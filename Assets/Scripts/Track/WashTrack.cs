@@ -17,7 +17,7 @@ namespace Sneakers
                 {
                     sneaker.StopCoroutine(sneaker.route);
                     sneaker.DragDropItem.isHold = false;
-                    sneaker.DragDropItem.isDropped = false;
+                    //sneaker.DragDropItem.isDropped = false;
                 }
 
                 // move to some place and start washing
@@ -39,7 +39,8 @@ namespace Sneakers
         public IEnumerator WashRoute(SneakerModel sneaker, int mover)
         {
             sneaker.SetTransporterType(TransporterType.Washing);
-            sneaker.GetComponent<DragDropItem>().isDropped = false;
+            //sneaker.DragDropItem.isDropped = false;
+            
             if (mover == 2)
             {
                 sneaker.currentPoint = 2;

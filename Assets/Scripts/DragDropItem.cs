@@ -31,6 +31,7 @@ namespace Sneakers
 
         public void OnDrag(PointerEventData eventData)
         {
+            isDropped = false;
             _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
 
@@ -38,11 +39,30 @@ namespace Sneakers
         {
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
+            
+            if (!isDropped)
+            {
+                transform.position = vector;
+                if (_sneaker.TransporterType == TransporterType.Main)
+                {
+                    Movement.instance.SendToMainTransporter(_sneaker, _sneaker.currentPoint);
+                }
+                if (_sneaker.TransporterType == TransporterType.Washing)
+                {
+                    Movement.instance.SendToWashTransporter(_sneaker, _sneaker.currentPoint);
+                }
+                if (_sneaker.TransporterType == TransporterType.Lacing)
+                {
+                    Movement.instance.SendToLaceTransporter(_sneaker, _sneaker.currentPoint);
+                }
+            }
+
+            isDropped = false;
         }
 
         public void OnDrop(PointerEventData eventData)
         {
-       
+            
         }
     }
 }

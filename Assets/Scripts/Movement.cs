@@ -77,7 +77,7 @@ namespace Sneakers
     
         private IEnumerator MainRoute(SneakerModel sneaker, int mover)
         {
-            sneaker.GetComponent<DragDropItem>().isDropped = false;
+            //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Main);
             while (mover == 0 || mover == 1 || mover == 2)
             {

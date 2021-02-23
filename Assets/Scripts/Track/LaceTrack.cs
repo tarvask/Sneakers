@@ -17,7 +17,7 @@ namespace Sneakers
                 {
                     sneaker.StopCoroutine(sneaker.route);
                     sneaker.DragDropItem.isHold = false;
-                    sneaker.DragDropItem.isDropped = false;
+                    //sneaker.DragDropItem.isDropped = false;
                 }
                 
                 sneaker.transform.position = _movement.points[7].position;
@@ -31,8 +31,9 @@ namespace Sneakers
         
         public IEnumerator LaceRoute(SneakerModel sneaker, int mover)
         {
-            sneaker.GetComponent<DragDropItem>().isDropped = false;
+            //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Waiting);
+            
             if (mover == 2)
             {
                 sneaker.SwitchVisibility(false);
