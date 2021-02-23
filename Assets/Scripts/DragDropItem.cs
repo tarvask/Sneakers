@@ -23,7 +23,7 @@ namespace Sneakers
     
         public void OnBeginDrag(PointerEventData eventData)
         {
-            StopCoroutine(eventData.pointerDrag.GetComponent<SneakerModel>().route);
+            _sneaker.StopCoroutine(_sneaker.route);
             _canvasGroup.alpha = 0.4f;
             _canvasGroup.blocksRaycasts = false;
             vector = transform.position;
@@ -38,23 +38,6 @@ namespace Sneakers
         {
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
-        
-            if (!isDropped)
-            {
-                transform.position = vector;
-                if (_sneaker.route_index == 0)
-                {
-                    _sneaker.route = StartCoroutine(Movement.instance.MainRoute(gameObject, _sneaker.currentPoint));
-                }
-                if (_sneaker.route_index == 1)
-                {
-                    _sneaker.route = StartCoroutine(Movement.instance.WashRoute(gameObject, _sneaker.currentPoint));
-                }
-                if (_sneaker.route_index == 2)
-                {
-                    _sneaker.route = StartCoroutine(Movement.instance.ShnurRoute(gameObject, _sneaker.currentPoint));
-                }
-            }
         }
 
         public void OnDrop(PointerEventData eventData)

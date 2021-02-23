@@ -14,7 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: adidas_black
   id: 0
-  sprite: {fileID: 21300000, guid: fcd8e9ff9dfde8a478ec3ce3e4d18e58, type: 3}
-  sprite_wash: {fileID: 21300000, guid: fc954c028ded23047b61d72dd62c66e3, type: 3}
-  sprite_shnur: {fileID: 21300000, guid: 48732492df2e77b4c897486cdc8a70db, type: 3}
-  sprite_broken: {fileID: 21300000, guid: 7fa7586a1d52bb74495f3725079bdbd3, type: 3}
+  prefab: {fileID: 1455919591318342102, guid: 65d922d0934204dddac871c1f30e4040, type: 3}

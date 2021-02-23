@@ -14,7 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: nike_red
   id: 1
-  sprite: {fileID: 21300000, guid: 5c64c028753079a479e4a873c78e9034, type: 3}
-  sprite_wash: {fileID: 21300000, guid: 1e2c43f38232775429a8a5093dbdbf00, type: 3}
-  sprite_shnur: {fileID: 21300000, guid: deca639a583add8478b4e3f8d1e7d6c0, type: 3}
-  sprite_broken: {fileID: 21300000, guid: 2a12412eeb1f36f4c8e23a901909a316, type: 3}
+  prefab: {fileID: 1455919591318342102, guid: 1889242b6451b4f5cab05b4c523cce7a, type: 3}
