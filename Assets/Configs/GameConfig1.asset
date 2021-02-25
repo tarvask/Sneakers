@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7a041f6f4f44f2b7be096e234f0f89, type: 3}
   m_Name: GameConfig1
   m_EditorClassIdentifier: 
-  mainTrackMovementSpeed: 5
+  mainTrackMovementSpeed: 2
   mainTrackSpawnDelay: 2
-  washTrackMovementSpeed: 5
+  washTrackMovementSpeed: 2
   washProcessDelay: 5
-  laceTrackMovementSpeed: 5
+  laceTrackMovementSpeed: 2
   laceProcessDelay: 5
-  waitTrackMovementSpeed: 5
+  waitTrackMovementSpeed: 2
   firstBinModelId: 1
   secondBinModelId: 0

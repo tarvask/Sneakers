@@ -95,7 +95,7 @@ namespace Sneakers
                 while (points[sneaker.currentPoint + 1].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[sneaker.currentPoint + 1].position, gameConfig.MainTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 mover++;
             }
@@ -109,7 +109,7 @@ namespace Sneakers
                 while (points[3].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[5].position, gameConfig.MainTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 mover++;
             }
@@ -118,7 +118,7 @@ namespace Sneakers
                 while (points[3].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 mover++;
             }
@@ -127,7 +127,7 @@ namespace Sneakers
                 while (points[3].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 //mover++;
             }
