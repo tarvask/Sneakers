@@ -5,14 +5,13 @@ namespace Sneakers
 {
     public abstract class AbstractTrack : MonoBehaviour, IDropHandler
     {
-        public int id;
         //public Transform[] points;
         
         protected Movement _movement;
 
-        public void Start()
+        public void Init(Movement movement)
         {
-            _movement = Movement.instance;
+            _movement = movement;
         }
         
         public virtual void OnDrop(PointerEventData eventData)

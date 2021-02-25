@@ -209,10 +209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e505d273836b4748969499547f2f19bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 4
-  points: []
-  washDelay: 5
-  washTrackMovementSpeed: 5
 --- !u!114 &205889801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,7 +553,7 @@ GameObject:
   - component: {fileID: 715104879}
   - component: {fileID: 715104878}
   m_Layer: 5
-  m_Name: ColliderBox_9
+  m_Name: FirstModelBin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -575,7 +571,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1690161646}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 60}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -594,9 +590,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb202bf2b344809bf705b4cf78b0fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 9
-  points: []
-  modelId: 1
 --- !u!114 &715104878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,8 +778,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6e1aedb1774c2ba043e5e0514fade9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 2
-  points: []
 --- !u!222 &953112900
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -880,10 +871,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea84ebeee26f44169992db48ef6ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 5
-  points: []
-  laceDelay: 5
-  laceTrackMovementSpeed: 5
 --- !u!114 &1175665109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,9 +959,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04319fe950a14aacb7d991ab95c60e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 7
-  points: []
-  waitTrackMovementSpeed: 5
 --- !u!114 &1269669203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,8 +1047,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c42ac622f60b4c4399334dc2531837f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 6
-  points: []
 --- !u!114 &1298926340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1278,8 +1260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6e1aedb1774c2ba043e5e0514fade9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 1
-  points: []
 --- !u!114 &1465760305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1420,8 +1400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1f7e01707494ba4d83bf0a4038bbdc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
-  spawnDelay: 2
+  gameConfig: {fileID: 11400000, guid: e4884cd84acd7407d80e006460365c27, type: 2}
   points:
   - {fileID: 1873898305}
   - {fileID: 1958564464}
@@ -1438,7 +1417,10 @@ MonoBehaviour:
   sneakersSpawnPoint: {fileID: 1873898305}
   washTrack: {fileID: 205889800}
   laceTrack: {fileID: 1175665108}
+  wasteTrack: {fileID: 1298926339}
   waitTrack: {fileID: 1269669202}
+  firstModelBin: {fileID: 715104877}
+  secondModelBin: {fileID: 2016216055}
   sneakers:
   - {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
   - {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
@@ -1493,8 +1475,8 @@ RectTransform:
   - {fileID: 1175665107}
   - {fileID: 1298926338}
   - {fileID: 1269669201}
-  - {fileID: 2016216054}
   - {fileID: 715104876}
+  - {fileID: 2016216054}
   m_Father: {fileID: 1543585938}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1766,7 +1748,7 @@ GameObject:
   - component: {fileID: 2016216057}
   - component: {fileID: 2016216056}
   m_Layer: 5
-  m_Name: ColliderBox_8
+  m_Name: SecondModelBin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1784,7 +1766,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1690161646}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 60}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1803,9 +1785,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb202bf2b344809bf705b4cf78b0fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 8
-  points: []
-  modelId: 0
 --- !u!114 &2016216056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2156,5 +2135,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6e1aedb1774c2ba043e5e0514fade9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 3
-  points: []

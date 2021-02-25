@@ -5,8 +5,16 @@ namespace Sneakers
 {
     public class WashTrack : AbstractSpecialTrack
     {
-        [SerializeField] private float washDelay = 5f;
-        [SerializeField] private float washTrackMovementSpeed;
+        private float _washTrackMovementSpeed;
+        private float _washProcessDelay;
+
+        public void Init(Movement movement, float washTrackMovementSpeed, float washProcessDelay)
+        {
+            base.Init(movement);
+
+            _washTrackMovementSpeed = washTrackMovementSpeed;
+            _washProcessDelay = washProcessDelay;
+        }
         
         protected override void OnDropSneaker(SneakerModel sneaker)
         {
@@ -47,12 +55,12 @@ namespace Sneakers
                 while (_movement.points[5].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[5].position, washTrackMovementSpeed);
+                        _movement.points[5].position, _washTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 
                 sneaker.SwitchVisibility(false);
-                yield return new WaitForSeconds(washDelay);
+                yield return new WaitForSeconds(_washProcessDelay);
                 
                 sneaker.SwitchVisibility(true);
                 mover++;
@@ -64,7 +72,7 @@ namespace Sneakers
                 while (_movement.points[6].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[6].position, washTrackMovementSpeed);
+                        _movement.points[6].position, _washTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;
@@ -75,7 +83,7 @@ namespace Sneakers
                 while (_movement.SneakersSpawnPoint.position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.SneakersSpawnPoint.position, washTrackMovementSpeed);
+                        _movement.SneakersSpawnPoint.position, _washTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;

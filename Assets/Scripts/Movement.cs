@@ -6,17 +6,19 @@ namespace Sneakers
 {
     public class Movement : MonoBehaviour
     {
-        public static Movement instance;
-        [SerializeField] private float movementSpeed = 5f;
-        [SerializeField] private float spawnDelay = 2f;
+        [SerializeField] private GameConfig gameConfig;
         
         public Transform[] points;
 
         [SerializeField] private Transform sneakersSpawnPoint;
 
+        [Space]
         [SerializeField] private WashTrack washTrack;
         [SerializeField] private LaceTrack laceTrack;
+        [SerializeField] private WasteTrack wasteTrack;
         [SerializeField] private WaitTrack waitTrack;
+        [SerializeField] private ModelBinTrack firstModelBin;
+        [SerializeField] private ModelBinTrack secondModelBin;
 
         [SerializeField] private SneakerConfig[] sneakers;
         public Canvas canvas;
@@ -24,6 +26,8 @@ namespace Sneakers
         [SerializeField] private Text livesLabel;
 
         public Transform SneakersSpawnPoint => sneakersSpawnPoint;
+        
+        public static Movement instance;
         
         private int _currentPoint;
         private int _countSneakers;
@@ -38,6 +42,13 @@ namespace Sneakers
         
         private void Start()
         {
+            washTrack.Init(this, gameConfig.WashTrackMovementSpeed, gameConfig.WashProcessDelay);
+            laceTrack.Init(this, gameConfig.LaceTrackMovementSpeed, gameConfig.LaceProcessDelay);
+            wasteTrack.Init(this);
+            waitTrack.Init(this, gameConfig.WaitTrackMovementSpeed);
+            firstModelBin.Init(this, gameConfig.FirstBinModelId);
+            secondModelBin.Init(this, gameConfig.SecondBinModelId);
+            
             StartCoroutine(Spawn());
         }
     
@@ -71,7 +82,7 @@ namespace Sneakers
                 SneakerModel sneaker = InstantiateSneaker(spawnRoot, sneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
                 
-                yield return new WaitForSeconds(spawnDelay);
+                yield return new WaitForSeconds(gameConfig.MainTrackSpawnDelay);
             }
         }
     
@@ -84,7 +95,7 @@ namespace Sneakers
                 sneaker.currentPoint = mover;
                 while (points[sneaker.currentPoint + 1].position != sneaker.transform.position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[sneaker.currentPoint + 1].position, movementSpeed);
+                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[sneaker.currentPoint + 1].position, gameConfig.MainTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;
@@ -98,7 +109,7 @@ namespace Sneakers
             {
                 while (points[3].position != sneaker.transform.position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[5].position, movementSpeed);
+                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[5].position, gameConfig.MainTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;
@@ -107,7 +118,7 @@ namespace Sneakers
             {
                 while (points[3].position != sneaker.transform.position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, movementSpeed);
+                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;
@@ -116,7 +127,7 @@ namespace Sneakers
             {
                 while (points[3].position != sneaker.transform.position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, movementSpeed);
+                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 //mover++;

@@ -6,9 +6,16 @@ namespace Sneakers
 {
     public class WaitTrack : AbstractTrack
     {
-        [SerializeField] private float waitTrackMovementSpeed;
+        private float _waitTrackMovementSpeed;
         
         private List<SneakerModel> _waitList = new List<SneakerModel>();
+        
+        public void Init(Movement movement, float waitTrackMovementSpeed)
+        {
+            base.Init(movement);
+
+            _waitTrackMovementSpeed = waitTrackMovementSpeed;
+        }
         
         protected override void OnDropSneaker(SneakerModel sneaker)
         {
@@ -41,7 +48,7 @@ namespace Sneakers
                 while (_movement.points[baseWaitTransporterIndex + mover].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[baseWaitTransporterIndex + mover].position, waitTrackMovementSpeed);
+                        _movement.points[baseWaitTransporterIndex + mover].position, _waitTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 

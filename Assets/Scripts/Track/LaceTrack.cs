@@ -5,9 +5,17 @@ namespace Sneakers
 {
     public class LaceTrack : AbstractSpecialTrack
     {
-        [SerializeField] private float laceDelay = 5f;
-        [SerializeField] private float laceTrackMovementSpeed;
-        
+        private float _laceTrackMovementSpeed;
+        private float _laceProcessDelay;
+
+        public void Init(Movement movement, float laceTrackMovementSpeed, float laceProcessDelay)
+        {
+            base.Init(movement);
+
+            _laceTrackMovementSpeed = laceTrackMovementSpeed;
+            _laceProcessDelay = laceProcessDelay;
+        }
+
         protected override void OnDropSneaker(SneakerModel sneaker)
         {
             if (sneaker.State == SneakerState.Unlaced)
@@ -37,7 +45,7 @@ namespace Sneakers
             if (mover == 2)
             {
                 sneaker.SwitchVisibility(false);
-                yield return new WaitForSeconds(laceDelay);
+                yield return new WaitForSeconds(_laceProcessDelay);
                     
                 sneaker.SetState(SneakerState.Normal);
                 sneaker.currentPoint = 2;
@@ -48,7 +56,7 @@ namespace Sneakers
                 while (_movement.points[8].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[8].position, laceTrackMovementSpeed);
+                        _movement.points[8].position, _laceTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;
@@ -59,7 +67,7 @@ namespace Sneakers
                 while (_movement.SneakersSpawnPoint.position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.SneakersSpawnPoint.position, laceTrackMovementSpeed);
+                        _movement.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
                     yield return new WaitForFixedUpdate();
                 }
                 mover++;

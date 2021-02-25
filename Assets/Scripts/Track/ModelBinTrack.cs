@@ -1,15 +1,20 @@
-using UnityEngine;
-
 namespace Sneakers
 {
     public class ModelBinTrack : AbstractSpecialTrack
     {
-        [SerializeField] private int modelId;
+        private int _modelId;
+        
+        public void Init(Movement movement, int modelId)
+        {
+            base.Init(movement);
+
+            _modelId = modelId;
+        }
         
         protected override void OnDropSneaker(SneakerModel sneaker)
         {
             // sorting
-            if (sneaker.Id == modelId && sneaker.State == SneakerState.Normal)
+            if (sneaker.Id == _modelId && sneaker.State == SneakerState.Normal)
             {
                 _movement.OnSortSucceeded(sneaker);
             }

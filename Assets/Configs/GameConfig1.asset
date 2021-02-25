@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7a041f6f4f44f2b7be096e234f0f89, type: 3}
+  m_Name: GameConfig1
+  m_EditorClassIdentifier: 
+  mainTrackMovementSpeed: 5
+  mainTrackSpawnDelay: 2
+  washTrackMovementSpeed: 5
+  washProcessDelay: 5
+  laceTrackMovementSpeed: 5
+  laceProcessDelay: 5
+  waitTrackMovementSpeed: 5
+  firstBinModelId: 1
+  secondBinModelId: 0
