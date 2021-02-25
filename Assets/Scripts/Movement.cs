@@ -63,7 +63,6 @@ namespace Sneakers
             newSneaker.SetState(state);
             newSneaker.Model = sneakerConfig.Model;
             newSneaker.Id = sneakerConfig.Id;
-            newSneaker.transform.localScale = new Vector3(2F, 1.5F, 1);
             newSneaker.transform.localPosition = position;
             newSneaker.name = sneakerConfig.Model + _countSneakers;
             _countSneakers++;
