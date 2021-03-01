@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameConfig1
   m_EditorClassIdentifier: 
   mainTrackMovementSpeed: 2
+  numberOfSneakers: 50
   mainTrackSpawnDelay: 2
   washTrackMovementSpeed: 2
   washProcessDelay: 5

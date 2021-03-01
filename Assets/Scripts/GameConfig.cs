@@ -5,6 +5,8 @@ namespace Sneakers
     [CreateAssetMenu(fileName = "New Game Config", menuName = "GameConfig")]
     public class GameConfig : ScriptableObject
     {
+        [SerializeField] private int numberOfSneakers;
+        
         [Header("Main track")]
         [SerializeField] private float mainTrackMovementSpeed = 5f;
         [SerializeField] private float mainTrackSpawnDelay = 2f;
@@ -24,6 +26,7 @@ namespace Sneakers
         [SerializeField] private int firstBinModelId;
         [SerializeField] private int secondBinModelId;
 
+        public int NumberOfSneakers => numberOfSneakers;
         public float MainTrackMovementSpeed => mainTrackMovementSpeed;
         public float MainTrackSpawnDelay => mainTrackSpawnDelay;
         public float WashTrackMovementSpeed => washTrackMovementSpeed;

@@ -76,7 +76,7 @@ namespace Sneakers
             spawnRoot.SetParent(sneakersSpawnPoint.parent.parent);
             spawnRoot.localPosition = Vector3.zero;
 
-            while (true)
+            while (_countSneakers < gameConfig.NumberOfSneakers)
             {
                 SneakerModel sneaker = InstantiateSneaker(spawnRoot, sneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
@@ -84,58 +84,10 @@ namespace Sneakers
                 yield return new WaitForSeconds(gameConfig.MainTrackSpawnDelay);
             }
         }
-    
-        private IEnumerator MainRoute(SneakerModel sneaker, int mover)
-        {
-            //sneaker.GetComponent<DragDropItem>().isDropped = false;
-            sneaker.SetTransporterType(TransporterType.Main);
-            while (mover == 0 || mover == 1 || mover == 2)
-            {
-                sneaker.currentPoint = mover;
-                while (points[sneaker.currentPoint + 1].position != sneaker.transform.position)
-                {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[sneaker.currentPoint + 1].position, gameConfig.MainTrackMovementSpeed);
-                    yield return null;
-                }
-                mover++;
-            }
-            if (mover == 3)
-            {
-                sneaker.currentPoint = 3;
-                OnSortFailed(sneaker);
-            }
-            if (mover == 4)
-            {
-                while (points[3].position != sneaker.transform.position)
-                {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[5].position, gameConfig.MainTrackMovementSpeed);
-                    yield return null;
-                }
-                mover++;
-            }
-            if (mover == 5)
-            {
-                while (points[3].position != sneaker.transform.position)
-                {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
-                    yield return null;
-                }
-                mover++;
-            }
-            if (mover == 7)
-            {
-                while (points[3].position != sneaker.transform.position)
-                {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position, points[6].position, gameConfig.MainTrackMovementSpeed);
-                    yield return null;
-                }
-                //mover++;
-            }
-        }
 
         public void SendToMainTransporter(SneakerModel sneaker, int mover = 0)
         {
-            sneaker.route = sneaker.StartCoroutine(MainRoute(sneaker, mover));
+            sneaker.route = sneaker.StartCoroutine(mainTrack.MainRoute(sneaker, mover));
         }
         
         public void SendToWashTransporter(SneakerModel sneaker, int mover = 2)
