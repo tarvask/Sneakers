@@ -7,12 +7,10 @@ namespace Sneakers
     public class Movement : MonoBehaviour
     {
         [SerializeField] private GameConfig gameConfig;
-        
-        public Transform[] points;
-
         [SerializeField] private Transform sneakersSpawnPoint;
 
         [Space]
+        [SerializeField] private MainTrack mainTrack;
         [SerializeField] private WashTrack washTrack;
         [SerializeField] private LaceTrack laceTrack;
         [SerializeField] private WasteTrack wasteTrack;
@@ -29,7 +27,6 @@ namespace Sneakers
         
         public static Movement instance;
         
-        private int _currentPoint;
         private int _countSneakers;
         private int _score;
         private int _lives;
@@ -42,6 +39,7 @@ namespace Sneakers
         
         private void Start()
         {
+            mainTrack.Init(this, gameConfig.MainTrackMovementSpeed);
             washTrack.Init(this, gameConfig.WashTrackMovementSpeed, gameConfig.WashProcessDelay);
             laceTrack.Init(this, gameConfig.LaceTrackMovementSpeed, gameConfig.LaceProcessDelay);
             wasteTrack.Init(this);

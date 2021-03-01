@@ -29,10 +29,10 @@ namespace Sneakers
                 }
 
                 // move to some place and start washing
-                float x1 = _movement.points[5].position.x;
-                float y1 = _movement.points[5].position.y;
-                float x2 = _movement.points[4].position.x;
-                float y2 = _movement.points[4].position.y;
+                float x1 = trackPoints[1].position.x;
+                float y1 = trackPoints[1].position.y;
+                float x2 = trackPoints[0].position.x;
+                float y2 = trackPoints[0].position.y;
                 float x = sneaker.transform.position.x;
                 float y = ((x1 * y2 - x2 * y1) + x * (y1 - y2)) / (x1 - x2);
                 sneaker.transform.position = new Vector2(x, y);
@@ -52,11 +52,11 @@ namespace Sneakers
             if (mover == 2)
             {
                 sneaker.currentPoint = 2;
-                while (_movement.points[5].position != sneaker.transform.position)
+                while (trackPoints[1].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[5].position, _washTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                        trackPoints[1].position, _washTrackMovementSpeed);
+                    yield return null;
                 }
                 
                 sneaker.SwitchVisibility(false);
@@ -69,11 +69,11 @@ namespace Sneakers
             {
                 sneaker.SetState(SneakerState.Normal);
                 sneaker.currentPoint = 3;
-                while (_movement.points[6].position != sneaker.transform.position)
+                while (trackPoints[2].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[6].position, _washTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                        trackPoints[2].position, _washTrackMovementSpeed);
+                    yield return null;
                 }
                 mover++;
             }
@@ -84,7 +84,7 @@ namespace Sneakers
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
                         _movement.SneakersSpawnPoint.position, _washTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 mover++;
             }

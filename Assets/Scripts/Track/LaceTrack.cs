@@ -28,7 +28,7 @@ namespace Sneakers
                     //sneaker.DragDropItem.isDropped = false;
                 }
                 
-                sneaker.transform.position = _movement.points[7].position;
+                sneaker.transform.position = trackPoints[0].position;
                 _movement.SendToLaceTransporter(sneaker);
             }
             else
@@ -53,11 +53,11 @@ namespace Sneakers
                 sneaker.GetComponent<CanvasGroup>().blocksRaycasts = true;
                 sneaker.SwitchVisibility(true);
                 
-                while (_movement.points[8].position != sneaker.transform.position)
+                while (trackPoints[1].position != sneaker.transform.position)
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.points[8].position, _laceTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                        trackPoints[1].position, _laceTrackMovementSpeed);
+                    yield return null;
                 }
                 mover++;
             }
@@ -68,7 +68,7 @@ namespace Sneakers
                 {
                     sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
                         _movement.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
-                    yield return new WaitForFixedUpdate();
+                    yield return null;
                 }
                 mover++;
             }
