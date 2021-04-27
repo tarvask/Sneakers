@@ -1,22 +1,31 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Sneakers
 {
     public abstract class AbstractTrack : MonoBehaviour, IDropHandler
     {
-        //public Transform[] points;
-        
-        protected Movement _movement;
+        [SerializeField] private Image[] colliderImages;
 
-        public void Init(Movement movement)
+        protected Movement _movement;
+        private bool _isAvailable;
+
+        public void Init(Movement movement, bool isAvailable)
         {
             _movement = movement;
+            _isAvailable = isAvailable;
+
+            foreach (Image colliderImage in colliderImages)
+            {
+                colliderImage.color = new Color(0, 0, 0,
+                    _isAvailable ? 0 : 0.5f);
+            }
         }
-        
+
         public virtual void OnDrop(PointerEventData eventData)
         {
-            if (eventData.pointerDrag == null)
+            if (!_isAvailable || eventData.pointerDrag == null)
                 return;
             
             SneakerModel sneaker = eventData.pointerDrag.GetComponent<SneakerModel>();

@@ -12,9 +12,9 @@ namespace Sneakers
         
         private SneakerModel _waitingSneaker;
         
-        public void Init(Movement movement, float waitTrackMovementSpeed)
+        public void Init(Movement movement, bool isAvailable, float waitTrackMovementSpeed)
         {
-            base.Init(movement);
+            base.Init(movement, isAvailable);
 
             _waitTrackMovementSpeed = waitTrackMovementSpeed;
         }

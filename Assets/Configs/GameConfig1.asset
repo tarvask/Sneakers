@@ -15,10 +15,14 @@ MonoBehaviour:
   numberOfSneakers: 50
   mainTrackMovementSpeed: 1
   mainTrackSpawnDelay: 2
+  isWashTrackAvailable: 1
   washTrackMovementSpeed: 1
   washProcessDelay: 5
+  isLaceTrackAvailable: 1
   laceTrackMovementSpeed: 1
   laceProcessDelay: 5
+  isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
+  isWasteTrackAvailable: 1
   firstBinModelId: 1
   secondBinModelId: 0

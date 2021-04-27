@@ -8,9 +8,9 @@ namespace Sneakers
         private float _washTrackMovementSpeed;
         private float _washProcessDelay;
 
-        public void Init(Movement movement, float washTrackMovementSpeed, float washProcessDelay)
+        public void Init(Movement movement, bool isAvailable, float washTrackMovementSpeed, float washProcessDelay)
         {
-            base.Init(movement);
+            base.Init(movement, isAvailable);
 
             _washTrackMovementSpeed = washTrackMovementSpeed;
             _washProcessDelay = washProcessDelay;

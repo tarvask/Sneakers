@@ -39,13 +39,13 @@ namespace Sneakers
         
         private void Start()
         {
-            mainTrack.Init(this, gameConfig.MainTrackMovementSpeed);
-            washTrack.Init(this, gameConfig.WashTrackMovementSpeed, gameConfig.WashProcessDelay);
-            laceTrack.Init(this, gameConfig.LaceTrackMovementSpeed, gameConfig.LaceProcessDelay);
-            wasteTrack.Init(this);
-            waitTrack.Init(this, gameConfig.WaitTrackMovementSpeed);
-            firstModelBin.Init(this, gameConfig.FirstBinModelId);
-            secondModelBin.Init(this, gameConfig.SecondBinModelId);
+            mainTrack.Init(this, true, gameConfig.MainTrackMovementSpeed);
+            washTrack.Init(this, gameConfig.IsWashTrackAvailable, gameConfig.WashTrackMovementSpeed, gameConfig.WashProcessDelay);
+            laceTrack.Init(this, gameConfig.IsLaceTrackAvailable, gameConfig.LaceTrackMovementSpeed, gameConfig.LaceProcessDelay);
+            wasteTrack.Init(this, gameConfig.IsWasteTrackAvailable);
+            waitTrack.Init(this, gameConfig.IsWaitTrackAvailable, gameConfig.WaitTrackMovementSpeed);
+            firstModelBin.Init(this, true, gameConfig.FirstBinModelId);
+            secondModelBin.Init(this, true, gameConfig.SecondBinModelId);
             
             StartCoroutine(Spawn());
         }

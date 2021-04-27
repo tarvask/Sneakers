@@ -4,9 +4,9 @@ namespace Sneakers
     {
         private int _modelId;
         
-        public void Init(Movement movement, int modelId)
+        public void Init(Movement movement, bool isAvailable, int modelId)
         {
-            base.Init(movement);
+            base.Init(movement, isAvailable);
 
             _modelId = modelId;
         }

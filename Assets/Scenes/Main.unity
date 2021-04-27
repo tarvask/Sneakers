@@ -212,6 +212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e505d273836b4748969499547f2f19bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 205889801}
   trackPoints:
   - {fileID: 293415643}
   - {fileID: 1318852847}
@@ -229,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -597,6 +599,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb202bf2b344809bf705b4cf78b0fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 715104878}
   trackPoints: []
 --- !u!114 &715104878
 MonoBehaviour:
@@ -611,7 +615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -757,6 +761,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6e1aedb1774c2ba043e5e0514fade9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 1465760305}
+  - {fileID: 953112898}
+  - {fileID: 2105836017}
   trackPoints:
   - {fileID: 1873898305}
   - {fileID: 1958564464}
@@ -813,7 +821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -842,6 +850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4078f903b88e454098ff5e91b5922571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages: []
 --- !u!222 &953112900
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -937,6 +946,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea84ebeee26f44169992db48ef6ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 1175665109}
   trackPoints:
   - {fileID: 815385005}
   - {fileID: 1724271083}
@@ -953,7 +964,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1031,6 +1042,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04319fe950a14aacb7d991ab95c60e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 1269669203}
   trackPoints:
   - {fileID: 1408474875}
   - {fileID: 1805983347}
@@ -1048,7 +1061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1123,6 +1136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c42ac622f60b4c4399334dc2531837f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 1298926340}
   trackPoints: []
 --- !u!114 &1298926340
 MonoBehaviour:
@@ -1137,7 +1152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1329,6 +1344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4078f903b88e454098ff5e91b5922571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages: []
 --- !u!114 &1465760305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1342,7 +1358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1840,6 +1856,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb202bf2b344809bf705b4cf78b0fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages:
+  - {fileID: 2016216056}
   trackPoints: []
 --- !u!114 &2016216056
 MonoBehaviour:
@@ -1854,7 +1872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2154,7 +2172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2191,3 +2209,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4078f903b88e454098ff5e91b5922571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderImages: []

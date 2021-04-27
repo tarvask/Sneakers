@@ -9,9 +9,9 @@ namespace Sneakers
         
         private float _mainTrackMovementSpeed;
 
-        public void Init(Movement movement, float mainTrackMovementSpeed)
+        public void Init(Movement movement, bool isAvailable, float mainTrackMovementSpeed)
         {
-            base.Init(movement);
+            base.Init(movement, isAvailable);
 
             _mainTrackMovementSpeed = mainTrackMovementSpeed;
         }

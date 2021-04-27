@@ -8,9 +8,9 @@ namespace Sneakers
         private float _laceTrackMovementSpeed;
         private float _laceProcessDelay;
 
-        public void Init(Movement movement, float laceTrackMovementSpeed, float laceProcessDelay)
+        public void Init(Movement movement, bool isAvailable, float laceTrackMovementSpeed, float laceProcessDelay)
         {
-            base.Init(movement);
+            base.Init(movement, isAvailable);
 
             _laceTrackMovementSpeed = laceTrackMovementSpeed;
             _laceProcessDelay = laceProcessDelay;
