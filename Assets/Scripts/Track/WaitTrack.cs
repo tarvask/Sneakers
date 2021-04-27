@@ -10,7 +10,7 @@ namespace Sneakers
         
         private float _waitTrackMovementSpeed;
         
-        private List<SneakerModel> _waitList = new List<SneakerModel>();
+        private SneakerModel _waitingSneaker;
         
         public void Init(Movement movement, float waitTrackMovementSpeed)
         {
@@ -25,16 +25,17 @@ namespace Sneakers
             {
                 sneaker.transform.position = sneaker.DragDropItem.vector;
             }
+            else if (_waitingSneaker != null)
+            {
+                // or maybe just send new sneaker back to it's roots
+                //_movement.SendToMainTransporter(_waitingSneaker, 2);
+                //_movement.SendToWaitTransporter(sneaker, 2);
+                sneaker.transform.position = sneaker.DragDropItem.vector;
+                _movement.SendToMainTransporter(sneaker, sneaker.currentPoint);
+            }
             else
             {
-                // if (_waitList.Count != 0)
-                // {
-                //     SneakerModel currentWaitingSneaker = _waitList[_waitList.Count - 1];
-                //     _movement.SendToMainTransporter(currentWaitingSneaker, 2);
-                //     _movement.SendToWaitTransporter(sneaker, 2);
-                // }
-                //
-                // _waitList.Add(sneaker);
+                _waitingSneaker = sneaker;
                 sneaker.transform.position = trackPoints[0].position;
                 _movement.SendToWaitTransporter(sneaker, 1);
                 sneaker.DragDropItem.isHold = true;
@@ -45,7 +46,7 @@ namespace Sneakers
         {
             int baseWaitTransporterIndex = 0;
             
-            if (mover == 1 || mover == 2)
+            while (mover == 1 || mover == 2)
             {
                 while (trackPoints[baseWaitTransporterIndex + mover].position != sneaker.transform.position)
                 {
@@ -54,8 +55,10 @@ namespace Sneakers
                     yield return null;
                 }
                 
-                sneaker.StopCoroutine(sneaker.route);
+                mover++;
             }
+            
+            sneaker.StopCoroutine(sneaker.route);
         }
     }
 }
