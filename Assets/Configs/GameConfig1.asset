@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: GameConfig1
   m_EditorClassIdentifier: 
   numberOfSneakers: 50
+  coinsSuccessfulStepReward: 10
+  coinsWrongStepReward: -25
   mainTrackMovementSpeed: 1
   mainTrackSpawnDelay: 2
   isWashTrackAvailable: 1

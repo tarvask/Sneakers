@@ -111,7 +111,7 @@ namespace Sneakers
 
         public void OnSortSucceeded(SneakerModel sneaker)
         {
-            _score++;
+            _score += gameConfig.CoinsSuccessfulStepReward;
             totalLabel.text = _score.ToString();
             
             sneaker.StopCoroutine(sneaker.route);
@@ -120,6 +120,9 @@ namespace Sneakers
 
         public void OnSortFailed(SneakerModel sneaker)
         {
+            // do not allow negative score
+            _score = Mathf.Max(0, _score + gameConfig.CoinsWrongStepReward);
+            totalLabel.text = _score.ToString();
             _lives--;
             livesLabel.text = _lives.ToString();
             
