@@ -7,10 +7,10 @@ namespace Sneakers
     {
         [SerializeField] private string model;
         [SerializeField] private int id;
-        [SerializeField] private SneakerModel prefab;
+        [SerializeField] private SneakerView prefab;
 
         public string Model => model;
         public int Id => id;
-        public SneakerModel Prefab => prefab;
+        public SneakerView Prefab => prefab;
     }
 }

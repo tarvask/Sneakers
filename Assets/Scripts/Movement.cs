@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,6 +32,8 @@ namespace Sneakers
         private int _score;
         private int _lives;
 
+        private List<SneakerController> _sneakers;
+
         // Start is called before the first frame update
         private void Awake()
         {
@@ -47,25 +50,26 @@ namespace Sneakers
             firstModelBin.Init(this, true, gameConfig.FirstBinModelId);
             secondModelBin.Init(this, true, gameConfig.SecondBinModelId);
             
+            _sneakers = new List<SneakerController>();
+            
             StartCoroutine(Spawn());
         }
     
-        private SneakerModel InstantiateSneaker(Transform spawnRoot, Vector3 position)
+        private SneakerController InstantiateSneaker(Transform spawnRoot, Vector3 position)
         {
             SneakerConfig sneakerConfig = sneakers[Random.Range(0, sneakers.Length)];
             SneakerState state = (SneakerState)Random.Range(1, 5);
             
-            SneakerModel newSneaker = Instantiate(sneakerConfig.Prefab, spawnRoot);
-            newSneaker.DragDropItem.canvas = canvas;
+            SneakerView newSneakerView = Instantiate(sneakerConfig.Prefab, spawnRoot);
+            newSneakerView.DragDropItem.canvas = canvas;
+            newSneakerView.transform.localPosition = position;
             
-            newSneaker.SetState(state);
-            newSneaker.Model = sneakerConfig.Model;
-            newSneaker.Id = sneakerConfig.Id;
-            newSneaker.transform.localPosition = position;
-            newSneaker.name = sneakerConfig.Model + _countSneakers;
+            SneakerController.Context sneakerControllerContext = new SneakerController.Context(newSneakerView, sneakerConfig);
+            SneakerController sneakerController = new SneakerController(sneakerControllerContext, _countSneakers);
+            sneakerController.SetState(state);
             _countSneakers++;
             
-            return newSneaker;
+            return sneakerController;
         }
         
         private IEnumerator Spawn()
@@ -76,31 +80,32 @@ namespace Sneakers
 
             while (_countSneakers < gameConfig.NumberOfSneakers)
             {
-                SneakerModel sneaker = InstantiateSneaker(spawnRoot, sneakersSpawnPoint.localPosition);
+                SneakerController sneaker = InstantiateSneaker(spawnRoot, sneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
+                _sneakers.Add(sneaker);
                 
                 yield return new WaitForSeconds(gameConfig.MainTrackSpawnDelay);
             }
         }
 
-        public void SendToMainTransporter(SneakerModel sneaker, int mover = 0)
+        public void SendToMainTransporter(SneakerController sneaker, int mover = 0)
         {
-            sneaker.route = sneaker.StartCoroutine(mainTrack.MainRoute(sneaker, mover));
+            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(mainTrack.MainRoute(sneaker, mover));
         }
         
-        public void SendToWashTransporter(SneakerModel sneaker, int mover = 2)
+        public void SendToWashTransporter(SneakerController sneaker, int mover = 2)
         {
-            sneaker.route = sneaker.StartCoroutine(washTrack.WashRoute(sneaker, mover));
+            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(washTrack.WashRoute(sneaker, mover));
         }
         
-        public void SendToLaceTransporter(SneakerModel sneaker, int mover = 2)
+        public void SendToLaceTransporter(SneakerController sneaker, int mover = 2)
         {
-            sneaker.route = sneaker.StartCoroutine(laceTrack.LaceRoute(sneaker, mover));
+            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(laceTrack.LaceRoute(sneaker, mover));
         }
         
-        public void SendToWaitTransporter(SneakerModel sneaker, int mover)
+        public void SendToWaitTransporter(SneakerController sneaker, int mover)
         {
-            sneaker.route = sneaker.StartCoroutine(waitTrack.WaitRoute(sneaker, mover));
+            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(waitTrack.WaitRoute(sneaker, mover));
         }
 
         public void OnSortError()
@@ -109,16 +114,17 @@ namespace Sneakers
             livesLabel.text = _lives.ToString();
         }
 
-        public void OnSortSucceeded(SneakerModel sneaker)
+        public void OnSortSucceeded(SneakerController sneaker)
         {
             _score += gameConfig.CoinsSuccessfulStepReward;
             totalLabel.text = _score.ToString();
-            
-            sneaker.StopCoroutine(sneaker.route);
-            Destroy(sneaker.gameObject);
+
+            _sneakers.Remove(sneaker);
+            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            Destroy(sneaker.View.gameObject);
         }
 
-        public void OnSortFailed(SneakerModel sneaker)
+        public void OnSortFailed(SneakerController sneaker)
         {
             // do not allow negative score
             _score = Mathf.Max(0, _score + gameConfig.CoinsWrongStepReward);
@@ -126,8 +132,9 @@ namespace Sneakers
             _lives--;
             livesLabel.text = _lives.ToString();
             
-            sneaker.StopCoroutine(sneaker.route);
-            Destroy(sneaker.gameObject);
+            _sneakers.Remove(sneaker);
+            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            Destroy(sneaker.View.gameObject);
         }
     }
 }

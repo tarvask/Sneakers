@@ -16,19 +16,19 @@ namespace Sneakers
             _laceProcessDelay = laceProcessDelay;
         }
 
-        protected override void OnDropSneaker(SneakerModel sneaker)
+        protected override void OnDropSneaker(SneakerController sneaker)
         {
             if (sneaker.State == SneakerState.Unlaced)
             {
                 // stop waiting coroutine
                 if (sneaker.DragDropItem.isHold)
                 {
-                    sneaker.StopCoroutine(sneaker.route);
+                    sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
                     sneaker.DragDropItem.isHold = false;
                     //sneaker.DragDropItem.isDropped = false;
                 }
                 
-                sneaker.transform.position = trackPoints[0].position;
+                sneaker.SetPosition(trackPoints[0].position);
                 _movement.SendToLaceTransporter(sneaker);
             }
             else
@@ -37,7 +37,7 @@ namespace Sneakers
             }
         }
         
-        public IEnumerator LaceRoute(SneakerModel sneaker, int mover)
+        public IEnumerator LaceRoute(SneakerController sneaker, int mover)
         {
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Waiting);
@@ -48,33 +48,31 @@ namespace Sneakers
                 yield return new WaitForSeconds(_laceProcessDelay);
                     
                 sneaker.SetState(SneakerState.Normal);
-                sneaker.currentPoint = 2;
-                sneaker.GetComponent<CanvasGroup>().alpha = 1F;
-                sneaker.GetComponent<CanvasGroup>().blocksRaycasts = true;
+                sneaker.SetCurrentPoint(2);
+                sneaker.View.GetComponent<CanvasGroup>().alpha = 1F;
+                sneaker.View.GetComponent<CanvasGroup>().blocksRaycasts = true;
                 sneaker.SwitchVisibility(true);
                 
-                while (trackPoints[1].position != sneaker.transform.position)
+                while (trackPoints[1].position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        trackPoints[1].position, _laceTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].position, _laceTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
             }
             if (mover == 3)
             {
-                sneaker.currentPoint = 3;
-                while (_movement.SneakersSpawnPoint.position != sneaker.transform.position)
+                sneaker.SetCurrentPoint(3);
+                while (_movement.SneakersSpawnPoint.position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
+                    sneaker.Move(_movement.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
             }
             if (mover == 4)
             {
-                sneaker.currentPoint = 4;
+                sneaker.SetCurrentPoint(4);
                 _movement.SendToMainTransporter(sneaker);
             }
         }

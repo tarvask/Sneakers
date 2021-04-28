@@ -16,14 +16,14 @@ namespace Sneakers
             _washProcessDelay = washProcessDelay;
         }
         
-        protected override void OnDropSneaker(SneakerModel sneaker)
+        protected override void OnDropSneaker(SneakerController sneaker)
         {
             if (sneaker.State == SneakerState.Dirty)
             {
                 // stop waiting coroutine
                 if (sneaker.DragDropItem.isHold)
                 {
-                    sneaker.StopCoroutine(sneaker.route);
+                    sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
                     sneaker.DragDropItem.isHold = false;
                     //sneaker.DragDropItem.isDropped = false;
                 }
@@ -33,9 +33,9 @@ namespace Sneakers
                 float y1 = trackPoints[1].position.y;
                 float x2 = trackPoints[0].position.x;
                 float y2 = trackPoints[0].position.y;
-                float x = sneaker.transform.position.x;
+                float x = sneaker.Position.x;
                 float y = ((x1 * y2 - x2 * y1) + x * (y1 - y2)) / (x1 - x2);
-                sneaker.transform.position = new Vector2(x, y);
+                sneaker.SetPosition(new Vector2(x, y));
                 _movement.SendToWashTransporter(sneaker);
             }
             else
@@ -44,18 +44,17 @@ namespace Sneakers
             }
         }
         
-        public IEnumerator WashRoute(SneakerModel sneaker, int mover)
+        public IEnumerator WashRoute(SneakerController sneaker, int mover)
         {
             sneaker.SetTransporterType(TransporterType.Washing);
             //sneaker.DragDropItem.isDropped = false;
             
             if (mover == 2)
             {
-                sneaker.currentPoint = 2;
-                while (trackPoints[1].position != sneaker.transform.position)
+                sneaker.SetCurrentPoint(2);
+                while (trackPoints[1].position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        trackPoints[1].position, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].position, _washTrackMovementSpeed);
                     yield return null;
                 }
                 
@@ -68,29 +67,27 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetState(SneakerState.Normal);
-                sneaker.currentPoint = 3;
-                while (trackPoints[2].position != sneaker.transform.position)
+                sneaker.SetCurrentPoint(3);
+                while (trackPoints[2].position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        trackPoints[2].position, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[2].position, _washTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
             }
             if (mover == 4)
             {
-                sneaker.currentPoint = 4;
-                while (_movement.SneakersSpawnPoint.position != sneaker.transform.position)
+                sneaker.SetCurrentPoint(4);
+                while (_movement.SneakersSpawnPoint.position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        _movement.SneakersSpawnPoint.position, _washTrackMovementSpeed);
+                    sneaker.Move(_movement.SneakersSpawnPoint.position, _washTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
             }
             if (mover == 5)
             {
-                sneaker.currentPoint = 5;
+                sneaker.SetCurrentPoint(5);
                 _movement.SendToMainTransporter(sneaker);
             }
         }

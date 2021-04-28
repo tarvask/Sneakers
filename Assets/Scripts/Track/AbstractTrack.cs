@@ -28,7 +28,7 @@ namespace Sneakers
             if (!_isAvailable || eventData.pointerDrag == null)
                 return;
             
-            SneakerModel sneaker = eventData.pointerDrag.GetComponent<SneakerModel>();
+            SneakerView sneaker = eventData.pointerDrag.GetComponent<SneakerView>();
 
             if (sneaker == null)
                 return;
@@ -36,23 +36,23 @@ namespace Sneakers
             // end drag
             sneaker.DragDropItem.isDropped = true;
 
-            OnDropSneaker(sneaker);
+            sneaker.OnDropSneakerEventHandler(OnDropSneaker);
         }
 
-        protected abstract void OnDropSneaker(SneakerModel sneaker);
+        protected abstract void OnDropSneaker(SneakerController sneaker);
 
-        protected virtual void OnWrongTrackDropped(SneakerModel sneaker)
+        protected virtual void OnWrongTrackDropped(SneakerController sneaker)
         {
             // back to position before drag
             if (!sneaker.DragDropItem.isHold)
             {
-                sneaker.transform.position = sneaker.DragDropItem.vector;
-                _movement.SendToMainTransporter(sneaker, sneaker.currentPoint);
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+                _movement.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
             }
             // back to wait
             else
             {
-                sneaker.transform.position = sneaker.DragDropItem.vector;
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
             }
         }
     }

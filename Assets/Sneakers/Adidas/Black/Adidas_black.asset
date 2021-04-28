@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: adidas_black
   id: 0
-  prefab: {fileID: 1455919591318342102, guid: 65d922d0934204dddac871c1f30e4040, type: 3}
+  prefab: {fileID: 8816515728949970005, guid: 65d922d0934204dddac871c1f30e4040, type: 3}

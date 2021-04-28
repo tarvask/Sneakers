@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: nike_red
   id: 1
-  prefab: {fileID: 1455919591318342102, guid: 1889242b6451b4f5cab05b4c523cce7a, type: 3}
+  prefab: {fileID: 8816515728949970005, guid: 1889242b6451b4f5cab05b4c523cce7a, type: 3}

@@ -2,7 +2,7 @@ namespace Sneakers
 {
     public class WasteTrack : AbstractSpecialTrack
     {
-        protected override void OnDropSneaker(SneakerModel sneaker)
+        protected override void OnDropSneaker(SneakerController sneaker)
         {
             if (sneaker.State == SneakerState.Wasted)
             {

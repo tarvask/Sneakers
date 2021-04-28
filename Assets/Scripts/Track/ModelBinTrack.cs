@@ -11,7 +11,7 @@ namespace Sneakers
             _modelId = modelId;
         }
         
-        protected override void OnDropSneaker(SneakerModel sneaker)
+        protected override void OnDropSneaker(SneakerController sneaker)
         {
             // sorting
             if (sneaker.Id == _modelId && sneaker.State == SneakerState.Normal)

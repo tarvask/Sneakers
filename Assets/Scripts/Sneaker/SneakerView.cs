@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Sneakers
@@ -8,6 +9,13 @@ namespace Sneakers
         [SerializeField] private DragDropItem dragDropItem;
 
         public DragDropItem DragDropItem => dragDropItem;
+        
+        public event Action<Action<SneakerController>> OnSneakerDropped;
+
+        public void OnDropSneakerEventHandler(Action<SneakerController> sneakerController)
+        {
+            OnSneakerDropped?.Invoke(sneakerController);
+        }
         
         public void SetState(SneakerState state)
         {

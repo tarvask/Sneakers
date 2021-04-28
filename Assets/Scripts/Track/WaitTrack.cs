@@ -10,7 +10,7 @@ namespace Sneakers
         
         private float _waitTrackMovementSpeed;
         
-        private SneakerModel _waitingSneaker;
+        private SneakerController _waitingSneaker;
         
         public void Init(Movement movement, bool isAvailable, float waitTrackMovementSpeed)
         {
@@ -19,46 +19,45 @@ namespace Sneakers
             _waitTrackMovementSpeed = waitTrackMovementSpeed;
         }
         
-        protected override void OnDropSneaker(SneakerModel sneaker)
+        protected override void OnDropSneaker(SneakerController sneaker)
         {
             if (sneaker.DragDropItem.isHold)
             {
-                sneaker.transform.position = sneaker.DragDropItem.vector;
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
             }
             else if (_waitingSneaker != null)
             {
                 // or maybe just send new sneaker back to it's roots
                 //_movement.SendToMainTransporter(_waitingSneaker, 2);
                 //_movement.SendToWaitTransporter(sneaker, 2);
-                sneaker.transform.position = sneaker.DragDropItem.vector;
-                _movement.SendToMainTransporter(sneaker, sneaker.currentPoint);
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+                _movement.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
             }
             else
             {
                 _waitingSneaker = sneaker;
-                sneaker.transform.position = trackPoints[0].position;
+                sneaker.SetPosition(trackPoints[0].position);
                 _movement.SendToWaitTransporter(sneaker, 1);
                 sneaker.DragDropItem.isHold = true;
             }
         }
         
-        public IEnumerator WaitRoute(SneakerModel sneaker, int mover)
+        public IEnumerator WaitRoute(SneakerController sneaker, int mover)
         {
             int baseWaitTransporterIndex = 0;
             
             while (mover == 1 || mover == 2)
             {
-                while (trackPoints[baseWaitTransporterIndex + mover].position != sneaker.transform.position)
+                while (trackPoints[baseWaitTransporterIndex + mover].position != sneaker.Position)
                 {
-                    sneaker.transform.position = Vector3.MoveTowards(sneaker.transform.position,
-                        trackPoints[baseWaitTransporterIndex + mover].position, _waitTrackMovementSpeed);
+                    sneaker.Move(trackPoints[baseWaitTransporterIndex + mover].position, _waitTrackMovementSpeed);
                     yield return null;
                 }
                 
                 mover++;
             }
             
-            sneaker.StopCoroutine(sneaker.route);
+            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Sneakers
     {
         [SerializeField] protected Transform[] trackPoints;
         
-        protected override void OnWrongTrackDropped(SneakerModel sneaker)
+        protected override void OnWrongTrackDropped(SneakerController sneaker)
         {
             base.OnWrongTrackDropped(sneaker);
             

@@ -1,0 +1,76 @@
+﻿using UnityEngine;
+
+namespace Sneakers
+{
+    public class SneakerController
+    {
+        public struct Context
+        {
+            public SneakerView View { get; }
+            public SneakerConfig Config { get; }
+
+            public Context(SneakerView view, SneakerConfig config)
+            {
+                View = view;
+                Config = config;
+            }
+        }
+
+        private readonly Context _context;
+        private SneakerState _state;
+        private TransporterType _transporterType;
+        private int _currentPoint;
+
+        public string Model => _context.Config.Model;
+        public int Id => _context.Config.Id;
+        public SneakerView View => _context.View;
+        public TransporterType TransporterType => _transporterType;
+        public SneakerState State => _state;
+        public DragDropItem DragDropItem => _context.View.DragDropItem;
+        public int CurrentPoint => _currentPoint;
+        public Vector3 Position => _context.View.transform.position;
+        
+        public Coroutine CurrentCoroutine { get; set; }
+
+        public SneakerController(Context context, int id)
+        {
+            _context = context;
+            
+            _context.View.name = _context.Config.Model + id;
+            _context.View.DragDropItem.Init(this);
+            _context.View.OnSneakerDropped += action => action(this);
+        }
+
+        public void SetState(SneakerState newState)
+        {
+            _state = newState;
+            _context.View.SetState(newState);
+        }
+
+        public void SetTransporterType(TransporterType newTransporterType)
+        {
+            _transporterType = newTransporterType;
+        }
+
+        public void SetCurrentPoint(int currentPoint)
+        {
+            _currentPoint = currentPoint;
+        }
+
+        public void SwitchVisibility(bool visible)
+        {
+            _context.View.SwitchVisibility(_state, visible);
+        }
+
+        public void SetPosition(Vector3 newPosition)
+        {
+            View.transform.position = newPosition;
+        }
+
+        public void Move(Vector3 targetPosition, float speed)
+        {
+            View.transform.position = Vector3.MoveTowards(View.transform.position,
+                targetPosition, speed);
+        }
+    }
+}

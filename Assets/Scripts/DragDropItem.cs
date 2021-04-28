@@ -12,18 +12,22 @@ namespace Sneakers
     
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
-        private SneakerModel _sneaker;
+        private SneakerController _sneaker;
     
         private void Start()
         {
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup = GetComponent<CanvasGroup>();
-            _sneaker = gameObject.GetComponent<SneakerModel>();
+        }
+
+        public void Init(SneakerController sneaker)
+        {
+            _sneaker = sneaker;
         }
     
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _sneaker.StopCoroutine(_sneaker.route);
+            _sneaker.View.StopCoroutine(_sneaker.CurrentCoroutine);
             _canvasGroup.alpha = 0.4f;
             _canvasGroup.blocksRaycasts = false;
             vector = transform.position;
@@ -45,15 +49,15 @@ namespace Sneakers
                 transform.position = vector;
                 if (_sneaker.TransporterType == TransporterType.Main)
                 {
-                    Movement.instance.SendToMainTransporter(_sneaker, _sneaker.currentPoint);
+                    Movement.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
                 if (_sneaker.TransporterType == TransporterType.Washing)
                 {
-                    Movement.instance.SendToWashTransporter(_sneaker, _sneaker.currentPoint);
+                    Movement.instance.SendToWashTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
                 if (_sneaker.TransporterType == TransporterType.Lacing)
                 {
-                    Movement.instance.SendToLaceTransporter(_sneaker, _sneaker.currentPoint);
+                    Movement.instance.SendToLaceTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
             }
 
