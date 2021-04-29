@@ -8,9 +8,9 @@ namespace Sneakers
         private float _washTrackMovementSpeed;
         private float _washProcessDelay;
 
-        public void Init(Movement movement, bool isAvailable, float washTrackMovementSpeed, float washProcessDelay)
+        public void Init(SortingController sortingController, bool isAvailable, float washTrackMovementSpeed, float washProcessDelay)
         {
-            base.Init(movement, isAvailable);
+            base.Init(sortingController, isAvailable);
 
             _washTrackMovementSpeed = washTrackMovementSpeed;
             _washProcessDelay = washProcessDelay;
@@ -36,7 +36,7 @@ namespace Sneakers
                 float x = sneaker.Position.x;
                 float y = ((x1 * y2 - x2 * y1) + x * (y1 - y2)) / (x1 - x2);
                 sneaker.SetPosition(new Vector2(x, y));
-                _movement.SendToWashTransporter(sneaker);
+                _sortingController.SendToWashTransporter(sneaker);
             }
             else
             {
@@ -78,9 +78,9 @@ namespace Sneakers
             if (mover == 4)
             {
                 sneaker.SetCurrentPoint(4);
-                while (_movement.SneakersSpawnPoint.position != sneaker.Position)
+                while (_sortingController.SneakersSpawnPoint.position != sneaker.Position)
                 {
-                    sneaker.Move(_movement.SneakersSpawnPoint.position, _washTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.position, _washTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
@@ -88,7 +88,7 @@ namespace Sneakers
             if (mover == 5)
             {
                 sneaker.SetCurrentPoint(5);
-                _movement.SendToMainTransporter(sneaker);
+                _sortingController.SendToMainTransporter(sneaker);
             }
         }
     }

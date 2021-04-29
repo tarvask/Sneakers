@@ -9,9 +9,9 @@ namespace Sneakers
         
         private float _mainTrackMovementSpeed;
 
-        public void Init(Movement movement, bool isAvailable, float mainTrackMovementSpeed)
+        public void Init(SortingController sortingController, bool isAvailable, float mainTrackMovementSpeed)
         {
-            base.Init(movement, isAvailable);
+            base.Init(sortingController, isAvailable);
 
             _mainTrackMovementSpeed = mainTrackMovementSpeed;
         }
@@ -38,7 +38,7 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetCurrentPoint(3);
-                _movement.OnSortFailed(sneaker);
+                _sortingController.OnSortFailed(sneaker);
             }
         }
     }

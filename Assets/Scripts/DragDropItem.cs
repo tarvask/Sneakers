@@ -49,15 +49,15 @@ namespace Sneakers
                 transform.position = vector;
                 if (_sneaker.TransporterType == TransporterType.Main)
                 {
-                    Movement.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint);
+                    SortingController.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
                 if (_sneaker.TransporterType == TransporterType.Washing)
                 {
-                    Movement.instance.SendToWashTransporter(_sneaker, _sneaker.CurrentPoint);
+                    SortingController.instance.SendToWashTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
                 if (_sneaker.TransporterType == TransporterType.Lacing)
                 {
-                    Movement.instance.SendToLaceTransporter(_sneaker, _sneaker.CurrentPoint);
+                    SortingController.instance.SendToLaceTransporter(_sneaker, _sneaker.CurrentPoint);
                 }
             }
 

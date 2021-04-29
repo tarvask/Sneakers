@@ -12,9 +12,9 @@ namespace Sneakers
         
         private SneakerController _waitingSneaker;
         
-        public void Init(Movement movement, bool isAvailable, float waitTrackMovementSpeed)
+        public void Init(SortingController sortingController, bool isAvailable, float waitTrackMovementSpeed)
         {
-            base.Init(movement, isAvailable);
+            base.Init(sortingController, isAvailable);
 
             _waitTrackMovementSpeed = waitTrackMovementSpeed;
         }
@@ -31,13 +31,13 @@ namespace Sneakers
                 //_movement.SendToMainTransporter(_waitingSneaker, 2);
                 //_movement.SendToWaitTransporter(sneaker, 2);
                 sneaker.SetPosition(sneaker.DragDropItem.vector);
-                _movement.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+                _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
             }
             else
             {
                 _waitingSneaker = sneaker;
                 sneaker.SetPosition(trackPoints[0].position);
-                _movement.SendToWaitTransporter(sneaker, 1);
+                _sortingController.SendToWaitTransporter(sneaker, 1);
                 sneaker.DragDropItem.isHold = true;
             }
         }

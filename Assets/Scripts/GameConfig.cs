@@ -6,8 +6,11 @@ namespace Sneakers
     public class GameConfig : ScriptableObject
     {
         [SerializeField] private int numberOfSneakers;
+        [SerializeField] private int numberOfLives;
         [SerializeField] private int coinsSuccessfulStepReward;
         [SerializeField] private int coinsWrongStepReward;
+        
+        [SerializeField] private SneakerConfig[] possibleSneakers;
         
         [Header("Main track")]
         [SerializeField] private float mainTrackMovementSpeed = 5f;
@@ -35,8 +38,11 @@ namespace Sneakers
         [SerializeField] private int secondBinModelId;
 
         public int NumberOfSneakers => numberOfSneakers;
+        public int NumberOfLives => numberOfLives;
         public int CoinsSuccessfulStepReward => coinsSuccessfulStepReward;
         public int CoinsWrongStepReward => coinsWrongStepReward;
+        
+        public SneakerConfig[] PossibleSneakers => possibleSneakers;
 
         // main track
         public float MainTrackMovementSpeed => mainTrackMovementSpeed;

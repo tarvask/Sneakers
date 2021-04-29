@@ -8,9 +8,9 @@ namespace Sneakers
         private float _laceTrackMovementSpeed;
         private float _laceProcessDelay;
 
-        public void Init(Movement movement, bool isAvailable, float laceTrackMovementSpeed, float laceProcessDelay)
+        public void Init(SortingController sortingController, bool isAvailable, float laceTrackMovementSpeed, float laceProcessDelay)
         {
-            base.Init(movement, isAvailable);
+            base.Init(sortingController, isAvailable);
 
             _laceTrackMovementSpeed = laceTrackMovementSpeed;
             _laceProcessDelay = laceProcessDelay;
@@ -29,7 +29,7 @@ namespace Sneakers
                 }
                 
                 sneaker.SetPosition(trackPoints[0].position);
-                _movement.SendToLaceTransporter(sneaker);
+                _sortingController.SendToLaceTransporter(sneaker);
             }
             else
             {
@@ -63,9 +63,9 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetCurrentPoint(3);
-                while (_movement.SneakersSpawnPoint.position != sneaker.Position)
+                while (_sortingController.SneakersSpawnPoint.position != sneaker.Position)
                 {
-                    sneaker.Move(_movement.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
@@ -73,7 +73,7 @@ namespace Sneakers
             if (mover == 4)
             {
                 sneaker.SetCurrentPoint(4);
-                _movement.SendToMainTransporter(sneaker);
+                _sortingController.SendToMainTransporter(sneaker);
             }
         }
     }

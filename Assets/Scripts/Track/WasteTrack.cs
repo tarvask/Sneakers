@@ -6,7 +6,7 @@ namespace Sneakers
         {
             if (sneaker.State == SneakerState.Wasted)
             {
-                _movement.OnSortSucceeded(sneaker);
+                _sortingController.OnSortSucceeded(sneaker);
             }
             else
             {

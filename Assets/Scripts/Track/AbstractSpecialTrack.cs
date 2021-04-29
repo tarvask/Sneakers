@@ -10,7 +10,7 @@ namespace Sneakers
         {
             base.OnWrongTrackDropped(sneaker);
             
-            _movement.OnSortError();
+            _sortingController.OnSortError();
         }
     }
 }

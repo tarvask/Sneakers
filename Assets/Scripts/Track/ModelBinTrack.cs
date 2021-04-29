@@ -4,9 +4,9 @@ namespace Sneakers
     {
         private int _modelId;
         
-        public void Init(Movement movement, bool isAvailable, int modelId)
+        public void Init(SortingController sortingController, bool isAvailable, int modelId)
         {
-            base.Init(movement, isAvailable);
+            base.Init(sortingController, isAvailable);
 
             _modelId = modelId;
         }
@@ -16,7 +16,7 @@ namespace Sneakers
             // sorting
             if (sneaker.Id == _modelId && sneaker.State == SneakerState.Normal)
             {
-                _movement.OnSortSucceeded(sneaker);
+                _sortingController.OnSortSucceeded(sneaker);
             }
             else
             {

@@ -8,12 +8,12 @@ namespace Sneakers
     {
         [SerializeField] private Image[] colliderImages;
 
-        protected Movement _movement;
+        protected SortingController _sortingController;
         private bool _isAvailable;
 
-        public void Init(Movement movement, bool isAvailable)
+        public void Init(SortingController sortingController, bool isAvailable)
         {
-            _movement = movement;
+            _sortingController = sortingController;
             _isAvailable = isAvailable;
 
             foreach (Image colliderImage in colliderImages)
@@ -47,7 +47,7 @@ namespace Sneakers
             if (!sneaker.DragDropItem.isHold)
             {
                 sneaker.SetPosition(sneaker.DragDropItem.vector);
-                _movement.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+                _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
             }
             // back to wait
             else
