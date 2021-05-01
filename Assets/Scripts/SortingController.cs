@@ -9,65 +9,91 @@ namespace Sneakers
         public struct Context
         {
             public SortingView View { get; }
-            public GameConfig GameConfig { get; }
 
-            public Context(SortingView view, GameConfig gameConfig)
+            public Context(SortingView view)
             {
                 View = view;
-                GameConfig = gameConfig;
             }
         }
 
         private readonly Context _context;
         private readonly List<SneakerController> _sneakers;
+        private LevelConfig _currentLevelConfig;
         
-        private int _countSneakers;
+        private int _spawnedSneakersCount;
+        private int _sortedSneakersCount;
         private int _score;
         private int _lives;
         
         public static SortingController instance;
         public Transform SneakersSpawnPoint => _context.View.SneakersSpawnPoint;
 
+        public bool AllSneakersAreSorted => _sortedSneakersCount == _currentLevelConfig.NumberOfSneakers;
+        public int Score => _score;
+        public int Lives => _lives;
+
         public SortingController(Context context)
         {
             _context = context;
-
-            _lives = _context.GameConfig.NumberOfLives;
-            
             instance = this;
-            
-            _context.View.MainTrack.Init(this, true, _context.GameConfig.MainTrackMovementSpeed);
-            _context.View.WashTrack.Init(this, _context.GameConfig.IsWashTrackAvailable, _context.GameConfig.WashTrackMovementSpeed, _context.GameConfig.WashProcessDelay);
-            _context.View.LaceTrack.Init(this, _context.GameConfig.IsLaceTrackAvailable, _context.GameConfig.LaceTrackMovementSpeed, _context.GameConfig.LaceProcessDelay);
-            _context.View.WasteTrack.Init(this, _context.GameConfig.IsWasteTrackAvailable);
-            _context.View.WaitTrack.Init(this, _context.GameConfig.IsWaitTrackAvailable, _context.GameConfig.WaitTrackMovementSpeed);
-            _context.View.FirstModelBin.Init(this, true, _context.GameConfig.FirstBinModelId);
-            _context.View.SecondModelBin.Init(this, true, _context.GameConfig.SecondBinModelId);
-            
             _sneakers = new List<SneakerController>();
+        }
+
+        public void Init(LevelConfig levelConfig)
+        {
+            _currentLevelConfig = levelConfig;
+            
+            _context.View.MainTrack.Init(this, true, _currentLevelConfig.MainTrackMovementSpeed);
+            _context.View.WashTrack.Init(this, _currentLevelConfig.IsWashTrackAvailable, _currentLevelConfig.WashTrackMovementSpeed, _currentLevelConfig.WashProcessDelay);
+            _context.View.LaceTrack.Init(this, _currentLevelConfig.IsLaceTrackAvailable, _currentLevelConfig.LaceTrackMovementSpeed, _currentLevelConfig.LaceProcessDelay);
+            _context.View.WasteTrack.Init(this, _currentLevelConfig.IsWasteTrackAvailable);
+            _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed);
+            _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
+            _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
+            
+            _spawnedSneakersCount = 0;
+            _sortedSneakersCount = 0;
+            _lives = _currentLevelConfig.NumberOfLives;
+            _context.View.LivesLabel.text = _lives.ToString();
+            _score = 0;
+            _context.View.TotalLabel.text = _score.ToString();
             
             _context.View.StartCoroutine(Spawn());
+        }
+
+        public void Clear()
+        {
+            foreach (SneakerController sneaker in _sneakers)
+            {
+                sneaker.View.StopAllCoroutines();
+                Object.Destroy(sneaker.View.gameObject);
+            }
+            
+            _sneakers.Clear();
+            _context.View.StopAllCoroutines();
         }
         
         private IEnumerator Spawn()
         {
+            yield return new WaitForSeconds(1f);
+            
             Transform spawnRoot = new GameObject("Sneakers").transform;
             spawnRoot.SetParent(_context.View.SneakersSpawnPoint.parent.parent);
             spawnRoot.localPosition = Vector3.zero;
 
-            while (_countSneakers < _context.GameConfig.NumberOfSneakers)
+            while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers)
             {
                 SneakerController sneaker = InstantiateSneaker(spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
                 _sneakers.Add(sneaker);
                 
-                yield return new WaitForSeconds(_context.GameConfig.MainTrackSpawnDelay);
+                yield return new WaitForSeconds(_currentLevelConfig.MainTrackSpawnDelay);
             }
         }
         
         private SneakerController InstantiateSneaker(Transform spawnRoot, Vector3 position)
         {
-            SneakerConfig sneakerConfig = _context.GameConfig.PossibleSneakers[Random.Range(0, _context.GameConfig.PossibleSneakers.Length)];
+            SneakerConfig sneakerConfig = _currentLevelConfig.PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)];
             SneakerState state = (SneakerState)Random.Range(1, 5);
             
             SneakerView newSneakerView = Object.Instantiate(sneakerConfig.Prefab, spawnRoot);
@@ -75,9 +101,9 @@ namespace Sneakers
             newSneakerView.transform.localPosition = position;
             
             SneakerController.Context sneakerControllerContext = new SneakerController.Context(newSneakerView, sneakerConfig);
-            SneakerController sneakerController = new SneakerController(sneakerControllerContext, _countSneakers);
+            SneakerController sneakerController = new SneakerController(sneakerControllerContext, _spawnedSneakersCount);
             sneakerController.SetState(state);
-            _countSneakers++;
+            _spawnedSneakersCount++;
             
             return sneakerController;
         }
@@ -105,16 +131,18 @@ namespace Sneakers
         public void OnSortError()
         {
             // do not allow negative score
-            _score = Mathf.Max(0, _score + _context.GameConfig.CoinsWrongStepReward);
+            _score = Mathf.Max(0, _score + _currentLevelConfig.CoinsWrongStepReward);
             _context.View.TotalLabel.text = _score.ToString();
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
+            _sortedSneakersCount++;
         }
 
         public void OnSortSucceeded(SneakerController sneaker)
         {
-            _score += _context.GameConfig.CoinsSuccessfulStepReward;
+            _score += _currentLevelConfig.CoinsSuccessfulStepReward;
             _context.View.TotalLabel.text = _score.ToString();
+            _sortedSneakersCount++;
 
             _sneakers.Remove(sneaker);
             sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
@@ -124,10 +152,11 @@ namespace Sneakers
         public void OnSortFailed(SneakerController sneaker)
         {
             // do not allow negative score
-            _score = Mathf.Max(0, _score + _context.GameConfig.CoinsWrongStepReward);
+            _score = Mathf.Max(0, _score + _currentLevelConfig.CoinsWrongStepReward);
             _context.View.TotalLabel.text = _score.ToString();
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
+            _sortedSneakersCount++;
             
             _sneakers.Remove(sneaker);
             sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
