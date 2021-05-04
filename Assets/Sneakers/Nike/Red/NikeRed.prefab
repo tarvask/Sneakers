@@ -425,6 +425,7 @@ MonoBehaviour:
   - state: 4
     view: {fileID: 4376362302866044316}
   dragDropItem: {fileID: -1355932885069085328}
+  icon: {fileID: 7087658737027080919}
 --- !u!225 &-4160521736670788510
 CanvasGroup:
   m_ObjectHideFlags: 0

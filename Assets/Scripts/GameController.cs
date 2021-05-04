@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -16,6 +17,7 @@ namespace Sneakers
         private readonly TutorialUiController _tutorialUiController;
         private readonly WinUiController _winUiController;
         private readonly LoseUiController _loseUiController;
+        private readonly LegendUiController _legendUiController;
 
         private GameState _currentState;
         private int _currentLevel;
@@ -33,13 +35,14 @@ namespace Sneakers
             _currentLevel = PlayerPrefs.GetInt(GameConstants.CurrentLevelStorageName, 1);
             
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
-            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView);
+            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, ShowLegend);
             _sortingController = new SortingController(sortingControllerContext);
             
             _mainMenuUiController = new MainMenuUiController(_view.MainMenuUi);
             _tutorialUiController = new TutorialUiController(_view.TutorialUi);
             _winUiController = new WinUiController(_view.WinUi);
             _loseUiController = new LoseUiController(_view.LoseUi);
+            _legendUiController = new LegendUiController(_view.LegendUi);
 
             ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
         }
@@ -98,10 +101,8 @@ namespace Sneakers
         private void WinLevel()
         {
             ChangeState(GameState.WinLevel);
-            
-            if (_currentLevel < _view.GameConfig.Levels.Length)
-                _currentLevel++;
-            
+            SaveProgress();
+
             _winUiController.Show(_sortingController.Score,
                 () =>
                 {
@@ -139,6 +140,58 @@ namespace Sneakers
                 });
         }
 
+        private void ShowLegend(int legendarySneakerId)
+        {
+            ChangeState(GameState.CollectLegend);
+            // find config of legendary sneaker
+            SneakerConfig legendarySneakerConfig = Array.Find(_view.GameConfig.Levels[_currentLevel - 1].PossibleSneakers,
+                (sneakerParams) => sneakerParams.Config.Id == legendarySneakerId).Config;
+            _legendUiController.Show(legendarySneakerConfig,
+                () =>
+                {
+                    _legendUiController.Hide();
+                    ChangeState(GameState.Playing);
+                });
+        }
+
+        private void SaveProgress()
+        {
+            // save current level
+            if (_currentLevel < _view.GameConfig.Levels.Length)
+            {
+                _currentLevel++;
+                PlayerPrefs.SetInt(GameConstants.CurrentLevelStorageName, _currentLevel);
+            }
+
+            // save legends
+            Dictionary<int, int> currentLegends = StringToDict(PlayerPrefs.GetString(GameConstants.CollectedLegendarySneakersStorageName, ""));
+
+            foreach (KeyValuePair<int, int> legendPair in _sortingController.CollectedLegendarySneakers)
+            {
+                if (currentLegends.ContainsKey(legendPair.Key))
+                    currentLegends[legendPair.Key] += legendPair.Value;
+                else
+                    currentLegends.Add(legendPair.Key, legendPair.Value);
+            }
+            
+            PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, DictToString(currentLegends));
+            
+            // save coins
+            PlayerPrefs.SetInt(GameConstants.CoinsStorageName,
+                PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0) + _sortingController.Score);
+        }
+
+        private void DropProgress()
+        {
+            // level
+            _currentLevel = 1;
+            PlayerPrefs.SetInt(GameConstants.CurrentLevelStorageName, _currentLevel);
+            // coins
+            PlayerPrefs.SetInt(GameConstants.CoinsStorageName, 0);
+            // legends
+            PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, "");
+        }
+
         private void ChangeState(GameState newState)
         {
             _currentState = newState;
@@ -150,7 +203,34 @@ namespace Sneakers
             return state == GameState.Playing;
         }
 
+        private string DictToString(Dictionary<int, int> dictionary)
+        {
+            return string.Join(";", dictionary);
+        }
+
+        private Dictionary<int, int> StringToDict(string legendarySneakersString)
+        {
+            Dictionary<int, int> result = new Dictionary<int, int>();
+            string[] items = legendarySneakersString.Split(';');
+
+            foreach (string item in items)
+            {
+                string[] keyValueTokens = item.Split(',');
+                
+                if (keyValueTokens.Length == 2)
+                    result.Add(int.Parse(keyValueTokens[0].Trim('[')), int.Parse(keyValueTokens[1].Trim(']')));
+            }
+
+            return result;
+        }
+
 #if UNITY_EDITOR
+        [MenuItem("Window/Sneakers/Drop progress", false, 0)]
+        public static void DropProgressInEditor()
+        {
+            _instance.DropProgress();
+        }
+        
         [MenuItem("Window/Sneakers/Win Level", false, 0)]
         public static void WinLevelInEditor()
         {

@@ -9,12 +9,16 @@ namespace Sneakers
         [SerializeField] private int numberOfLives;
         [SerializeField] private int coinsSuccessfulStepReward;
         [SerializeField] private int coinsWrongStepReward;
-        
-        [SerializeField] private SneakerConfig[] possibleSneakers;
+
+        [Space]
+        [Header("Possible sneakers")]
+        [SerializeField] private bool shufflePossibleSneakers;
+        [SerializeField] private PossibleSneakerParams[] possibleSneakers;
         
         [Header("Main track")]
         [SerializeField] private float mainTrackMovementSpeed = 5f;
-        [SerializeField] private float mainTrackSpawnDelay = 2f;
+        [SerializeField] private float mainTrackMinSpawnDelay = 2f;
+        [SerializeField] private float mainTrackMaxSpawnDelay = 2f;
 
         [Header("Wash track")]
         [SerializeField] private bool isWashTrackAvailable;
@@ -39,18 +43,21 @@ namespace Sneakers
         
         [Space]
         [Header("Tutorial")]
+        [TextArea]
         [SerializeField] private string tutorialText;
 
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
         public int CoinsSuccessfulStepReward => coinsSuccessfulStepReward;
         public int CoinsWrongStepReward => coinsWrongStepReward;
-        
-        public SneakerConfig[] PossibleSneakers => possibleSneakers;
+
+        public bool ShufflePossibleSneakers => shufflePossibleSneakers;
+        public PossibleSneakerParams[] PossibleSneakers => possibleSneakers;
 
         // main track
         public float MainTrackMovementSpeed => mainTrackMovementSpeed;
-        public float MainTrackSpawnDelay => mainTrackSpawnDelay;
+        public float MainTrackMinSpawnDelay => mainTrackMinSpawnDelay;
+        public float MainTrackMaxSpawnDelay => mainTrackMaxSpawnDelay;
         
         // wash track
         public bool IsWashTrackAvailable => isWashTrackAvailable;
@@ -75,5 +82,18 @@ namespace Sneakers
         
         // tutorial
         public string TutorialText => tutorialText;
+
+        [ContextMenu("Validate number of sneakers")]
+        public void ValidateNumberOfSneakers()
+        {
+            int sneakersToSort = 0;
+
+            foreach (PossibleSneakerParams possibleSneakerItem in possibleSneakers)
+            {
+                sneakersToSort += possibleSneakerItem.Count;
+            }
+
+            numberOfSneakers = sneakersToSort;
+        }
     }
 }

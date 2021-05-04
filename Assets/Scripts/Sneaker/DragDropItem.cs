@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Sneakers
 {
-    public class DragDropItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+    public class DragDropItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler, IPointerClickHandler
     {
         public Canvas canvas;
         public Vector2 vector;
@@ -67,6 +67,15 @@ namespace Sneakers
         public void OnDrop(PointerEventData eventData)
         {
             
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_sneaker.IsLegendary)
+                return;
+
+            if (_sneaker.State == SneakerState.Normal)
+                _sneaker.CollectLegendary();
         }
     }
 }

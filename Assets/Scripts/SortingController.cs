@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Sneakers
 {
@@ -9,15 +12,19 @@ namespace Sneakers
         public struct Context
         {
             public SortingView View { get; }
+            public Action<int> OnLegendarySneakerCollectedAction { get; }
 
-            public Context(SortingView view)
+            public Context(SortingView view, Action<int> onLegendarySneakerCollectedAction)
             {
                 View = view;
+                OnLegendarySneakerCollectedAction = onLegendarySneakerCollectedAction;
             }
         }
 
         private readonly Context _context;
         private readonly List<SneakerController> _sneakers;
+        private readonly Dictionary<int, int> _collectedLegendarySneakers;
+        private List<PossibleSneakerParams> _sneakersToSpawn;
         private LevelConfig _currentLevelConfig;
         
         private int _spawnedSneakersCount;
@@ -28,6 +35,7 @@ namespace Sneakers
         public static SortingController instance;
         public Transform SneakersSpawnPoint => _context.View.SneakersSpawnPoint;
 
+        public Dictionary<int, int> CollectedLegendarySneakers => _collectedLegendarySneakers;
         public bool AllSneakersAreSorted => _sortedSneakersCount == _currentLevelConfig.NumberOfSneakers;
         public int Score => _score;
         public int Lives => _lives;
@@ -36,12 +44,26 @@ namespace Sneakers
         {
             _context = context;
             instance = this;
+            _sneakersToSpawn = new List<PossibleSneakerParams>();
             _sneakers = new List<SneakerController>();
+            _collectedLegendarySneakers = new Dictionary<int, int>();
         }
 
         public void Init(LevelConfig levelConfig)
         {
             _currentLevelConfig = levelConfig;
+
+            // prepare stuff for spawn
+            foreach (PossibleSneakerParams possibleSneakerParams in _currentLevelConfig.PossibleSneakers)
+            {
+                for (int countIndex = 0; countIndex < possibleSneakerParams.Count; countIndex++)
+                {
+                    _sneakersToSpawn.Add(possibleSneakerParams);
+                }
+            }
+            
+            if (_currentLevelConfig.ShufflePossibleSneakers)
+                CollectionsExtensions.ShuffleList(ref _sneakersToSpawn);
             
             _context.View.MainTrack.Init(this, true, _currentLevelConfig.MainTrackMovementSpeed);
             _context.View.WashTrack.Init(this, _currentLevelConfig.IsWashTrackAvailable, _currentLevelConfig.WashTrackMovementSpeed, _currentLevelConfig.WashProcessDelay);
@@ -68,8 +90,10 @@ namespace Sneakers
                 sneaker.View.StopAllCoroutines();
                 Object.Destroy(sneaker.View.gameObject);
             }
-            
+
+            _sneakersToSpawn.Clear();
             _sneakers.Clear();
+            _collectedLegendarySneakers.Clear();
             _context.View.StopAllCoroutines();
         }
         
@@ -86,26 +110,39 @@ namespace Sneakers
                 SneakerController sneaker = InstantiateSneaker(spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
                 _sneakers.Add(sneaker);
+                float randomSpawnDelay = Random.Range(_currentLevelConfig.MainTrackMinSpawnDelay,
+                    _currentLevelConfig.MainTrackMaxSpawnDelay);
                 
-                yield return new WaitForSeconds(_currentLevelConfig.MainTrackSpawnDelay);
+                yield return new WaitForSeconds(randomSpawnDelay);
             }
         }
         
         private SneakerController InstantiateSneaker(Transform spawnRoot, Vector3 position)
         {
-            SneakerConfig sneakerConfig = _currentLevelConfig.PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)];
-            SneakerState state = (SneakerState)Random.Range(1, 5);
+            SneakerConfig sneakerConfig = _sneakersToSpawn[_spawnedSneakersCount].Config;
+            SneakerState state = _sneakersToSpawn[_spawnedSneakersCount].State;
             
             SneakerView newSneakerView = Object.Instantiate(sneakerConfig.Prefab, spawnRoot);
             newSneakerView.DragDropItem.canvas = _context.View.canvas;
             newSneakerView.transform.localPosition = position;
             
-            SneakerController.Context sneakerControllerContext = new SneakerController.Context(newSneakerView, sneakerConfig);
+            SneakerController.Context sneakerControllerContext = new SneakerController.Context(newSneakerView, sneakerConfig, OnLegendarySneakerCollectedEventHandler);
             SneakerController sneakerController = new SneakerController(sneakerControllerContext, _spawnedSneakersCount);
             sneakerController.SetState(state);
             _spawnedSneakersCount++;
             
             return sneakerController;
+        }
+        
+        private void OnLegendarySneakerCollectedEventHandler(SneakerController sneaker)
+        {
+            if (_collectedLegendarySneakers.ContainsKey(sneaker.Id))
+                _collectedLegendarySneakers[sneaker.Id]++;
+            else
+                _collectedLegendarySneakers.Add(sneaker.Id, 1);
+
+            _context.OnLegendarySneakerCollectedAction.Invoke(sneaker.Id);
+            OnSortSucceeded(sneaker);
         }
         
         public void SendToMainTransporter(SneakerController sneaker, int mover = 0)
@@ -135,7 +172,7 @@ namespace Sneakers
             _context.View.TotalLabel.text = _score.ToString();
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
-            _sortedSneakersCount++;
+            //_sortedSneakersCount++;
         }
 
         public void OnSortSucceeded(SneakerController sneaker)
@@ -157,6 +194,15 @@ namespace Sneakers
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
             _sortedSneakersCount++;
+            
+            _sneakers.Remove(sneaker);
+            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            Object.Destroy(sneaker.View.gameObject);
+        }
+
+        public void OnSortLegendaryError(SneakerController sneaker)
+        {
+            _lives = 0;
             
             _sneakers.Remove(sneaker);
             sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);

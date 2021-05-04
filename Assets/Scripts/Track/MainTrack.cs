@@ -38,7 +38,11 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetCurrentPoint(3);
-                _sortingController.OnSortFailed(sneaker);
+                
+                if (!sneaker.IsLegendary)
+                    _sortingController.OnSortFailed(sneaker);
+                else
+                    _sortingController.OnSortLegendaryError(sneaker);
             }
         }
     }

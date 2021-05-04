@@ -23,5 +23,13 @@ namespace Sneakers
                 OnWrongTrackDropped(sneaker);
             }
         }
+        
+        protected override void OnWrongTrackDropped(SneakerController sneaker)
+        {
+            base.OnWrongTrackDropped(sneaker);
+            
+            if (sneaker.IsLegendary)
+                _sortingController.OnSortLegendaryError(sneaker);
+        }
     }
 }

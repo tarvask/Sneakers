@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sneakers
 {
@@ -7,9 +8,11 @@ namespace Sneakers
     {
         [SerializeField] private SneakerStateViewPair[] statesViews;
         [SerializeField] private DragDropItem dragDropItem;
+        [SerializeField] private Image icon;
 
         public DragDropItem DragDropItem => dragDropItem;
-        
+        public Image Icon => icon;
+
         public event Action<Action<SneakerController>> OnSneakerDropped;
 
         public void OnDropSneakerEventHandler(Action<SneakerController> sneakerController)

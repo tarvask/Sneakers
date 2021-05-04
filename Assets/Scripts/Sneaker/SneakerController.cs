@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Sneakers
 {
@@ -8,11 +9,14 @@ namespace Sneakers
         {
             public SneakerView View { get; }
             public SneakerConfig Config { get; }
+            public Action<SneakerController> OnLegendarySneakerCollectedAction { get; }
 
-            public Context(SneakerView view, SneakerConfig config)
+            public Context(SneakerView view, SneakerConfig config,
+                Action<SneakerController> onLegendarySneakerCollectedAction)
             {
                 View = view;
                 Config = config;
+                OnLegendarySneakerCollectedAction = onLegendarySneakerCollectedAction;
             }
         }
 
@@ -23,6 +27,7 @@ namespace Sneakers
 
         public string Model => _context.Config.Model;
         public int Id => _context.Config.Id;
+        public bool IsLegendary => _context.Config.IsLegendary;
         public SneakerView View => _context.View;
         public TransporterType TransporterType => _transporterType;
         public SneakerState State => _state;
@@ -71,6 +76,11 @@ namespace Sneakers
         {
             View.transform.position = Vector3.MoveTowards(View.transform.position,
                 targetPosition, speed);
+        }
+
+        public void CollectLegendary()
+        {
+            _context.OnLegendarySneakerCollectedAction.Invoke(this);
         }
     }
 }

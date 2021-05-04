@@ -11,6 +11,7 @@ namespace Sneakers
         [SerializeField] private TutorialUiView tutorialUi;
         [SerializeField] private WinUiView winUi;
         [SerializeField] private LoseUiView loseUi;
+        [SerializeField] private LegendUiView legendUi;
 
         public GameConfig GameConfig => gameConfig;
         
@@ -19,5 +20,6 @@ namespace Sneakers
         public TutorialUiView TutorialUi => tutorialUi;
         public WinUiView WinUi => winUi;
         public LoseUiView LoseUi => loseUi;
+        public LegendUiView LegendUi => legendUi;
     }
 }
