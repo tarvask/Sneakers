@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b7a041f6f4f44f2b7be096e234f0f89, type: 3}
-  m_Name: Level01
+  m_Name: Level03
   m_EditorClassIdentifier: 
-  numberOfSneakers: 6
+  numberOfSneakers: 10
   numberOfLives: 3
   coinsSuccessfulStepReward: 10
   coinsWrongStepReward: -25
@@ -25,37 +25,43 @@ MonoBehaviour:
     state: 4
     count: 1
   - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+    state: 3
+    count: 2
+  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
     state: 1
     count: 1
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
     state: 2
-    count: 1
+    count: 2
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
     state: 4
     count: 1
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
+    state: 3
+    count: 1
+  - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
     state: 1
     count: 1
-  mainTrackMovementSpeed: 1
+  mainTrackMovementSpeed: 1.2
   mainTrackMinSpawnDelay: 1.5
   mainTrackMaxSpawnDelay: 2.5
   isWashTrackAvailable: 1
   washTrackMovementSpeed: 1
   washProcessDelay: 5
-  isLaceTrackAvailable: 0
+  isLaceTrackAvailable: 1
   laceTrackMovementSpeed: 1
   laceProcessDelay: 5
-  isWaitTrackAvailable: 0
+  isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
   isWasteTrackAvailable: 1
   firstBinModelId: 1
   secondBinModelId: 0
-  tutorialText: "\u0425\u0430\u0439! \u041D\u0430 \u043D\u043E\u0432\u043E\u043C
-    \u0437\u0430\u0432\u043E\u0434\u0435 \u043F\u043E\u043A\u0430 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u0430
-    \u0442\u043E\u043B\u044C\u043A\u043E \u0441\u0442\u0438\u0440\u0430\u043B\u044C\u043D\u0430\u044F
-    \u043C\u0430\u0448\u0438\u043D\u0430 \u0438 \u0443\u0442\u0438\u043B\u0438\u0437\u0430\u0442\u043E\u0440,
-    \n\u0433\u0440\u044F\u0437\u043D\u044B\u0435 \u043A\u0440\u043E\u0441\u0441\u043E\u0432\u043A\u0438
-    \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F \u043F\u043E\u043C\u044B\u0442\u044C,
-    \u0438\u0441\u043F\u043E\u0440\u0447\u0435\u043D\u043D\u044B\u0435 - \u0443\u0442\u0438\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u0442\u044C,
-    \u0430 \u043F\u043E\u0442\u043E\u043C \u0440\u0430\u0441\u043F\u0440\u0435\u0434\u0435\u043B\u0438\u0442\u044C
-    \u043F\u043E \u0446\u0432\u0435\u0442\u0430\u043C \u0432 \u043A\u043E\u0440\u043E\u0431\u043A\u0438."
+  tutorialText: "\u0422\u044B \u0431\u044B\u0441\u0442\u0440\u043E \u0443\u0447\u0438\u0448\u044C\u0441\u044F!\n\u0412
+    \u0446\u0435\u043B\u044F\u0445 \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F
+    \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0441\u0442\u0432\u0430 \u043E\u0441\u043D\u043E\u0432\u043D\u0430\u044F
+    \u043B\u0435\u043D\u0442\u0430 \u0442\u0435\u043F\u0435\u0440\u044C \u043D\u0435\u043C\u043D\u043E\u0433\u043E
+    \u0443\u0441\u043A\u043E\u0440\u0438\u0442\u0441\u044F.\n\u0427\u0442\u043E\u0431\u044B
+    \u0438\u0437\u0431\u0435\u0436\u0430\u0442\u044C \u043E\u0448\u0438\u0431\u043E\u043A,
+    \u0442\u0435\u0431\u0435 \u0432 \u043F\u043E\u043C\u043E\u0449\u044C \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u043B\u0438
+    \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u0443\u044E \u0437\u043E\u043D\u0443
+    \u043E\u0436\u0438\u0434\u0430\u043D\u0438\u044F"

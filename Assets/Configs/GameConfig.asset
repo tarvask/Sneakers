@@ -14,3 +14,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels:
   - {fileID: 11400000, guid: e4884cd84acd7407d80e006460365c27, type: 2}
+  - {fileID: 11400000, guid: 9eb7e938c145c49f5a7aefae272114fe, type: 2}
+  - {fileID: 11400000, guid: e8d656e83b2c646d18a5e0112bc32b9c, type: 2}
+  - {fileID: 11400000, guid: 7fab0493a5d794d6bada81c0b671fe0e, type: 2}
+  - {fileID: 11400000, guid: 3e8daf92e2556424ab331fd492528ca8, type: 2}
+  - {fileID: 11400000, guid: 848f6fced67bc41d3a3941c170604eb2, type: 2}
+  - {fileID: 11400000, guid: 39cf1966c8b124459a6d0d6860586423, type: 2}
+  - {fileID: 11400000, guid: bab5c9cec49634c868c271b72fc4c2f5, type: 2}
+  - {fileID: 11400000, guid: 493bb633b0cec46be96acebd51320479, type: 2}
+  - {fileID: 11400000, guid: 71441a6d2cacb4a48b4ed9b69cbdce33, type: 2}
+  - {fileID: 11400000, guid: cecf1ddd68e4a4cc6b1166619d46ddce, type: 2}
+  - {fileID: 11400000, guid: b81f0dce19999401bbcfa122111ab534, type: 2}
+  washTrackLevels:
+  - level: 0
+    price: 0
+    processDuration: 5
+    trackSpeed: 1
+  - level: 1
+    price: 200
+    processDuration: 2.5
+    trackSpeed: 1.5
+  - level: 2
+    price: 400
+    processDuration: 1.5
+    trackSpeed: 2.25
+  laceTrackLevels:
+  - level: 0
+    price: 0
+    processDuration: 5
+    trackSpeed: 1
+  - level: 1
+    price: 200
+    processDuration: 2.5
+    trackSpeed: 1.5
+  - level: 2
+    price: 400
+    processDuration: 1.5
+    trackSpeed: 2.25
