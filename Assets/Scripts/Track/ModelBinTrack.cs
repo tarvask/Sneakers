@@ -16,6 +16,7 @@ namespace Sneakers
             // sorting
             if (sneaker.Id == _modelId && sneaker.State == SneakerState.Normal)
             {
+                sneaker.DragDropItem.IsHold = false;
                 _sortingController.OnSortSucceeded(sneaker);
             }
             else

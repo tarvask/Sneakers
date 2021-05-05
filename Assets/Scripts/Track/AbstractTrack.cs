@@ -44,7 +44,7 @@ namespace Sneakers
         protected virtual void OnWrongTrackDropped(SneakerController sneaker)
         {
             // back to position before drag
-            if (!sneaker.DragDropItem.isHold)
+            if (!sneaker.DragDropItem.IsHold)
             {
                 sneaker.SetPosition(sneaker.DragDropItem.vector);
                 _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);

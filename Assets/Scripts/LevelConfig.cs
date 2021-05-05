@@ -29,6 +29,7 @@ namespace Sneakers
         [Header("Wait track")]
         [SerializeField] private bool isWaitTrackAvailable;
         [SerializeField] private float waitTrackMovementSpeed = 5f;
+        [SerializeField] private bool isWaitTrackMovingToWaste;
 
         [Header("Waste track")]
         [SerializeField] private bool isWasteTrackAvailable;
@@ -71,6 +72,7 @@ namespace Sneakers
         
         // waste track
         public bool IsWasteTrackAvailable => isWasteTrackAvailable;
+        public bool IsWaitTrackMovingToWaste => isWaitTrackMovingToWaste;
         
         // model bins
         public int FirstBinModelId => firstBinModelId;

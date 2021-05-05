@@ -26,6 +26,7 @@ namespace Sneakers
         private readonly Dictionary<int, int> _collectedLegendarySneakers;
         private List<PossibleSneakerParams> _sneakersToSpawn;
         private LevelConfig _currentLevelConfig;
+        private Transform _spawnRoot;
         
         private int _spawnedSneakersCount;
         private int _sortedSneakersCount;
@@ -69,7 +70,7 @@ namespace Sneakers
             _context.View.WashTrack.Init(this, _currentLevelConfig.IsWashTrackAvailable, washTrackLevel);
             _context.View.LaceTrack.Init(this, _currentLevelConfig.IsLaceTrackAvailable, laceTrackLevel);
             _context.View.WasteTrack.Init(this, _currentLevelConfig.IsWasteTrackAvailable);
-            _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed);
+            _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed, _currentLevelConfig.IsWaitTrackMovingToWaste);
             _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
             _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
             
@@ -100,14 +101,17 @@ namespace Sneakers
         private IEnumerator Spawn()
         {
             yield return new WaitForSeconds(1f);
-            
-            Transform spawnRoot = new GameObject("Sneakers").transform;
-            spawnRoot.SetParent(_context.View.SneakersSpawnPoint.parent.parent);
-            spawnRoot.localPosition = Vector3.zero;
+
+            if (_spawnRoot == null)
+            {
+                _spawnRoot = new GameObject("Sneakers").transform;
+                _spawnRoot.SetParent(_context.View.SneakersSpawnPoint.parent.parent);
+                _spawnRoot.localPosition = Vector3.zero;
+            }
 
             while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers)
             {
-                SneakerController sneaker = InstantiateSneaker(spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                SneakerController sneaker = InstantiateSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
                 SendToMainTransporter(sneaker);
                 _sneakers.Add(sneaker);
                 float randomSpawnDelay = Random.Range(_currentLevelConfig.MainTrackMinSpawnDelay,

@@ -8,7 +8,12 @@ namespace Sneakers
         public Canvas canvas;
         public Vector2 vector;
         public bool isDropped;
-        public bool isHold;
+
+        public bool IsHold
+        {
+            get;
+            set;
+        }
     
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
@@ -27,7 +32,9 @@ namespace Sneakers
     
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _sneaker.View.StopCoroutine(_sneaker.CurrentCoroutine);
+            if (_sneaker.CurrentCoroutine != null)
+                _sneaker.View.StopCoroutine(_sneaker.CurrentCoroutine);
+            
             _canvasGroup.alpha = 0.4f;
             _canvasGroup.blocksRaycasts = false;
             vector = transform.position;

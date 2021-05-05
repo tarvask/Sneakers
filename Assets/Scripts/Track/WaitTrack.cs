@@ -9,19 +9,21 @@ namespace Sneakers
         [SerializeField] protected Transform[] trackPoints;
         
         private float _waitTrackMovementSpeed;
+        private bool _moveToWaste;
         
         private SneakerController _waitingSneaker;
         
-        public void Init(SortingController sortingController, bool isAvailable, float waitTrackMovementSpeed)
+        public void Init(SortingController sortingController, bool isAvailable, float waitTrackMovementSpeed, bool moveToWaste)
         {
             base.Init(sortingController, isAvailable);
 
             _waitTrackMovementSpeed = waitTrackMovementSpeed;
+            _moveToWaste = moveToWaste;
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)
         {
-            if (sneaker.DragDropItem.isHold)
+            if (sneaker.DragDropItem.IsHold)
             {
                 sneaker.SetPosition(sneaker.DragDropItem.vector);
             }
@@ -37,13 +39,21 @@ namespace Sneakers
             {
                 _waitingSneaker = sneaker;
                 sneaker.SetPosition(trackPoints[0].position);
+                sneaker.DragDropItem.IsHold = true;
                 _sortingController.SendToWaitTransporter(sneaker, 1);
-                sneaker.DragDropItem.isHold = true;
             }
         }
         
         public IEnumerator WaitRoute(SneakerController sneaker, int mover)
         {
+            StartCoroutine(CheckPresence(sneaker));
+            
+            if (!_moveToWaste)
+            {
+                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+                yield break;
+            }
+
             int baseWaitTransporterIndex = 0;
             
             while (mover == 1 || mover == 2)
@@ -58,6 +68,35 @@ namespace Sneakers
             }
             
             sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            DropToWaste(sneaker);
+        }
+
+        private IEnumerator CheckPresence(SneakerController sneaker)
+        {
+            while (sneaker != null && sneaker.DragDropItem.IsHold)
+            {
+                yield return null;
+            }
+            
+            _waitingSneaker = null;
+            StopAllCoroutines();
+        }
+
+        private void DropToWaste(SneakerController sneaker)
+        {
+            _waitingSneaker = null;
+            
+            if (sneaker.State == SneakerState.Wasted)
+            {
+                _sortingController.OnSortSucceeded(sneaker);
+            }
+            else
+            {
+                if (sneaker.IsLegendary)
+                    _sortingController.OnSortLegendaryError(sneaker);
+                else
+                    _sortingController.OnSortFailed(sneaker);
+            }
         }
     }
 }

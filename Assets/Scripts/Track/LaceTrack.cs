@@ -27,10 +27,10 @@ namespace Sneakers
             if (sneaker.State == SneakerState.Unlaced)
             {
                 // stop waiting coroutine
-                if (sneaker.DragDropItem.isHold)
+                if (sneaker.DragDropItem.IsHold)
                 {
                     sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
-                    sneaker.DragDropItem.isHold = false;
+                    sneaker.DragDropItem.IsHold = false;
                     //sneaker.DragDropItem.isDropped = false;
                 }
                 
