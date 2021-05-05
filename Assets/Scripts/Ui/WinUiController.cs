@@ -22,6 +22,9 @@ namespace Sneakers
         public void Hide()
         {
             _view.gameObject.SetActive(false);
+            
+            _view.ContinueButton.onClick.RemoveAllListeners();
+            _view.MainMenuButton.onClick.RemoveAllListeners();
         }
     }
 }

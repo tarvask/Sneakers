@@ -8,6 +8,7 @@ namespace Sneakers
         Playing = 3,
         WinLevel = 4,
         LoseLevel = 5,
-        CollectLegend = 6
+        CollectLegend = 6,
+        UpgradeShop = 7
     }
 }

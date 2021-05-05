@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
+using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -18,14 +20,18 @@ namespace Sneakers
         private readonly WinUiController _winUiController;
         private readonly LoseUiController _loseUiController;
         private readonly LegendUiController _legendUiController;
+        private readonly UpgradeShopUiController _upgradeShopUiController;
 
         private GameState _currentState;
         private int _currentLevel;
+        private readonly ReactiveProperty<int> _coinsReactiveProperty;
+        private readonly ReactiveProperty<int> _washTrackLevel;
+        private readonly ReactiveProperty<int> _laceTrackLevel;
 
 #if UNITY_EDITOR
         private static GameController _instance;
 #endif
-        
+
         public GameController()
         {
 #if UNITY_EDITOR
@@ -33,6 +39,9 @@ namespace Sneakers
 #endif
             _view = Object.FindObjectOfType<GameView>();
             _currentLevel = PlayerPrefs.GetInt(GameConstants.CurrentLevelStorageName, 1);
+            _coinsReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0));
+            _washTrackLevel = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentWashTrackLevelStorageName, 0));
+            _laceTrackLevel = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentLaceTrackLevelStorageName, 0));
             
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
             SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, ShowLegend);
@@ -43,6 +52,7 @@ namespace Sneakers
             _winUiController = new WinUiController(_view.WinUi);
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
+            _upgradeShopUiController = new UpgradeShopUiController(_view.UpgradeShopUi);
 
             ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
         }
@@ -75,11 +85,17 @@ namespace Sneakers
 
         private void StartLevel(LevelConfig levelConfig)
         {
-            _sortingController.Init(levelConfig);
+            _sortingController.Init(levelConfig,
+                _view.GameConfig.WashTrackLevels[_washTrackLevel.Value],
+                _view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value]);
 
             if (!String.IsNullOrEmpty(levelConfig.TutorialText))
             {
                 ShowTutorial(levelConfig.TutorialText);
+            }
+            else if (levelConfig.ShowUpgradeShop)
+            {
+                ShowUpgradeShop();
             }
             else
             {
@@ -94,7 +110,15 @@ namespace Sneakers
                 () =>
                 {
                     _tutorialUiController.Hide();
-                    ChangeState(GameState.Playing);
+
+                    if (_view.GameConfig.Levels[_currentLevel - 1].ShowUpgradeShop)
+                    {
+                        ShowUpgradeShop();
+                    }
+                    else
+                    {
+                        ChangeState(GameState.Playing);
+                    }
                 });
         }
 
@@ -154,6 +178,39 @@ namespace Sneakers
                 });
         }
 
+        private void ShowUpgradeShop()
+        {
+            ChangeState(GameState.UpgradeShop);
+
+            _upgradeShopUiController.Show(_coinsReactiveProperty,
+                _view.GameConfig.WashTrackLevels,
+                _view.GameConfig.LaceTrackLevels,
+                _washTrackLevel, _laceTrackLevel,
+                () =>
+                {
+                    _washTrackLevel.Value++;
+                    PlayerPrefs.SetInt(GameConstants.CurrentWashTrackLevelStorageName, _washTrackLevel.Value);
+                    _sortingController.UpgradeWashTrack(_view.GameConfig.WashTrackLevels[_washTrackLevel.Value]);
+                    
+                    _coinsReactiveProperty.Value -= _view.GameConfig.WashTrackLevels[_washTrackLevel.Value].Price;
+                    PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
+                },
+                () =>
+                {
+                    _laceTrackLevel.Value++;
+                    PlayerPrefs.SetInt(GameConstants.CurrentLaceTrackLevelStorageName, _laceTrackLevel.Value);
+                    _sortingController.UpgradeLaceTrack(_view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value]);
+                    
+                    _coinsReactiveProperty.Value -= _view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value].Price;
+                    PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
+                },
+                (() =>
+                {
+                    _upgradeShopUiController.Hide();
+                    ChangeState(GameState.Playing);
+                }));
+        }
+
         private void SaveProgress()
         {
             // save current level
@@ -186,7 +243,13 @@ namespace Sneakers
             // level
             _currentLevel = 1;
             PlayerPrefs.SetInt(GameConstants.CurrentLevelStorageName, _currentLevel);
+            // tracks
+            _washTrackLevel.Value = 0;
+            PlayerPrefs.SetInt(GameConstants.CurrentWashTrackLevelStorageName, _washTrackLevel.Value);
+            _laceTrackLevel.Value = 0;
+            PlayerPrefs.SetInt(GameConstants.CurrentLaceTrackLevelStorageName, _laceTrackLevel.Value);
             // coins
+            _coinsReactiveProperty.Value = 0;
             PlayerPrefs.SetInt(GameConstants.CoinsStorageName, 0);
             // legends
             PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, "");

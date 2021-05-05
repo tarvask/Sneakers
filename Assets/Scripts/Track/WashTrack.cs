@@ -8,12 +8,18 @@ namespace Sneakers
         private float _washTrackMovementSpeed;
         private float _washProcessDelay;
 
-        public void Init(SortingController sortingController, bool isAvailable, float washTrackMovementSpeed, float washProcessDelay)
+        public void Init(SortingController sortingController, bool isAvailable, TrackLevelParams trackLevelParams)
         {
             base.Init(sortingController, isAvailable);
 
-            _washTrackMovementSpeed = washTrackMovementSpeed;
-            _washProcessDelay = washProcessDelay;
+            _washTrackMovementSpeed = trackLevelParams.TrackSpeed;
+            _washProcessDelay = trackLevelParams.ProcessDuration;
+        }
+
+        public void Upgrade(TrackLevelParams trackLevelParams)
+        {
+            _washTrackMovementSpeed = trackLevelParams.TrackSpeed;
+            _washProcessDelay = trackLevelParams.ProcessDuration;
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)

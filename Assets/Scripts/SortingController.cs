@@ -49,7 +49,7 @@ namespace Sneakers
             _collectedLegendarySneakers = new Dictionary<int, int>();
         }
 
-        public void Init(LevelConfig levelConfig)
+        public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
         {
             _currentLevelConfig = levelConfig;
 
@@ -66,8 +66,8 @@ namespace Sneakers
                 CollectionsExtensions.ShuffleList(ref _sneakersToSpawn);
             
             _context.View.MainTrack.Init(this, true, _currentLevelConfig.MainTrackMovementSpeed);
-            _context.View.WashTrack.Init(this, _currentLevelConfig.IsWashTrackAvailable, _currentLevelConfig.WashTrackMovementSpeed, _currentLevelConfig.WashProcessDelay);
-            _context.View.LaceTrack.Init(this, _currentLevelConfig.IsLaceTrackAvailable, _currentLevelConfig.LaceTrackMovementSpeed, _currentLevelConfig.LaceProcessDelay);
+            _context.View.WashTrack.Init(this, _currentLevelConfig.IsWashTrackAvailable, washTrackLevel);
+            _context.View.LaceTrack.Init(this, _currentLevelConfig.IsLaceTrackAvailable, laceTrackLevel);
             _context.View.WasteTrack.Init(this, _currentLevelConfig.IsWasteTrackAvailable);
             _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed);
             _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
@@ -207,6 +207,16 @@ namespace Sneakers
             _sneakers.Remove(sneaker);
             sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
             Object.Destroy(sneaker.View.gameObject);
+        }
+
+        public void UpgradeWashTrack(TrackLevelParams trackLevelParams)
+        {
+            _context.View.WashTrack.Upgrade(trackLevelParams);
+        }
+
+        public void UpgradeLaceTrack(TrackLevelParams trackLevelParams)
+        {
+            _context.View.LaceTrack.Upgrade(trackLevelParams);
         }
     }
 }

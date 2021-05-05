@@ -22,13 +22,9 @@ namespace Sneakers
 
         [Header("Wash track")]
         [SerializeField] private bool isWashTrackAvailable;
-        [SerializeField] private float washTrackMovementSpeed = 5f;
-        [SerializeField] private float washProcessDelay = 5f;
 
         [Header("Lace track")]
         [SerializeField] private bool isLaceTrackAvailable;
-        [SerializeField] private float laceTrackMovementSpeed = 5f;
-        [SerializeField] private float laceProcessDelay = 5f;
         
         [Header("Wait track")]
         [SerializeField] private bool isWaitTrackAvailable;
@@ -46,6 +42,10 @@ namespace Sneakers
         [TextArea]
         [SerializeField] private string tutorialText;
 
+        [Space]
+        [Header("Upgrade shop")]
+        [SerializeField] private bool showUpgradeShop;
+
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
         public int CoinsSuccessfulStepReward => coinsSuccessfulStepReward;
@@ -61,13 +61,9 @@ namespace Sneakers
         
         // wash track
         public bool IsWashTrackAvailable => isWashTrackAvailable;
-        public float WashTrackMovementSpeed => washTrackMovementSpeed;
-        public float WashProcessDelay => washProcessDelay;
         
         // lace track
         public bool IsLaceTrackAvailable => isLaceTrackAvailable;
-        public float LaceTrackMovementSpeed => laceTrackMovementSpeed;
-        public float LaceProcessDelay => laceProcessDelay;
         
         // wait track
         public bool IsWaitTrackAvailable => isWaitTrackAvailable;
@@ -82,6 +78,9 @@ namespace Sneakers
         
         // tutorial
         public string TutorialText => tutorialText;
+        
+        // upgrade shop
+        public bool ShowUpgradeShop => showUpgradeShop;
 
         [ContextMenu("Validate number of sneakers")]
         public void ValidateNumberOfSneakers()
