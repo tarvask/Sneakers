@@ -43,7 +43,7 @@ namespace Sneakers
         public void OnDrag(PointerEventData eventData)
         {
             isDropped = false;
-            _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+            _rectTransform.anchoredPosition += eventData.delta;// / canvas.scaleFactor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
