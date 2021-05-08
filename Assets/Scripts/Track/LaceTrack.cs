@@ -59,7 +59,7 @@ namespace Sneakers
                 sneaker.View.GetComponent<CanvasGroup>().blocksRaycasts = true;
                 sneaker.SwitchVisibility(true);
                 
-                while (trackPoints[1].position != sneaker.Position)
+                while (Vector3.SqrMagnitude(trackPoints[1].position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
                 {
                     sneaker.Move(trackPoints[1].position, _laceTrackMovementSpeed);
                     yield return null;
@@ -69,7 +69,7 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetCurrentPoint(3);
-                while (_sortingController.SneakersSpawnPoint.position != sneaker.Position)
+                while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
                 {
                     sneaker.Move(_sortingController.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
                     yield return null;
