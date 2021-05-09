@@ -38,7 +38,7 @@ namespace Sneakers
             else
             {
                 _waitingSneaker = sneaker;
-                sneaker.SetPosition(trackPoints[0].position);
+                sneaker.SetPosition(trackPoints[0].localPosition);
                 sneaker.DragDropItem.IsHold = true;
                 _sortingController.SendToWaitTransporter(sneaker, 1);
             }
@@ -78,7 +78,7 @@ namespace Sneakers
 
         private IEnumerator CheckPresence(SneakerController sneaker)
         {
-            while (sneaker != null && sneaker.DragDropItem.IsHold)
+            while (sneaker != null && !sneaker.IsDisposed && sneaker.DragDropItem.IsHold)
             {
                 yield return null;
             }

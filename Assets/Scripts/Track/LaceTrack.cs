@@ -48,7 +48,7 @@ namespace Sneakers
         public IEnumerator LaceRoute(SneakerController sneaker, int mover)
         {
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
-            sneaker.SetTransporterType(TransporterType.Waiting);
+            sneaker.SetTransporterType(TransporterType.Lacing);
             
             if (mover == 2)
             {
