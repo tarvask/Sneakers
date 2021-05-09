@@ -88,8 +88,7 @@ namespace Sneakers
         {
             foreach (SneakerController sneaker in _sneakers)
             {
-                sneaker.View.StopAllCoroutines();
-                Object.Destroy(sneaker.View.gameObject);
+                sneaker.Dispose();
             }
 
             _sneakersToSpawn.Clear();
@@ -187,11 +186,8 @@ namespace Sneakers
             _sortedSneakersCount++;
 
             _sneakers.Remove(sneaker);
-            
-            if (sneaker.CurrentCoroutine != null)
-                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
-            
-            Object.Destroy(sneaker.View.gameObject);
+
+            sneaker.Dispose();
         }
 
         public void OnSortFailed(SneakerController sneaker)
@@ -204,8 +200,7 @@ namespace Sneakers
             _sortedSneakersCount++;
             
             _sneakers.Remove(sneaker);
-            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
-            Object.Destroy(sneaker.View.gameObject);
+            sneaker.Dispose();
         }
 
         public void OnSortLegendaryError(SneakerController sneaker)
@@ -213,11 +208,7 @@ namespace Sneakers
             _lives = 0;
             
             _sneakers.Remove(sneaker);
-            
-            if (sneaker.CurrentCoroutine != null)
-                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
-            
-            Object.Destroy(sneaker.View.gameObject);
+            sneaker.Dispose();
         }
 
         public void UpgradeWashTrack(TrackLevelParams trackLevelParams)

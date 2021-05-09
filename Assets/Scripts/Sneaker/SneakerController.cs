@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sneakers
 {
-    public class SneakerController
+    public class SneakerController : IDisposable
     {
         public struct Context
         {
@@ -24,6 +25,7 @@ namespace Sneakers
         private SneakerState _state;
         private TransporterType _transporterType;
         private int _currentPoint;
+        private bool _isDisposed;
 
         public string Model => _context.Config.Model;
         public int Id => _context.Config.Id;
@@ -34,6 +36,8 @@ namespace Sneakers
         public DragDropItem DragDropItem => _context.View.DragDropItem;
         public int CurrentPoint => _currentPoint;
         public Vector3 LocalPosition => _context.View.transform.localPosition;
+        public bool IsDisposed => _isDisposed;
+
         public Coroutine CurrentCoroutine { get; set; }
 
         public SneakerController(Context context, int id)
@@ -80,6 +84,19 @@ namespace Sneakers
         public void CollectLegendary()
         {
             _context.OnLegendarySneakerCollectedAction.Invoke(this);
+        }
+
+
+        public void Dispose()
+        {
+            _context.View.StopAllCoroutines();
+            CurrentCoroutine = null;
+            
+            Object.Destroy(_context.View.DragDropItem);
+            Object.Destroy(_context.View);
+            Object.Destroy(_context.View.gameObject);
+
+            _isDisposed = true;
         }
     }
 }
