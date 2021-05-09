@@ -37,11 +37,11 @@ namespace Sneakers
                 }
 
                 // move to some place and start washing
-                float x1 = trackPoints[1].position.x;
-                float y1 = trackPoints[1].position.y;
-                float x2 = trackPoints[0].position.x;
-                float y2 = trackPoints[0].position.y;
-                float x = sneaker.Position.x;
+                float x1 = trackPoints[1].localPosition.x;
+                float y1 = trackPoints[1].localPosition.y;
+                float x2 = trackPoints[0].localPosition.x;
+                float y2 = trackPoints[0].localPosition.y;
+                float x = sneaker.LocalPosition.x;
                 float y = ((x1 * y2 - x2 * y1) + x * (y1 - y2)) / (x1 - x2);
                 sneaker.SetPosition(new Vector2(x, y));
                 _sortingController.SendToWashTransporter(sneaker);
@@ -60,9 +60,9 @@ namespace Sneakers
             if (mover == 2)
             {
                 sneaker.SetCurrentPoint(2);
-                while (Vector3.SqrMagnitude(trackPoints[1].position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
+                while (Vector3.SqrMagnitude(trackPoints[1].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[1].position, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].localPosition, _washTrackMovementSpeed);
                     yield return null;
                 }
                 
@@ -76,9 +76,9 @@ namespace Sneakers
             {
                 sneaker.SetState(SneakerState.Normal);
                 sneaker.SetCurrentPoint(3);
-                while (Vector3.SqrMagnitude(trackPoints[2].position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
+                while (Vector3.SqrMagnitude(trackPoints[2].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[2].position, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[2].localPosition, _washTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
@@ -86,9 +86,9 @@ namespace Sneakers
             if (mover == 4)
             {
                 sneaker.SetCurrentPoint(4);
-                while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
+                while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(_sortingController.SneakersSpawnPoint.position, _washTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _washTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;

@@ -8,6 +8,7 @@ namespace Sneakers
         
         private void Start()
         {
+            Application.targetFrameRate = 60;
             _gameController = new GameController();
         }
         

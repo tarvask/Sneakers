@@ -37,13 +37,13 @@ namespace Sneakers
             
             _canvasGroup.alpha = 0.4f;
             _canvasGroup.blocksRaycasts = false;
-            vector = transform.position;
+            vector = transform.localPosition;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             isDropped = false;
-            _rectTransform.anchoredPosition += eventData.delta;// / canvas.scaleFactor;
+            _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -53,7 +53,7 @@ namespace Sneakers
             
             if (!isDropped)
             {
-                transform.position = vector;
+                transform.localPosition = vector;
                 if (_sneaker.TransporterType == TransporterType.Main)
                 {
                     SortingController.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint);

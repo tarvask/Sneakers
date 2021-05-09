@@ -42,17 +42,14 @@ MonoBehaviour:
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
     state: 1
     count: 1
-  mainTrackMovementSpeed: 1.2
+  mainTrackMovementSpeed: 140
   mainTrackMinSpawnDelay: 1.5
   mainTrackMaxSpawnDelay: 2.5
   isWashTrackAvailable: 1
-  washTrackMovementSpeed: 1
-  washProcessDelay: 5
   isLaceTrackAvailable: 1
-  laceTrackMovementSpeed: 1
-  laceProcessDelay: 5
   isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
+  isWaitTrackMovingToWaste: 0
   isWasteTrackAvailable: 1
   firstBinModelId: 1
   secondBinModelId: 0
@@ -65,3 +62,4 @@ MonoBehaviour:
     \u0442\u0435\u0431\u0435 \u0432 \u043F\u043E\u043C\u043E\u0449\u044C \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u043B\u0438
     \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u0443\u044E \u0437\u043E\u043D\u0443
     \u043E\u0436\u0438\u0434\u0430\u043D\u0438\u044F"
+  showUpgradeShop: 0

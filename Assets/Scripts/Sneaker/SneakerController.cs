@@ -33,8 +33,7 @@ namespace Sneakers
         public SneakerState State => _state;
         public DragDropItem DragDropItem => _context.View.DragDropItem;
         public int CurrentPoint => _currentPoint;
-        public Vector3 Position => _context.View.transform.position;
-        
+        public Vector3 LocalPosition => _context.View.transform.localPosition;
         public Coroutine CurrentCoroutine { get; set; }
 
         public SneakerController(Context context, int id)
@@ -69,13 +68,13 @@ namespace Sneakers
 
         public void SetPosition(Vector3 newPosition)
         {
-            View.transform.position = newPosition;
+            View.transform.localPosition = newPosition;
         }
 
         public void Move(Vector3 targetPosition, float speed)
         {
-            View.transform.position = Vector3.MoveTowards(View.transform.position,
-                targetPosition, speed);
+            View.transform.localPosition = Vector3.MoveTowards(View.transform.localPosition,
+                targetPosition, speed * Time.deltaTime);
         }
 
         public void CollectLegendary()

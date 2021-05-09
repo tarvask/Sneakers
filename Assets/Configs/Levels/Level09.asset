@@ -42,13 +42,14 @@ MonoBehaviour:
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
     state: 1
     count: 2
-  mainTrackMovementSpeed: 1.2
+  mainTrackMovementSpeed: 180
   mainTrackMinSpawnDelay: 1.5
   mainTrackMaxSpawnDelay: 2.5
   isWashTrackAvailable: 1
   isLaceTrackAvailable: 1
   isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
+  isWaitTrackMovingToWaste: 0
   isWasteTrackAvailable: 1
   firstBinModelId: 1
   secondBinModelId: 0

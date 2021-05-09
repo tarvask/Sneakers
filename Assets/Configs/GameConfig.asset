@@ -29,25 +29,25 @@ MonoBehaviour:
   - level: 0
     price: 0
     processDuration: 5
-    trackSpeed: 1
+    trackSpeed: 140
   - level: 1
     price: 200
     processDuration: 2.5
-    trackSpeed: 1.5
+    trackSpeed: 180
   - level: 2
     price: 400
     processDuration: 1.5
-    trackSpeed: 2.25
+    trackSpeed: 240
   laceTrackLevels:
   - level: 0
     price: 0
     processDuration: 5
-    trackSpeed: 1
+    trackSpeed: 140
   - level: 1
     price: 200
     processDuration: 2.5
-    trackSpeed: 1.5
+    trackSpeed: 180
   - level: 2
     price: 400
     processDuration: 1.5
-    trackSpeed: 2.25
+    trackSpeed: 240

@@ -36,7 +36,7 @@ namespace Sneakers
                     //sneaker.DragDropItem.isDropped = false;
                 }
                 
-                sneaker.SetPosition(trackPoints[0].position);
+                sneaker.SetPosition(trackPoints[0].localPosition);
                 _sortingController.SendToLaceTransporter(sneaker);
             }
             else
@@ -61,9 +61,9 @@ namespace Sneakers
                 sneaker.View.GetComponent<CanvasGroup>().blocksRaycasts = true;
                 sneaker.SwitchVisibility(true);
                 
-                while (Vector3.SqrMagnitude(trackPoints[1].position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
+                while (Vector3.SqrMagnitude(trackPoints[1].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[1].position, _laceTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].localPosition, _laceTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
@@ -71,9 +71,9 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetCurrentPoint(3);
-                while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.position - sneaker.Position) > GameConstants.SuperCloseDistanceSqr)
+                while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(_sortingController.SneakersSpawnPoint.position, _laceTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _laceTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;

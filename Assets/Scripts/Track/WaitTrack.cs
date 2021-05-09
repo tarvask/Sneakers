@@ -60,10 +60,10 @@ namespace Sneakers
             
             while (mover == 1 || mover == 2)
             {
-                while (Vector3.SqrMagnitude(trackPoints[baseWaitTransporterIndex + mover].position - sneaker.Position)
+                while (Vector3.SqrMagnitude(trackPoints[baseWaitTransporterIndex + mover].localPosition - sneaker.LocalPosition)
                        > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[baseWaitTransporterIndex + mover].position, _waitTrackMovementSpeed);
+                    sneaker.Move(trackPoints[baseWaitTransporterIndex + mover].localPosition, _waitTrackMovementSpeed);
                     yield return null;
                 }
                 

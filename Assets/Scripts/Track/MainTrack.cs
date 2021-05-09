@@ -28,10 +28,10 @@ namespace Sneakers
             while (mover == 0 || mover == 1 || mover == 2)
             {
                 sneaker.SetCurrentPoint(mover);
-                while (Vector3.SqrMagnitude(trackPoints[sneaker.CurrentPoint + 1].position - sneaker.Position)
+                while (Vector3.SqrMagnitude(trackPoints[sneaker.CurrentPoint + 1].localPosition - sneaker.LocalPosition)
                        > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[sneaker.CurrentPoint + 1].position, _mainTrackMovementSpeed);
+                    sneaker.Move(trackPoints[sneaker.CurrentPoint + 1].localPosition, _mainTrackMovementSpeed);
                     yield return null;
                 }
                 mover++;
