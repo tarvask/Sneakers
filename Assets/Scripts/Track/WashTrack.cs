@@ -29,7 +29,9 @@ namespace Sneakers
                 // stop waiting coroutine
                 if (sneaker.DragDropItem.IsHold)
                 {
-                    sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+                    if (sneaker.CurrentCoroutine != null)
+                        sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+                    
                     sneaker.DragDropItem.IsHold = false;
                     //sneaker.DragDropItem.isDropped = false;
                 }

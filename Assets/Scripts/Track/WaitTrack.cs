@@ -50,7 +50,9 @@ namespace Sneakers
             
             if (!_moveToWaste)
             {
-                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+                if (sneaker.CurrentCoroutine != null)
+                    sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+                
                 yield break;
             }
 
@@ -68,7 +70,9 @@ namespace Sneakers
                 mover++;
             }
             
-            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            if (sneaker.CurrentCoroutine != null)
+                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            
             DropToWaste(sneaker);
         }
 

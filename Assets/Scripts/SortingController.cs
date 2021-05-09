@@ -107,6 +107,7 @@ namespace Sneakers
                 _spawnRoot = new GameObject("Sneakers").transform;
                 _spawnRoot.SetParent(_context.View.SneakersSpawnPoint.parent.parent);
                 _spawnRoot.localPosition = Vector3.zero;
+                _spawnRoot.localScale = Vector3.one;
             }
 
             while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers)
@@ -186,7 +187,10 @@ namespace Sneakers
             _sortedSneakersCount++;
 
             _sneakers.Remove(sneaker);
-            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            
+            if (sneaker.CurrentCoroutine != null)
+                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            
             Object.Destroy(sneaker.View.gameObject);
         }
 
@@ -209,7 +213,10 @@ namespace Sneakers
             _lives = 0;
             
             _sneakers.Remove(sneaker);
-            sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            
+            if (sneaker.CurrentCoroutine != null)
+                sneaker.View.StopCoroutine(sneaker.CurrentCoroutine);
+            
             Object.Destroy(sneaker.View.gameObject);
         }
 
