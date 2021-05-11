@@ -24,7 +24,14 @@ namespace Sneakers
         
         protected override void OnDropSneaker(SneakerController sneaker)
         {
-            if (sneaker.State == SneakerState.Dirty)
+            if (IsBusy)
+            {
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+                
+                if (!sneaker.DragDropItem.IsHold)
+                    _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+            }
+            else if (sneaker.State == SneakerState.Dirty)
             {
                 // stop waiting coroutine
                 if (sneaker.DragDropItem.IsHold)
@@ -45,6 +52,7 @@ namespace Sneakers
                 float y = ((x1 * y2 - x2 * y1) + x * (y1 - y2)) / (x1 - x2);
                 sneaker.SetPosition(new Vector2(x, y));
                 _sortingController.SendToWashTransporter(sneaker);
+                StartProcessingSneaker(sneaker);
             }
             else
             {
@@ -75,6 +83,7 @@ namespace Sneakers
             if (mover == 3)
             {
                 sneaker.SetState(SneakerState.Normal);
+                StopProcessingSneaker();
                 sneaker.SetCurrentPoint(3);
                 while (Vector3.SqrMagnitude(trackPoints[2].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {

@@ -4,14 +4,10 @@ using UnityEngine;
 
 namespace Sneakers
 {
-    public class WaitTrack : AbstractTrack
+    public class WaitTrack : AbstractSpecialTrack
     {
-        [SerializeField] protected Transform[] trackPoints;
-        
         private float _waitTrackMovementSpeed;
         private bool _moveToWaste;
-        
-        private SneakerController _waitingSneaker;
         
         public void Init(SortingController sortingController, bool isAvailable, float waitTrackMovementSpeed, bool moveToWaste)
         {
@@ -23,31 +19,39 @@ namespace Sneakers
         
         protected override void OnDropSneaker(SneakerController sneaker)
         {
-            if (sneaker.DragDropItem.IsHold)
+            if (IsBusy)
             {
                 sneaker.SetPosition(sneaker.DragDropItem.vector);
-            }
-            else if (_waitingSneaker != null)
-            {
-                // or maybe just send new sneaker back to it's roots
-                //_movement.SendToMainTransporter(_waitingSneaker, 2);
-                //_movement.SendToWaitTransporter(sneaker, 2);
-                sneaker.SetPosition(sneaker.DragDropItem.vector);
-                _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+                
+                if (!sneaker.DragDropItem.IsHold)
+                    _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
             }
             else
             {
-                _waitingSneaker = sneaker;
+                StartProcessingSneaker(sneaker);
                 sneaker.SetPosition(trackPoints[0].localPosition);
                 sneaker.DragDropItem.IsHold = true;
                 _sortingController.SendToWaitTransporter(sneaker, 1);
             }
         }
         
+        protected override void OnWrongTrackDropped(SneakerController sneaker)
+        {
+            // back to position before drag
+            if (!sneaker.DragDropItem.IsHold)
+            {
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+                _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+            }
+            // back to wait
+            else
+            {
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+            }
+        }
+        
         public IEnumerator WaitRoute(SneakerController sneaker, int mover)
         {
-            StartCoroutine(CheckPresence(sneaker));
-            
             if (!_moveToWaste)
             {
                 if (sneaker.CurrentCoroutine != null)
@@ -76,20 +80,9 @@ namespace Sneakers
             DropToWaste(sneaker);
         }
 
-        private IEnumerator CheckPresence(SneakerController sneaker)
-        {
-            while (sneaker != null && !sneaker.IsDisposed && sneaker.DragDropItem.IsHold)
-            {
-                yield return null;
-            }
-            
-            _waitingSneaker = null;
-            StopAllCoroutines();
-        }
-
         private void DropToWaste(SneakerController sneaker)
         {
-            _waitingSneaker = null;
+            StopProcessingSneaker();
             
             if (sneaker.State == SneakerState.Wasted)
             {

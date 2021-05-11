@@ -24,7 +24,14 @@ namespace Sneakers
 
         protected override void OnDropSneaker(SneakerController sneaker)
         {
-            if (sneaker.State == SneakerState.Unlaced)
+            if (IsBusy)
+            {
+                sneaker.SetPosition(sneaker.DragDropItem.vector);
+                
+                if (!sneaker.DragDropItem.IsHold)
+                    _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+            }
+            else if (sneaker.State == SneakerState.Unlaced)
             {
                 // stop waiting coroutine
                 if (sneaker.DragDropItem.IsHold)
@@ -38,6 +45,7 @@ namespace Sneakers
                 
                 sneaker.SetPosition(trackPoints[0].localPosition);
                 _sortingController.SendToLaceTransporter(sneaker);
+                StartProcessingSneaker(sneaker);
             }
             else
             {
@@ -56,6 +64,7 @@ namespace Sneakers
                 yield return new WaitForSeconds(_laceProcessDelay);
                     
                 sneaker.SetState(SneakerState.Normal);
+                StopProcessingSneaker();
                 sneaker.SetCurrentPoint(2);
                 sneaker.View.GetComponent<CanvasGroup>().alpha = 1F;
                 sneaker.View.GetComponent<CanvasGroup>().blocksRaycasts = true;

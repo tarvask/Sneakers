@@ -137,6 +137,13 @@ namespace Sneakers
             
             return sneakerController;
         }
+
+        private void CheckAndRemoveFromSpecialTracks(SneakerController sneakerController)
+        {
+            _context.View.WashTrack.CheckAndRemoveFromTrack(sneakerController);
+            _context.View.LaceTrack.CheckAndRemoveFromTrack(sneakerController);
+            _context.View.WaitTrack.CheckAndRemoveFromTrack(sneakerController);
+        }
         
         private void OnLegendarySneakerCollectedEventHandler(SneakerController sneaker)
         {
@@ -152,6 +159,7 @@ namespace Sneakers
         public void SendToMainTransporter(SneakerController sneaker, int mover = 0)
         {
             sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.MainTrack.MainRoute(sneaker, mover));
+            CheckAndRemoveFromSpecialTracks(sneaker);
         }
         
         public void SendToWashTransporter(SneakerController sneaker, int mover = 2)
@@ -186,7 +194,7 @@ namespace Sneakers
             _sortedSneakersCount++;
 
             _sneakers.Remove(sneaker);
-
+            CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
         }
 
@@ -200,6 +208,7 @@ namespace Sneakers
             _sortedSneakersCount++;
             
             _sneakers.Remove(sneaker);
+            CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
         }
 
@@ -208,6 +217,7 @@ namespace Sneakers
             _lives = 0;
             
             _sneakers.Remove(sneaker);
+            CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
         }
 
