@@ -61,15 +61,15 @@ namespace Sneakers
         {
             if (!IsPlayingState(_currentState))
                 return;
-            
-            if (_sortingController.AllSneakersAreSorted)
+
+            if (_sortingController.Lives <= 0)
             {
-                WinLevel();
+                LoseLevel();
                 return;
             }
 
-            if (_sortingController.Lives <= 0)
-                LoseLevel();
+            if (_sortingController.AllSneakersAreSorted)
+                WinLevel();
         }
 
         private void ShowMainMenu(int currentLevel, LevelConfig levelConfig)
