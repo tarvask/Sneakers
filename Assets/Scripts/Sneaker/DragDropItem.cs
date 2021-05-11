@@ -56,7 +56,7 @@ namespace Sneakers
                 transform.localPosition = vector;
                 if (_sneaker.TransporterType == TransporterType.Main)
                 {
-                    SortingController.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint);
+                    SortingController.instance.SendToMainTransporter(_sneaker, _sneaker.CurrentPoint, _sneaker.DragDropItem.IsHold);
                 }
                 if (_sneaker.TransporterType == TransporterType.Washing)
                 {

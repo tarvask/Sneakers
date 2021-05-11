@@ -156,10 +156,10 @@ namespace Sneakers
             OnSortSucceeded(sneaker);
         }
         
-        public void SendToMainTransporter(SneakerController sneaker, int mover = 0)
+        public void SendToMainTransporter(SneakerController sneaker, int mover = 0, bool isImmediately = false)
         {
-            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.MainTrack.MainRoute(sneaker, mover));
             CheckAndRemoveFromSpecialTracks(sneaker);
+            sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.MainTrack.MainRoute(sneaker, mover, isImmediately));
         }
         
         public void SendToWashTransporter(SneakerController sneaker, int mover = 2)

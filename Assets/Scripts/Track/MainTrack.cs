@@ -24,10 +24,14 @@ namespace Sneakers
             OnWrongTrackDropped(sneaker);
         }
         
-        public IEnumerator MainRoute(SneakerController sneaker, int mover)
+        public IEnumerator MainRoute(SneakerController sneaker, int mover, bool isImmediately = false)
         {
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Main);
+            
+            if (isImmediately)
+                sneaker.SetPosition(trackPoints[sneaker.CurrentPoint].localPosition);
+            
             while (mover == 0 || mover == 1 || mover == 2)
             {
                 sneaker.SetCurrentPoint(mover);
