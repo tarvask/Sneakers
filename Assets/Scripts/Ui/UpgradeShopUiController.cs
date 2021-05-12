@@ -42,6 +42,8 @@ namespace Sneakers
             TrackLevelParams[] washTrackLevelParams, TrackLevelParams[] laceTrackLevelParams,
             ReactiveProperty<int> washTrackLevel, ReactiveProperty<int> laceTrackLevel)
         {
+            _view.CoinsCountText.text = $"{coinsReactiveProperty.Value}";
+            
             bool hasUpgradesOnWashTrack = washTrackLevel.Value + 1 < washTrackLevelParams.Length;
             bool hasUpgradesOnLaceTrack = laceTrackLevel.Value + 1 < laceTrackLevelParams.Length;
 
