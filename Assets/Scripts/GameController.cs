@@ -22,6 +22,8 @@ namespace Sneakers
         private readonly LegendUiController _legendUiController;
         private readonly UpgradeShopUiController _upgradeShopUiController;
 
+        private readonly CheatPanelUiController _cheatPanelUiController;
+
         private GameState _currentState;
         private int _currentLevel;
         private readonly ReactiveProperty<int> _coinsReactiveProperty;
@@ -53,6 +55,8 @@ namespace Sneakers
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
             _upgradeShopUiController = new UpgradeShopUiController(_view.UpgradeShopUi);
+            
+            _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
 
             ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
         }
@@ -287,7 +291,6 @@ namespace Sneakers
             return result;
         }
 
-#if UNITY_EDITOR
         [MenuItem("Window/Sneakers/Drop progress", false, 0)]
         public static void DropProgressInEditor()
         {
@@ -305,6 +308,16 @@ namespace Sneakers
         {
             _instance.LoseLevel();
         }
-#endif
+
+        public static void AddCoinsInEditor()
+        {
+            _instance._coinsReactiveProperty.Value += 100;
+        }
+        
+        public static void RemoveCoinsInEditor()
+        {
+            if (_instance._coinsReactiveProperty.Value >= 100)
+                _instance._coinsReactiveProperty.Value -= 100;
+        }
     }
 }

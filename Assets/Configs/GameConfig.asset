@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba3e12e2938547d8bad305af5d9896ce, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
+  showCheatPanel: 1
   levels:
   - {fileID: 11400000, guid: e4884cd84acd7407d80e006460365c27, type: 2}
   - {fileID: 11400000, guid: 9eb7e938c145c49f5a7aefae272114fe, type: 2}

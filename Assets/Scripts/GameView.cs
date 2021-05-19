@@ -14,6 +14,9 @@ namespace Sneakers
         [SerializeField] private LegendUiView legendUi;
         [SerializeField] private UpgradeShopUiView upgradeShopUi;
 
+        [Space] [Header("Cheat Panel")]
+        [SerializeField] private CheatPanelUiView cheatPanelUi;
+
         public GameConfig GameConfig => gameConfig;
         
         // windows
@@ -23,5 +26,8 @@ namespace Sneakers
         public LoseUiView LoseUi => loseUi;
         public LegendUiView LegendUi => legendUi;
         public UpgradeShopUiView UpgradeShopUi => upgradeShopUi;
+        
+        // cheat panel
+        public CheatPanelUiView CheatPanelUi => cheatPanelUi;
     }
 }
