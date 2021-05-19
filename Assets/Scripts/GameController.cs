@@ -30,15 +30,15 @@ namespace Sneakers
         private readonly ReactiveProperty<int> _washTrackLevel;
         private readonly ReactiveProperty<int> _laceTrackLevel;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         private static GameController _instance;
-#endif
+//#endif
 
         public GameController()
         {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
             _instance = this;
-#endif
+//#endif
             _view = Object.FindObjectOfType<GameView>();
             _currentLevel = PlayerPrefs.GetInt(GameConstants.CurrentLevelStorageName, 1);
             _coinsReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0));
@@ -291,19 +291,19 @@ namespace Sneakers
             return result;
         }
 
-        [MenuItem("Window/Sneakers/Drop progress", false, 0)]
+        //[MenuItem("Window/Sneakers/Drop progress", false, 0)]
         public static void DropProgressInEditor()
         {
             _instance.DropProgress();
         }
         
-        [MenuItem("Window/Sneakers/Win Level", false, 0)]
+        //[MenuItem("Window/Sneakers/Win Level", false, 0)]
         public static void WinLevelInEditor()
         {
             _instance.WinLevel();
         }
 
-        [MenuItem("Window/Sneakers/Lose Level", false, 0)]
+        //[MenuItem("Window/Sneakers/Lose Level", false, 0)]
         public static void LoseLevelInEditor()
         {
             _instance.LoseLevel();
