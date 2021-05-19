@@ -127,10 +127,10 @@ namespace Sneakers
             SneakerState state = _sneakersToSpawn[_spawnedSneakersCount].State;
             
             SneakerView newSneakerView = Object.Instantiate(sneakerConfig.Prefab, spawnRoot);
-            newSneakerView.DragDropItem.canvas = _context.View.canvas;
             newSneakerView.transform.localPosition = position;
             
-            SneakerController.Context sneakerControllerContext = new SneakerController.Context(newSneakerView, sneakerConfig, OnLegendarySneakerCollectedEventHandler);
+            SneakerController.Context sneakerControllerContext =
+                new SneakerController.Context(newSneakerView, sneakerConfig, _context.View.canvas, OnLegendarySneakerCollectedEventHandler);
             SneakerController sneakerController = new SneakerController(sneakerControllerContext, _spawnedSneakersCount);
             sneakerController.SetState(state);
             _spawnedSneakersCount++;

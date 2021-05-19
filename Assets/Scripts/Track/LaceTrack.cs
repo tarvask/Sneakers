@@ -57,6 +57,7 @@ namespace Sneakers
         {
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Lacing);
+            sneaker.OnRouteStart();
             
             if (mover == 2)
             {

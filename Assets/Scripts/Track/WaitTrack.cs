@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Sneakers
@@ -52,6 +51,8 @@ namespace Sneakers
         
         public IEnumerator WaitRoute(SneakerController sneaker, int mover)
         {
+            sneaker.OnRouteStart();
+            
             if (!_moveToWaste)
             {
                 if (sneaker.CurrentCoroutine != null)

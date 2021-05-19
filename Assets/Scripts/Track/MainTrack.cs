@@ -28,6 +28,7 @@ namespace Sneakers
         {
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Main);
+            sneaker.OnRouteStart();
             
             if (isImmediately)
                 sneaker.SetPosition(trackPoints[sneaker.CurrentPoint].localPosition);

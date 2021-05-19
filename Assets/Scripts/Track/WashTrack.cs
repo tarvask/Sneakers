@@ -63,6 +63,7 @@ namespace Sneakers
         public IEnumerator WashRoute(SneakerController sneaker, int mover)
         {
             sneaker.SetTransporterType(TransporterType.Washing);
+            sneaker.OnRouteStart();
             //sneaker.DragDropItem.isDropped = false;
             
             if (mover == 2)

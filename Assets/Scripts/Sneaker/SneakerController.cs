@@ -10,13 +10,15 @@ namespace Sneakers
         {
             public SneakerView View { get; }
             public SneakerConfig Config { get; }
+            public Canvas Canvas { get; }
             public Action<SneakerController> OnLegendarySneakerCollectedAction { get; }
 
-            public Context(SneakerView view, SneakerConfig config,
+            public Context(SneakerView view, SneakerConfig config, Canvas canvas,
                 Action<SneakerController> onLegendarySneakerCollectedAction)
             {
                 View = view;
                 Config = config;
+                Canvas = canvas;
                 OnLegendarySneakerCollectedAction = onLegendarySneakerCollectedAction;
             }
         }
@@ -25,7 +27,7 @@ namespace Sneakers
         private SneakerState _state;
         private TransporterType _transporterType;
         private int _currentPoint;
-        private bool _isDisposed;
+        private Vector3 _currentTargetPosition;
 
         public string Model => _context.Config.Model;
         public int Id => _context.Config.Id;
@@ -35,8 +37,8 @@ namespace Sneakers
         public SneakerState State => _state;
         public DragDropItem DragDropItem => _context.View.DragDropItem;
         public int CurrentPoint => _currentPoint;
+        public Vector3 CurrentTargetPosition => _currentTargetPosition;
         public Vector3 LocalPosition => _context.View.transform.localPosition;
-        public bool IsDisposed => _isDisposed;
 
         public Coroutine CurrentCoroutine { get; set; }
 
@@ -45,7 +47,7 @@ namespace Sneakers
             _context = context;
             
             _context.View.name = _context.Config.Model + id;
-            _context.View.DragDropItem.Init(this);
+            _context.View.DragDropItem.Init(this, _context.Canvas);
             _context.View.OnSneakerDropped += action => action(this);
         }
 
@@ -77,8 +79,16 @@ namespace Sneakers
 
         public void Move(Vector3 targetPosition, float speed)
         {
+            _currentTargetPosition = targetPosition;
             View.transform.localPosition = Vector3.MoveTowards(View.transform.localPosition,
-                targetPosition, speed * Time.deltaTime);
+                _currentTargetPosition, speed * Time.deltaTime);
+        }
+
+        // used to resolve collisions
+        public void MoveByDelta(Vector3 startPosition, Vector3 targetPosition, float delta)
+        {
+            View.transform.localPosition = Vector3.MoveTowards(startPosition,
+                targetPosition, delta);
         }
 
         public void CollectLegendary()
@@ -86,7 +96,11 @@ namespace Sneakers
             _context.OnLegendarySneakerCollectedAction.Invoke(this);
         }
 
-
+        public void OnRouteStart()
+        {
+            DragDropItem.StopDrag();
+        }
+        
         public void Dispose()
         {
             _context.View.StopAllCoroutines();
@@ -95,8 +109,6 @@ namespace Sneakers
             Object.Destroy(_context.View.DragDropItem);
             Object.Destroy(_context.View);
             Object.Destroy(_context.View.gameObject);
-
-            _isDisposed = true;
         }
     }
 }
