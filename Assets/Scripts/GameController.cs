@@ -238,8 +238,8 @@ namespace Sneakers
             PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, DictToString(currentLegends));
             
             // save coins
-            PlayerPrefs.SetInt(GameConstants.CoinsStorageName,
-                PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0) + _sortingController.Score);
+            _coinsReactiveProperty.Value += _sortingController.Score;
+            PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
         }
 
         private void DropProgress()
