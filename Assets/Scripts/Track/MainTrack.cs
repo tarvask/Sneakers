@@ -26,6 +26,14 @@ namespace Sneakers
         
         public IEnumerator MainRoute(SneakerController sneaker, int mover, bool isImmediately = false)
         {
+            // ugly safety, in case of moving from side track to Wait track and then to Main
+            if (mover >= 3)
+            {
+                mover = 0;
+                sneaker.SetCurrentPoint(0);
+                isImmediately = true;
+            }
+
             //sneaker.GetComponent<DragDropItem>().isDropped = false;
             sneaker.SetTransporterType(TransporterType.Main);
             sneaker.OnRouteStart();

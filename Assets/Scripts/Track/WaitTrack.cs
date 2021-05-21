@@ -29,6 +29,7 @@ namespace Sneakers
             {
                 StartProcessingSneaker(sneaker);
                 sneaker.SetPosition(trackPoints[0].localPosition);
+                sneaker.SetTransporterType(TransporterType.Main);
                 sneaker.DragDropItem.IsHold = true;
                 _sortingController.SendToWaitTransporter(sneaker, 1);
             }
