@@ -11,7 +11,7 @@ namespace Sneakers
         protected SortingController _sortingController;
         private bool _isAvailable;
 
-        public void Init(SortingController sortingController, bool isAvailable)
+        public virtual void Init(SortingController sortingController, bool isAvailable)
         {
             _sortingController = sortingController;
             _isAvailable = isAvailable;

@@ -138,11 +138,16 @@ namespace Sneakers
             return sneakerController;
         }
 
-        private void CheckAndRemoveFromSpecialTracks(SneakerController sneakerController)
+        private void CheckAndRemoveFromSpecialTracks(SneakerController sneakerController, TransporterType trackToIgnore = TransporterType.Undefined)
         {
-            _context.View.WashTrack.CheckAndRemoveFromTrack(sneakerController);
-            _context.View.LaceTrack.CheckAndRemoveFromTrack(sneakerController);
-            _context.View.WaitTrack.CheckAndRemoveFromTrack(sneakerController);
+            if (trackToIgnore != TransporterType.Washing)
+                _context.View.WashTrack.CheckAndRemoveFromTrack(sneakerController);
+            
+            if (trackToIgnore != TransporterType.Lacing)
+                _context.View.LaceTrack.CheckAndRemoveFromTrack(sneakerController);
+            
+            if (trackToIgnore != TransporterType.Waiting)
+                _context.View.WaitTrack.CheckAndRemoveFromTrack(sneakerController);
         }
         
         private void OnLegendarySneakerCollectedEventHandler(SneakerController sneaker)
@@ -164,16 +169,19 @@ namespace Sneakers
         
         public void SendToWashTransporter(SneakerController sneaker, int mover = 2)
         {
+            CheckAndRemoveFromSpecialTracks(sneaker, TransporterType.Washing);
             sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.WashTrack.WashRoute(sneaker, mover));
         }
         
         public void SendToLaceTransporter(SneakerController sneaker, int mover = 2)
         {
+            CheckAndRemoveFromSpecialTracks(sneaker, TransporterType.Lacing);
             sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.LaceTrack.LaceRoute(sneaker, mover));
         }
         
         public void SendToWaitTransporter(SneakerController sneaker, int mover)
         {
+            CheckAndRemoveFromSpecialTracks(sneaker, TransporterType.Waiting);
             sneaker.CurrentCoroutine = sneaker.View.StartCoroutine(_context.View.WaitTrack.WaitRoute(sneaker, mover));
         }
         

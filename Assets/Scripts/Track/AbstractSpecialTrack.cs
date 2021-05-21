@@ -10,6 +10,14 @@ namespace Sneakers
 
         protected bool IsBusy => _processingSneaker != null;
         
+        public override void Init(SortingController sortingController, bool isAvailable)
+        {
+            base.Init(sortingController, isAvailable);
+            
+            // safety reasons
+            StopProcessingSneaker();
+        }
+        
         protected override void OnWrongTrackDropped(SneakerController sneaker)
         {
             base.OnWrongTrackDropped(sneaker);
