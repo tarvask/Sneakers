@@ -149,7 +149,7 @@ PlayerSettings:
     iPhone: com.Polygames.Sneakerssorting
   buildNumber:
     Standalone: 0
-    iPhone: 6
+    iPhone: 7
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
   AndroidBundleVersionCode: 1
