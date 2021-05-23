@@ -63,8 +63,8 @@ namespace Sneakers
             else
                 _view.LaceTrackUpgradePriceText.gameObject.SetActive(false);
 
-            bool canUpgradeWashTrack = hasUpgradesOnWashTrack && coinsReactiveProperty.Value >= washTrackLevelParams[washTrackLevel.Value].Price;
-            bool canUpgradeLaceTrack = hasUpgradesOnLaceTrack && coinsReactiveProperty.Value >= laceTrackLevelParams[laceTrackLevel.Value].Price;
+            bool canUpgradeWashTrack = hasUpgradesOnWashTrack && coinsReactiveProperty.Value >= washTrackLevelParams[washTrackLevel.Value + 1].Price;
+            bool canUpgradeLaceTrack = hasUpgradesOnLaceTrack && coinsReactiveProperty.Value >= laceTrackLevelParams[laceTrackLevel.Value + 1].Price;
 
             _view.WashTrackUpgradeButton.enabled = canUpgradeWashTrack;
             _view.LaceTrackUpgradeButton.enabled = canUpgradeLaceTrack;
