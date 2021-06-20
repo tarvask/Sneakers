@@ -43,8 +43,8 @@ MonoBehaviour:
     state: 1
     count: 2
   mainTrackMovementSpeed: 180
-  mainTrackMinSpawnDelay: 1.5
-  mainTrackMaxSpawnDelay: 2.5
+  mainTrackMinSpawnDelay: 1.1
+  mainTrackMaxSpawnDelay: 2.2
   isWashTrackAvailable: 1
   isLaceTrackAvailable: 1
   isWaitTrackAvailable: 1
