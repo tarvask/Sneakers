@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfSneakers: 8
   numberOfLives: 3
-  coinsSuccessfulStepReward: 10
+  coinsSuccessfulLevelReward: 100
   coinsWrongStepReward: -25
   shufflePossibleSneakers: 1
   possibleSneakers:

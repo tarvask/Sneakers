@@ -129,6 +129,7 @@ namespace Sneakers
         private void WinLevel()
         {
             ChangeState(GameState.WinLevel);
+            _sortingController.CountScore();
             SaveProgress();
 
             _winUiController.Show(_sortingController.Score,

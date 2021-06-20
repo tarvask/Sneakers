@@ -187,17 +187,12 @@ namespace Sneakers
         
         public void OnSortError()
         {
-            // do not allow negative score
-            _score = Mathf.Max(0, _score + _currentLevelConfig.CoinsWrongStepReward);
-            _context.View.TotalLabel.text = _score.ToString();
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
-            //_sortedSneakersCount++;
         }
 
         public void OnSortSucceeded(SneakerController sneaker)
         {
-            _score += _currentLevelConfig.CoinsSuccessfulStepReward;
             _context.View.TotalLabel.text = _score.ToString();
             _sortedSneakersCount++;
 
@@ -208,9 +203,6 @@ namespace Sneakers
 
         public void OnSortFailed(SneakerController sneaker)
         {
-            // do not allow negative score
-            _score = Mathf.Max(0, _score + _currentLevelConfig.CoinsWrongStepReward);
-            _context.View.TotalLabel.text = _score.ToString();
             _lives--;
             _context.View.LivesLabel.text = _lives.ToString();
             _sortedSneakersCount++;
@@ -227,6 +219,13 @@ namespace Sneakers
             _sneakers.Remove(sneaker);
             CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
+        }
+
+        public void CountScore()
+        {
+            int coinsReward = _currentLevelConfig.CoinsSuccessfulLevelReward;
+            int fineSize = (_currentLevelConfig.NumberOfLives - _lives) * _currentLevelConfig.CoinsWrongStepReward; 
+            _score = coinsReward + fineSize;
         }
 
         public void UpgradeWashTrack(TrackLevelParams trackLevelParams)
