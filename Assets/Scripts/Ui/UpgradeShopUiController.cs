@@ -12,8 +12,8 @@ namespace Sneakers
             _view = view;
         }
         
-        public void Show(ReactiveProperty<int> coinsReactiveProperty, TrackLevelParams[] washTrackLevelParams, TrackLevelParams[] laceTrackLevelParams,
-            ReactiveProperty<int> washTrackLevel, ReactiveProperty<int> laceTrackLevel,
+        public void Show(IReadOnlyReactiveProperty<int> coinsReactiveProperty, TrackLevelParams[] washTrackLevelParams, TrackLevelParams[] laceTrackLevelParams,
+            IReadOnlyReactiveProperty<int> washTrackLevel, IReadOnlyReactiveProperty<int> laceTrackLevel,
             Action onUpgradeWashTrackAction,
             Action onUpgradeLaceTrackAction,
             Action onContinueAction)
@@ -38,9 +38,9 @@ namespace Sneakers
             _view.gameObject.SetActive(true);
         }
 
-        private void UpdateInfo(ReactiveProperty<int> coinsReactiveProperty,
+        private void UpdateInfo(IReadOnlyReactiveProperty<int> coinsReactiveProperty,
             TrackLevelParams[] washTrackLevelParams, TrackLevelParams[] laceTrackLevelParams,
-            ReactiveProperty<int> washTrackLevel, ReactiveProperty<int> laceTrackLevel)
+            IReadOnlyReactiveProperty<int> washTrackLevel, IReadOnlyReactiveProperty<int> laceTrackLevel)
         {
             _view.CoinsCountText.text = $"{coinsReactiveProperty.Value}";
             

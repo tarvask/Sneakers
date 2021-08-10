@@ -24,27 +24,20 @@ namespace Sneakers
 
         private readonly CheatPanelUiController _cheatPanelUiController;
 
-        private GameState _currentState;
-        private int _currentLevel;
-        private readonly ReactiveProperty<int> _coinsReactiveProperty;
-        private readonly ReactiveProperty<int> _washTrackLevel;
-        private readonly ReactiveProperty<int> _laceTrackLevel;
+        private readonly GameModel _model;
 
 //#if UNITY_EDITOR
         private static GameController _instance;
-//#endif
+        //#endif
 
         public GameController()
         {
 //#if UNITY_EDITOR
             _instance = this;
 //#endif
+            _model = new GameModel();
             _view = Object.FindObjectOfType<GameView>();
-            _currentLevel = PlayerPrefs.GetInt(GameConstants.CurrentLevelStorageName, 1);
-            _coinsReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0));
-            _washTrackLevel = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentWashTrackLevelStorageName, 0));
-            _laceTrackLevel = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentLaceTrackLevelStorageName, 0));
-            
+
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
             SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, ShowLegend);
             _sortingController = new SortingController(sortingControllerContext);
@@ -58,12 +51,12 @@ namespace Sneakers
             
             _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
 
-            ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
+            ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
         }
 
         public void OuterUpdate()
         {
-            if (!IsPlayingState(_currentState))
+            if (!_model.IsPlayingState(_model.CurrentState))
                 return;
 
             if (_sortingController.Lives <= 0)
@@ -90,8 +83,8 @@ namespace Sneakers
         private void StartLevel(LevelConfig levelConfig)
         {
             _sortingController.Init(levelConfig,
-                _view.GameConfig.WashTrackLevels[_washTrackLevel.Value],
-                _view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value]);
+                _view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value],
+                _view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value]);
 
             if (!String.IsNullOrEmpty(levelConfig.TutorialText))
             {
@@ -115,7 +108,7 @@ namespace Sneakers
                 {
                     _tutorialUiController.Hide();
 
-                    if (_view.GameConfig.Levels[_currentLevel - 1].ShowUpgradeShop)
+                    if (_view.GameConfig.Levels[_model.CurrentLevel - 1].ShowUpgradeShop)
                     {
                         ShowUpgradeShop();
                     }
@@ -137,14 +130,14 @@ namespace Sneakers
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(_view.GameConfig.Levels[_currentLevel - 1]);
+                    StartLevel(_view.GameConfig.Levels[_model.CurrentLevel - 1]);
                 },
-                (() =>
+                () =>
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
-                }));
+                    ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
+                });
         }
 
         private void LoseLevel()
@@ -159,13 +152,13 @@ namespace Sneakers
                 {
                     _loseUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(_view.GameConfig.Levels[_currentLevel - 1]);
+                    StartLevel(_view.GameConfig.Levels[_model.CurrentLevel - 1]);
                 },
                 () =>
                 {
                     _loseUiController.Hide();
                     _sortingController.Clear();
-                    ShowMainMenu(_currentLevel, _view.GameConfig.Levels[_currentLevel - 1]);
+                    ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
                 });
         }
 
@@ -173,7 +166,7 @@ namespace Sneakers
         {
             ChangeState(GameState.CollectLegend);
             // find config of legendary sneaker
-            SneakerConfig legendarySneakerConfig = Array.Find(_view.GameConfig.Levels[_currentLevel - 1].PossibleSneakers,
+            SneakerConfig legendarySneakerConfig = Array.Find(_view.GameConfig.Levels[_model.CurrentLevel - 1].PossibleSneakers,
                 (sneakerParams) => sneakerParams.Config.Id == legendarySneakerId).Config;
             _legendUiController.Show(legendarySneakerConfig,
                 () =>
@@ -187,27 +180,25 @@ namespace Sneakers
         {
             ChangeState(GameState.UpgradeShop);
 
-            _upgradeShopUiController.Show(_coinsReactiveProperty,
+            _upgradeShopUiController.Show(_model.CoinsReactiveProperty,
                 _view.GameConfig.WashTrackLevels,
                 _view.GameConfig.LaceTrackLevels,
-                _washTrackLevel, _laceTrackLevel,
+                _model.WashTrackLevelReactiveProperty, _model.LaceTrackLevelReactiveProperty,
                 () =>
                 {
-                    _washTrackLevel.Value++;
-                    PlayerPrefs.SetInt(GameConstants.CurrentWashTrackLevelStorageName, _washTrackLevel.Value);
-                    _sortingController.UpgradeWashTrack(_view.GameConfig.WashTrackLevels[_washTrackLevel.Value]);
+                    if (!_model.SpendMoney(_view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value].Price))
+                        return;
                     
-                    _coinsReactiveProperty.Value -= _view.GameConfig.WashTrackLevels[_washTrackLevel.Value].Price;
-                    PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
+                    _model.UpgradeWashMachine();
+                    _sortingController.UpgradeWashTrack(_view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value]);
                 },
                 () =>
                 {
-                    _laceTrackLevel.Value++;
-                    PlayerPrefs.SetInt(GameConstants.CurrentLaceTrackLevelStorageName, _laceTrackLevel.Value);
-                    _sortingController.UpgradeLaceTrack(_view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value]);
+                    if (!_model.SpendMoney(_view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value].Price))
+                        return;
                     
-                    _coinsReactiveProperty.Value -= _view.GameConfig.LaceTrackLevels[_laceTrackLevel.Value].Price;
-                    PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
+                    _model.UpgradeLaceMachine();
+                    _sortingController.UpgradeLaceTrack(_view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value]);
                 },
                 (() =>
                 {
@@ -219,10 +210,9 @@ namespace Sneakers
         private void SaveProgress()
         {
             // save current level
-            if (_currentLevel < _view.GameConfig.Levels.Length)
+            if (_model.CurrentLevel < _view.GameConfig.Levels.Length)
             {
-                _currentLevel++;
-                PlayerPrefs.SetInt(GameConstants.CurrentLevelStorageName, _currentLevel);
+                _model.NextLevel();
             }
 
             // save legends
@@ -239,36 +229,13 @@ namespace Sneakers
             PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, DictToString(currentLegends));
             
             // save coins
-            _coinsReactiveProperty.Value += _sortingController.Score;
-            PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
-        }
-
-        private void DropProgress()
-        {
-            // level
-            _currentLevel = 1;
-            PlayerPrefs.SetInt(GameConstants.CurrentLevelStorageName, _currentLevel);
-            // tracks
-            _washTrackLevel.Value = 0;
-            PlayerPrefs.SetInt(GameConstants.CurrentWashTrackLevelStorageName, _washTrackLevel.Value);
-            _laceTrackLevel.Value = 0;
-            PlayerPrefs.SetInt(GameConstants.CurrentLaceTrackLevelStorageName, _laceTrackLevel.Value);
-            // coins
-            _coinsReactiveProperty.Value = 0;
-            PlayerPrefs.SetInt(GameConstants.CoinsStorageName, 0);
-            // legends
-            PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, "");
+            _model.AddMoney(_sortingController.Score);
         }
 
         private void ChangeState(GameState newState)
         {
-            _currentState = newState;
-            Time.timeScale = IsPlayingState(newState) ? 1 : 0;
-        }
-
-        private bool IsPlayingState(GameState state)
-        {
-            return state == GameState.Playing;
+            _model.ChangeState(newState);
+            Time.timeScale = _model.IsPlayingState(_model.CurrentState) ? 1 : 0;
         }
 
         private string DictToString(Dictionary<int, int> dictionary)
@@ -295,7 +262,7 @@ namespace Sneakers
         //[MenuItem("Window/Sneakers/Drop progress", false, 0)]
         public static void DropProgressInEditor()
         {
-            _instance.DropProgress();
+            _instance._model.DropProgress();
         }
         
         //[MenuItem("Window/Sneakers/Win Level", false, 0)]
@@ -312,13 +279,13 @@ namespace Sneakers
 
         public static void AddCoinsInEditor()
         {
-            _instance._coinsReactiveProperty.Value += 100;
+            _instance._model.AddMoney(100);
         }
         
         public static void RemoveCoinsInEditor()
         {
-            if (_instance._coinsReactiveProperty.Value >= 100)
-                _instance._coinsReactiveProperty.Value -= 100;
+            if (_instance._model.CoinsReactiveProperty.Value >= 100)
+                _instance._model.SpendMoney(100);
         }
     }
 }
