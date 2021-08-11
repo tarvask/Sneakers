@@ -14,6 +14,7 @@ namespace Sneakers
     {
         private readonly GameView _view;
         private readonly SortingController _sortingController;
+        private readonly BonusesController _bonusesController;
 
         private readonly MainMenuUiController _mainMenuUiController;
         private readonly TutorialUiController _tutorialUiController;
@@ -37,25 +38,34 @@ namespace Sneakers
 //#endif
             _model = new GameModel();
             _view = Object.FindObjectOfType<GameView>();
+            
+            BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
+                _view.GameConfig.BonusesParameters, SwitchFrozenState);
+            _bonusesController = new BonusesController(bonusesControllerContext);
 
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
-            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, ShowLegend);
+            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, _model,
+                _view.GameConfig.BonusesParameters,
+                _bonusesController,
+                ShowLegend, ApplyBonus);
             _sortingController = new SortingController(sortingControllerContext);
-            
+
             _mainMenuUiController = new MainMenuUiController(_view.MainMenuUi);
             _tutorialUiController = new TutorialUiController(_view.TutorialUi);
             _winUiController = new WinUiController(_view.WinUi);
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
             _upgradeShopUiController = new UpgradeShopUiController(_view.UpgradeShopUi);
-            
+
             _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
 
             ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
         }
 
-        public void OuterUpdate()
+        public void OuterUpdate(float frameLength)
         {
+            _bonusesController.OuterUpdate(frameLength);
+            
             if (!_model.IsPlayingState(_model.CurrentState))
                 return;
 
@@ -236,6 +246,20 @@ namespace Sneakers
         {
             _model.ChangeState(newState);
             Time.timeScale = _model.IsPlayingState(_model.CurrentState) ? 1 : 0;
+        }
+
+        private void SwitchFrozenState(bool enabled)
+        {
+            if (enabled)
+                ChangeState(GameState.Frozen);
+            // don't change state if some other activated
+            else if (_model.CurrentState == GameState.Frozen)
+                ChangeState(GameState.Playing);
+        }
+
+        private void ApplyBonus(BonusType bonusType)
+        {
+            _bonusesController.ApplyBonus(bonusType);
         }
 
         private string DictToString(Dictionary<int, int> dictionary)

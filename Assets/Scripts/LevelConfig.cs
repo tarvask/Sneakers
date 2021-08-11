@@ -47,6 +47,10 @@ namespace Sneakers
         [Header("Upgrade shop")]
         [SerializeField] private bool showUpgradeShop;
 
+        [Space]
+        [Header("Bonuses")]
+        [SerializeField] private BonusLevelLimitations freezeTrackBonusLimitations;
+
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
         public int CoinsSuccessfulLevelReward => coinsSuccessfulLevelReward;
@@ -83,8 +87,12 @@ namespace Sneakers
         
         // upgrade shop
         public bool ShowUpgradeShop => showUpgradeShop;
+        
+        // bonuses
+        public BonusLevelLimitations FreezeTrackBonusLimitations => freezeTrackBonusLimitations;
 
         [ContextMenu("Validate number of sneakers")]
+
         public void ValidateNumberOfSneakers()
         {
             int sneakersToSort = 0;

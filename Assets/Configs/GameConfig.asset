@@ -52,3 +52,8 @@ MonoBehaviour:
     price: 400
     processDuration: 1.5
     trackSpeed: 240
+  bonusesParameters:
+    freezeTrackBonusParameters:
+      bonusCooldown: 15
+      bonusPrice: 50
+      bonusDuration: 3

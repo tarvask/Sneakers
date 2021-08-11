@@ -20,6 +20,10 @@ namespace Sneakers
         [SerializeField] private Text totalLabel;
         [SerializeField] private Text livesLabel;
 
+        [Space]
+        [Header("Bonuses")]
+        [SerializeField] private BonusItemView freezeTrackBonus;
+
         public Transform SneakersSpawnPoint => sneakersSpawnPoint;
 
         public MainTrack MainTrack => mainTrack; 
@@ -32,5 +36,7 @@ namespace Sneakers
 
         public Text TotalLabel => totalLabel;
         public Text LivesLabel => livesLabel;
+
+        public BonusItemView FreezeTrackBonus => freezeTrackBonus;
     }
 }

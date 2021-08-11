@@ -9,6 +9,7 @@ namespace Sneakers
         WinLevel = 4,
         LoseLevel = 5,
         CollectLegend = 6,
-        UpgradeShop = 7
+        UpgradeShop = 7,
+        Frozen = 8
     }
 }

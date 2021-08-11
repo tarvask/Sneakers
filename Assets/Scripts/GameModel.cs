@@ -90,6 +90,54 @@ namespace Sneakers
             _coinsReactiveProperty.Value = Mathf.Clamp(_coinsReactiveProperty.Value + coinsCount, 0, Int32.MaxValue);
             PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
         }
+        
+        public void SpendBonus(BonusType bonusType)
+        {
+            switch (bonusType)
+            {
+                case BonusType.TrackFreeze:
+                    _trackFreezeBonusCountReactiveProperty.Value--;
+                    break;
+                case BonusType.QuickFixWash:
+                    _quickFixWashBonusCountReactiveProperty.Value--;
+                    break;
+                case BonusType.QuickFixLace:
+                    _quickFixLaceBonusCountReactiveProperty.Value--;
+                    break;
+                case BonusType.AutoUtilization:
+                    _autoUtilizationBonusCountReactiveProperty.Value--;
+                    break;
+                case BonusType.Undo:
+                    _undoBonusCountReactiveProperty.Value--;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown bonus type");
+            }
+        }
+        
+        public void AddBonus(BonusType bonusType)
+        {
+            switch (bonusType)
+            {
+                case BonusType.TrackFreeze:
+                    _trackFreezeBonusCountReactiveProperty.Value++;
+                    break;
+                case BonusType.QuickFixWash:
+                    _quickFixWashBonusCountReactiveProperty.Value++;
+                    break;
+                case BonusType.QuickFixLace:
+                    _quickFixLaceBonusCountReactiveProperty.Value++;
+                    break;
+                case BonusType.AutoUtilization:
+                    _autoUtilizationBonusCountReactiveProperty.Value++;
+                    break;
+                case BonusType.Undo:
+                    _undoBonusCountReactiveProperty.Value++;
+                    break;
+                default:
+                    throw new ArgumentException("Unknown bonus type");
+            }
+        }
 
         public void NextLevel()
         {

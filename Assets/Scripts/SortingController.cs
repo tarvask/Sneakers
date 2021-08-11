@@ -12,12 +12,22 @@ namespace Sneakers
         public struct Context
         {
             public SortingView View { get; }
+            public GameModel GameModel { get; }
+            public BonusesParameters BonusesParameters { get; }
+            public BonusesController BonusesController { get; }
             public Action<int> OnLegendarySneakerCollectedAction { get; }
+            public Action<BonusType> OnBonusButtonClickedAction { get; }
 
-            public Context(SortingView view, Action<int> onLegendarySneakerCollectedAction)
+            public Context(SortingView view, GameModel gameModel, BonusesParameters bonusesParameters,
+                BonusesController bonusesController,
+                Action<int> onLegendarySneakerCollectedAction, Action<BonusType> onBonusButtonClickedAction)
             {
                 View = view;
+                GameModel = gameModel;
+                BonusesParameters = bonusesParameters;
+                BonusesController = bonusesController;
                 OnLegendarySneakerCollectedAction = onLegendarySneakerCollectedAction;
+                OnBonusButtonClickedAction = onBonusButtonClickedAction;
             }
         }
 
@@ -27,6 +37,8 @@ namespace Sneakers
         private List<PossibleSneakerParams> _sneakersToSpawn;
         private LevelConfig _currentLevelConfig;
         private Transform _spawnRoot;
+
+        private readonly BonusItemController _freezeTrackBonus;
         
         private int _spawnedSneakersCount;
         private int _sortedSneakersCount;
@@ -48,6 +60,12 @@ namespace Sneakers
             _sneakersToSpawn = new List<PossibleSneakerParams>();
             _sneakers = new List<SneakerController>();
             _collectedLegendarySneakers = new Dictionary<int, int>();
+            
+            BonusItemController.Context freezeTrackBonusContext = new BonusItemController.Context(
+                _context.View.FreezeTrackBonus, BonusType.TrackFreeze, _context.BonusesParameters.FreezeTrackBonusParameters,
+                _context.GameModel.TrackFreezeBonusCountReactiveProperty,
+                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+            _freezeTrackBonus = new BonusItemController(freezeTrackBonusContext);
         }
 
         public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
@@ -73,6 +91,9 @@ namespace Sneakers
             _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed, _currentLevelConfig.IsWaitTrackMovingToWaste);
             _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
             _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
+            
+            _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations);
+            _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
             
             _spawnedSneakersCount = 0;
             _sortedSneakersCount = 0;

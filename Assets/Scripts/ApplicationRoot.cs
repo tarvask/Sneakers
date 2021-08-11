@@ -14,7 +14,7 @@ namespace Sneakers
         
         private void Update()
         {
-            _gameController.OuterUpdate();
+            _gameController.OuterUpdate(Time.deltaTime);
         }
     }
 }
