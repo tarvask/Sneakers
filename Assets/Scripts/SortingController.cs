@@ -39,6 +39,8 @@ namespace Sneakers
         private Transform _spawnRoot;
 
         private readonly BonusItemController _freezeTrackBonus;
+        private readonly BonusItemController _quickFixWashBonus;
+        private readonly BonusItemController _quickFixLaceBonus;
         
         private int _spawnedSneakersCount;
         private int _sortedSneakersCount;
@@ -61,11 +63,24 @@ namespace Sneakers
             _sneakers = new List<SneakerController>();
             _collectedLegendarySneakers = new Dictionary<int, int>();
             
+            // bonuses
             BonusItemController.Context freezeTrackBonusContext = new BonusItemController.Context(
                 _context.View.FreezeTrackBonus, BonusType.TrackFreeze, _context.BonusesParameters.FreezeTrackBonusParameters,
                 _context.GameModel.TrackFreezeBonusCountReactiveProperty,
                 _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
             _freezeTrackBonus = new BonusItemController(freezeTrackBonusContext);
+            
+            BonusItemController.Context quickFixWashBonusContext = new BonusItemController.Context(
+                _context.View.QuickFixWashBonus, BonusType.QuickFixWash, _context.BonusesParameters.QuickFixWashBonusParameters,
+                _context.GameModel.QuickFixWashBonusCountReactiveProperty,
+                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+            _quickFixWashBonus = new BonusItemController(quickFixWashBonusContext);
+            
+            BonusItemController.Context quickFixLaceBonusContext = new BonusItemController.Context(
+                _context.View.QuickFixLaceBonus, BonusType.QuickFixLace, _context.BonusesParameters.QuickFixLaceBonusParameters,
+                _context.GameModel.QuickFixLaceBonusCountReactiveProperty,
+                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+            _quickFixLaceBonus = new BonusItemController(quickFixLaceBonusContext);
         }
 
         public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
@@ -94,6 +109,8 @@ namespace Sneakers
             
             _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations);
             _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
+            _quickFixWashBonus.Init(_currentLevelConfig.QuickFixWashBonusLimitations.IsBonusAvailable);
+            _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixLaceBonusLimitations.IsBonusAvailable);
             
             _spawnedSneakersCount = 0;
             _sortedSneakersCount = 0;
@@ -257,6 +274,20 @@ namespace Sneakers
         public void UpgradeLaceTrack(TrackLevelParams trackLevelParams)
         {
             _context.View.LaceTrack.Upgrade(trackLevelParams);
+        }
+
+        public void WashAllSneakers()
+        {
+            foreach (SneakerController sneaker in _sneakers)
+                if (sneaker.State == SneakerState.Dirty)
+                    sneaker.SetState(SneakerState.Normal);
+        }
+
+        public void LaceAllSneakers()
+        {
+            foreach (SneakerController sneaker in _sneakers)
+                if (sneaker.State == SneakerState.Unlaced)
+                    sneaker.SetState(SneakerState.Normal);
         }
     }
 }

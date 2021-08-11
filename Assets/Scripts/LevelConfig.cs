@@ -50,6 +50,8 @@ namespace Sneakers
         [Space]
         [Header("Bonuses")]
         [SerializeField] private BonusLevelLimitations freezeTrackBonusLimitations;
+        [SerializeField] private BonusLevelLimitations quickFixWashBonusLimitations;
+        [SerializeField] private BonusLevelLimitations quickFixLaceBonusLimitations;
 
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
@@ -90,6 +92,8 @@ namespace Sneakers
         
         // bonuses
         public BonusLevelLimitations FreezeTrackBonusLimitations => freezeTrackBonusLimitations;
+        public BonusLevelLimitations QuickFixWashBonusLimitations => quickFixWashBonusLimitations;
+        public BonusLevelLimitations QuickFixLaceBonusLimitations => quickFixLaceBonusLimitations;
 
         [ContextMenu("Validate number of sneakers")]
 

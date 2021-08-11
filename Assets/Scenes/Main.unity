@@ -7749,6 +7749,8 @@ MonoBehaviour:
   totalLabel: {fileID: 2067790396}
   livesLabel: {fileID: 2046532520}
   freezeTrackBonus: {fileID: 518708487}
+  quickFixWashBonus: {fileID: 1018970379}
+  quickFixLaceBonus: {fileID: 1436588169}
 --- !u!4 &1685422808
 Transform:
   m_ObjectHideFlags: 0

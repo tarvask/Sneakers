@@ -54,6 +54,12 @@ MonoBehaviour:
     trackSpeed: 240
   bonusesParameters:
     freezeTrackBonusParameters:
-      bonusCooldown: 15
+      bonusCooldown: 0
       bonusPrice: 50
       bonusDuration: 3
+    quickFixWashBonusParameters:
+      bonusCooldown: 0
+      bonusPrice: 100
+    quickFixLaceBonusParameters:
+      bonusCooldown: 0
+      bonusPrice: 100

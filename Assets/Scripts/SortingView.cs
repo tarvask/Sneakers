@@ -23,6 +23,8 @@ namespace Sneakers
         [Space]
         [Header("Bonuses")]
         [SerializeField] private BonusItemView freezeTrackBonus;
+        [SerializeField] private BonusItemView quickFixWashBonus;
+        [SerializeField] private BonusItemView quickFixLaceBonus;
 
         public Transform SneakersSpawnPoint => sneakersSpawnPoint;
 
@@ -37,6 +39,9 @@ namespace Sneakers
         public Text TotalLabel => totalLabel;
         public Text LivesLabel => livesLabel;
 
+        // bonuses
         public BonusItemView FreezeTrackBonus => freezeTrackBonus;
+        public BonusItemView QuickFixWashBonus => quickFixWashBonus;
+        public BonusItemView QuickFixLaceBonus => quickFixLaceBonus;
     }
 }

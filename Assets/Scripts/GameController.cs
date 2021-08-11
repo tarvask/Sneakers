@@ -40,7 +40,7 @@ namespace Sneakers
             _view = Object.FindObjectOfType<GameView>();
             
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.BonusesParameters, SwitchFrozenState);
+                _view.GameConfig.BonusesParameters, SwitchFrozenState, WashAllSneakers, LaceAllSneakers);
             _bonusesController = new BonusesController(bonusesControllerContext);
 
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
@@ -255,6 +255,16 @@ namespace Sneakers
             // don't change state if some other activated
             else if (_model.CurrentState == GameState.Frozen)
                 ChangeState(GameState.Playing);
+        }
+
+        private void WashAllSneakers()
+        {
+            _sortingController.WashAllSneakers();
+        }
+
+        private void LaceAllSneakers()
+        {
+            _sortingController.LaceAllSneakers();
         }
 
         private void ApplyBonus(BonusType bonusType)
