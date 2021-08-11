@@ -63,3 +63,7 @@ MonoBehaviour:
     quickFixLaceBonusParameters:
       bonusCooldown: 0
       bonusPrice: 100
+    autoUtilizationBonusParameters:
+      bonusCooldown: 100000
+      bonusPrice: 150
+      bonusDuration: 100000

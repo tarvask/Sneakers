@@ -14,17 +14,20 @@ namespace Sneakers
             public Action<bool> SwitchFrozenStateAction { get; }
             public Action WashAllSneakersAction { get; }
             public Action LaceAllSneakersAction { get; }
+            public Action<bool> SwitchAutoUtilizationAction { get; }
 
             public Context(GameModel gameModel, BonusesParameters bonusesParameters,
                 Action<bool> switchFrozenStateAction,
                 Action washAllSneakersAction,
-                Action laceAllSneakersAction)
+                Action laceAllSneakersAction,
+                Action<bool> switchAutoUtilizationAction)
             {
                 GameModel = gameModel;
                 BonusesParameters = bonusesParameters;
                 SwitchFrozenStateAction = switchFrozenStateAction;
                 WashAllSneakersAction = washAllSneakersAction;
                 LaceAllSneakersAction = laceAllSneakersAction;
+                SwitchAutoUtilizationAction = switchAutoUtilizationAction;
             }
         }
 
@@ -37,6 +40,10 @@ namespace Sneakers
         private bool _isQuickFixWashBonusOnCooldown;
         private bool _isQuickFixLaceBonusOnCooldown;
 
+        private bool _isAutoUtilizationBonusActive;
+        private bool _stopAutoUtilizationBonus;
+        private bool _isAutoUtilizationBonusOnCooldown;
+
         private readonly ReactiveProperty<bool> _isFreezeTrackBonusReady;
         private readonly ReactiveProperty<bool> _isQuickFixWashBonusReady;
         private readonly ReactiveProperty<bool> _isQuickFixLaceBonusReady;
@@ -46,9 +53,18 @@ namespace Sneakers
         public BonusesController(Context context)
         {
             _context = context;
+            
+            _isFreezeTrackBonusReady = new ReactiveProperty<bool>();
+            _isQuickFixWashBonusReady = new ReactiveProperty<bool>();
+            _isQuickFixLaceBonusReady = new ReactiveProperty<bool>();
+            _isAutoUtilizationBonusReady = new ReactiveProperty<bool>();
+            _isUndoBonusReady = new ReactiveProperty<bool>();
         }
 
-        public void Init(BonusLevelLimitations freezeTrackBonusLimitations)
+        public void Init(BonusLevelLimitations freezeTrackBonusLimitations,
+            BonusLevelLimitations quickFixWashBonusLimitations,
+            BonusLevelLimitations quickFixLaceBonusLimitations,
+            BonusLevelLimitations autoUtilizationBonusLimitations)
         {
             // track freeze
             if (freezeTrackBonusLimitations.BonusesToAddCount > 0)
@@ -58,24 +74,63 @@ namespace Sneakers
             if (freezeTrackBonusLimitations.BonusMaxCount != -1)
                 while (GetBonusCount(BonusType.TrackFreeze) > freezeTrackBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.TrackFreeze);
+            
+            // quick fix wash
+            if (quickFixWashBonusLimitations.BonusesToAddCount > 0)
+                for (int i = 0; i < quickFixWashBonusLimitations.BonusesToAddCount; i++)
+                    _context.GameModel.AddBonus(BonusType.QuickFixWash);
+
+            if (quickFixWashBonusLimitations.BonusMaxCount != -1)
+                while (GetBonusCount(BonusType.QuickFixWash) > quickFixWashBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusType.QuickFixWash);
+            
+            // quick fix lace
+            if (quickFixLaceBonusLimitations.BonusesToAddCount > 0)
+                for (int i = 0; i < quickFixLaceBonusLimitations.BonusesToAddCount; i++)
+                    _context.GameModel.AddBonus(BonusType.QuickFixLace);
+
+            if (quickFixLaceBonusLimitations.BonusMaxCount != -1)
+                while (GetBonusCount(BonusType.QuickFixLace) > quickFixLaceBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusType.QuickFixLace);
+            
+            // auto utilization
+            if (autoUtilizationBonusLimitations.BonusesToAddCount > 0)
+                for (int i = 0; i < autoUtilizationBonusLimitations.BonusesToAddCount; i++)
+                    _context.GameModel.AddBonus(BonusType.AutoUtilization);
+
+            if (autoUtilizationBonusLimitations.BonusMaxCount != -1)
+                while (GetBonusCount(BonusType.QuickFixLace) > autoUtilizationBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusType.AutoUtilization);
         }
 
         public void OuterUpdate(float frameLength)
         {
+            // freeze track bonus
             if (_isFreezeTrackBonusActive && _stopFreezeTrackBonus)
             {
                 _isFreezeTrackBonusActive = false;
                 _context.SwitchFrozenStateAction(false);
             }
-
+            
             if (!_isFreezeTrackBonusReady.Value && !_isFreezeTrackBonusOnCooldown)
                 _isFreezeTrackBonusReady.Value = true;
 
+            // quick fix bonus
             if (!_isQuickFixWashBonusReady.Value && !_isQuickFixWashBonusOnCooldown)
                 _isQuickFixWashBonusReady.Value = true;
             
             if (!_isQuickFixLaceBonusReady.Value && !_isQuickFixLaceBonusOnCooldown)
                 _isQuickFixLaceBonusReady.Value = true;
+            
+            // auto utilization
+            if (_isAutoUtilizationBonusActive && _stopAutoUtilizationBonus)
+            {
+                _isAutoUtilizationBonusActive = false;
+                _context.SwitchAutoUtilizationAction(false);
+            }
+            
+            if (!_isAutoUtilizationBonusReady.Value && !_isAutoUtilizationBonusOnCooldown)
+                _isAutoUtilizationBonusReady.Value = true;
         }
 
         private int GetBonusCount(BonusType bonusType)
@@ -128,6 +183,9 @@ namespace Sneakers
                     break;
                 case BonusType.QuickFixLace:
                     LaceAllSneakers();
+                    break;
+                case BonusType.AutoUtilization:
+                    AutoUtilization();
                     break;
             }
 
@@ -195,6 +253,35 @@ namespace Sneakers
                 {
                     await Task.Delay(cooldownTimerInMilliseconds);
                     _isQuickFixLaceBonusOnCooldown = false;
+                });
+            }
+        }
+
+        private void AutoUtilization()
+        {
+            _context.SwitchAutoUtilizationAction(true);
+            
+            _isAutoUtilizationBonusActive = true;
+
+            // effect duration
+            int effectTimerInMilliseconds =
+                Mathf.RoundToInt(_context.BonusesParameters.AutoUtilizationBonusParameters.BonusDuration * 1000);
+            Task.Run(async () =>
+            {
+                await Task.Delay(effectTimerInMilliseconds);
+                _stopAutoUtilizationBonus = true;
+            });
+            
+            // effect cooldown
+            if (_context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown > 0)
+            {
+                _isAutoUtilizationBonusOnCooldown = true;
+                int cooldownTimerInMilliseconds =
+                    Mathf.RoundToInt(_context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown * 1000);
+                Task.Run(async () =>
+                {
+                    await Task.Delay(cooldownTimerInMilliseconds);
+                    _isAutoUtilizationBonusOnCooldown = false;
                 });
             }
         }

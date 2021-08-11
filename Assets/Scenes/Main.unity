@@ -7751,6 +7751,7 @@ MonoBehaviour:
   freezeTrackBonus: {fileID: 518708487}
   quickFixWashBonus: {fileID: 1018970379}
   quickFixLaceBonus: {fileID: 1436588169}
+  autoUtilizationBonus: {fileID: 1762787910}
 --- !u!4 &1685422808
 Transform:
   m_ObjectHideFlags: 0
@@ -9701,7 +9702,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 260, y: -85.63}
+  m_AnchoredPosition: {x: 260, y: -85.62988}
   m_SizeDelta: {x: 100, y: 110}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1873742207

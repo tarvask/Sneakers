@@ -103,6 +103,9 @@ namespace Sneakers
         
         public void Dispose()
         {
+            if (_context.View == null)
+                return;
+            
             _context.View.StopAllCoroutines();
             CurrentCoroutine = null;
             

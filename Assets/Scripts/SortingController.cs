@@ -41,11 +41,13 @@ namespace Sneakers
         private readonly BonusItemController _freezeTrackBonus;
         private readonly BonusItemController _quickFixWashBonus;
         private readonly BonusItemController _quickFixLaceBonus;
+        private readonly BonusItemController _autoUtilizationBonus;
         
         private int _spawnedSneakersCount;
         private int _sortedSneakersCount;
         private int _score;
         private int _lives;
+        private bool _isAutoUtilizationActive;
         
         public static SortingController instance;
         public Transform SneakersSpawnPoint => _context.View.SneakersSpawnPoint;
@@ -81,6 +83,12 @@ namespace Sneakers
                 _context.GameModel.QuickFixLaceBonusCountReactiveProperty,
                 _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
             _quickFixLaceBonus = new BonusItemController(quickFixLaceBonusContext);
+            
+            BonusItemController.Context autoUtilizationBonusContext = new BonusItemController.Context(
+                _context.View.AutoUtilizationBonus, BonusType.AutoUtilization, _context.BonusesParameters.AutoUtilizationBonusParameters,
+                _context.GameModel.AutoUtilizationBonusCountReactiveProperty,
+                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+            _autoUtilizationBonus = new BonusItemController(autoUtilizationBonusContext);
         }
 
         public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
@@ -107,10 +115,14 @@ namespace Sneakers
             _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
             _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
             
-            _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations);
+            _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations,
+                _currentLevelConfig.QuickFixWashBonusLimitations,
+                _currentLevelConfig.QuickFixLaceBonusLimitations,
+                _currentLevelConfig.AutoUtilizationBonusLimitations);
             _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
             _quickFixWashBonus.Init(_currentLevelConfig.QuickFixWashBonusLimitations.IsBonusAvailable);
             _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixLaceBonusLimitations.IsBonusAvailable);
+            _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable);
             
             _spawnedSneakersCount = 0;
             _sortedSneakersCount = 0;
@@ -150,6 +162,10 @@ namespace Sneakers
             while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers)
             {
                 SneakerController sneaker = InstantiateSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                
+                if (_isAutoUtilizationActive && sneaker.State == SneakerState.Wasted)
+                    OnSortSucceeded(sneaker);
+                
                 SendToMainTransporter(sneaker);
                 _sneakers.Add(sneaker);
                 float randomSpawnDelay = Random.Range(_currentLevelConfig.MainTrackMinSpawnDelay,
@@ -288,6 +304,11 @@ namespace Sneakers
             foreach (SneakerController sneaker in _sneakers)
                 if (sneaker.State == SneakerState.Unlaced)
                     sneaker.SetState(SneakerState.Normal);
+        }
+        
+        public void SwitchAutoUtilization(bool isActive)
+        {
+            _isAutoUtilizationActive = isActive;
         }
     }
 }

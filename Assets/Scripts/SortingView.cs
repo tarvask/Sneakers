@@ -25,6 +25,7 @@ namespace Sneakers
         [SerializeField] private BonusItemView freezeTrackBonus;
         [SerializeField] private BonusItemView quickFixWashBonus;
         [SerializeField] private BonusItemView quickFixLaceBonus;
+        [SerializeField] private BonusItemView autoUtilizationBonus;
 
         public Transform SneakersSpawnPoint => sneakersSpawnPoint;
 
@@ -43,5 +44,6 @@ namespace Sneakers
         public BonusItemView FreezeTrackBonus => freezeTrackBonus;
         public BonusItemView QuickFixWashBonus => quickFixWashBonus;
         public BonusItemView QuickFixLaceBonus => quickFixLaceBonus;
+        public BonusItemView AutoUtilizationBonus => autoUtilizationBonus;
     }
 }
