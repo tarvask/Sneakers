@@ -127,7 +127,7 @@ namespace Sneakers
             _spawnedSneakersCount = 0;
             _sortedSneakersCount = 0;
             _lives = _currentLevelConfig.NumberOfLives;
-            _context.View.LivesLabel.text = _lives.ToString();
+            _context.View.LivesIndicator.SetLives(_lives);
             _score = 0;
             _context.View.TotalLabel.text = _score.ToString();
             
@@ -242,7 +242,7 @@ namespace Sneakers
         public void OnSortError()
         {
             _lives--;
-            _context.View.LivesLabel.text = _lives.ToString();
+            _context.View.LivesIndicator.SetLives(_lives);
         }
 
         public void OnSortSucceeded(SneakerController sneaker)
@@ -258,7 +258,7 @@ namespace Sneakers
         public void OnSortFailed(SneakerController sneaker)
         {
             _lives--;
-            _context.View.LivesLabel.text = _lives.ToString();
+            _context.View.LivesIndicator.SetLives(_lives);
             _sortedSneakersCount++;
             
             _sneakers.Remove(sneaker);
