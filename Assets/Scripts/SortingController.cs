@@ -286,10 +286,18 @@ namespace Sneakers
             _context.View.LivesIndicator.SetLives(_lives);
             _sortedSneakersCount++;
             
-            //_sneakers.Remove(sneaker);
-            //CheckAndRemoveFromSpecialTracks(sneaker);
-            //sneaker.Dispose();
+            // hide sneaker
             sneaker.View.gameObject.SetActive(false);
+            
+            // clear previous bad sorting
+            if (_lastBadSorting != null)
+            {
+                _sneakers.Remove(sneaker);
+                CheckAndRemoveFromSpecialTracks(sneaker);
+                sneaker.Dispose();
+            }
+            
+            // save current bad sorting
             _lastBadSorting = new BadSortingInfo(sneaker, Vector3.zero);
         }
 
