@@ -42,6 +42,9 @@ namespace Sneakers
         private readonly BonusItemController _quickFixWashBonus;
         private readonly BonusItemController _quickFixLaceBonus;
         private readonly BonusItemController _autoUtilizationBonus;
+        private readonly BonusItemController _undoBonus;
+
+        private BadSortingInfo _lastBadSorting;
         
         private int _spawnedSneakersCount;
         private int _sortedSneakersCount;
@@ -89,6 +92,12 @@ namespace Sneakers
                 _context.GameModel.AutoUtilizationBonusCountReactiveProperty,
                 _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
             _autoUtilizationBonus = new BonusItemController(autoUtilizationBonusContext);
+            
+            BonusItemController.Context undoBonusContext = new BonusItemController.Context(
+                _context.View.UndoBonus, BonusType.Undo, _context.BonusesParameters.UndoBonusParameters,
+                _context.GameModel.UndoBonusCountReactiveProperty,
+                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+            _undoBonus = new BonusItemController(undoBonusContext);
         }
 
         public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
@@ -118,11 +127,14 @@ namespace Sneakers
             _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations,
                 _currentLevelConfig.QuickFixWashBonusLimitations,
                 _currentLevelConfig.QuickFixLaceBonusLimitations,
-                _currentLevelConfig.AutoUtilizationBonusLimitations);
+                _currentLevelConfig.AutoUtilizationBonusLimitations,
+                _currentLevelConfig.UndoBonusLimitations);
             _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
             _quickFixWashBonus.Init(_currentLevelConfig.QuickFixWashBonusLimitations.IsBonusAvailable);
             _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixLaceBonusLimitations.IsBonusAvailable);
             _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable);
+            _undoBonus.Init(_currentLevelConfig.UndoBonusLimitations.IsBonusAvailable);
+            _lastBadSorting = null;
             
             _spawnedSneakersCount = 0;
             _sortedSneakersCount = 0;
@@ -243,6 +255,7 @@ namespace Sneakers
         {
             _lives--;
             _context.View.LivesIndicator.SetLives(_lives);
+            _lastBadSorting = null;
         }
 
         public void OnSortSucceeded(SneakerController sneaker)
@@ -264,6 +277,20 @@ namespace Sneakers
             _sneakers.Remove(sneaker);
             CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
+            _lastBadSorting = null;
+        }
+
+        public void OnWasteFailed(SneakerController sneaker)
+        {
+            _lives--;
+            _context.View.LivesIndicator.SetLives(_lives);
+            _sortedSneakersCount++;
+            
+            //_sneakers.Remove(sneaker);
+            //CheckAndRemoveFromSpecialTracks(sneaker);
+            //sneaker.Dispose();
+            sneaker.View.gameObject.SetActive(false);
+            _lastBadSorting = new BadSortingInfo(sneaker, Vector3.zero);
         }
 
         public void OnSortLegendaryError(SneakerController sneaker)
@@ -309,6 +336,39 @@ namespace Sneakers
         public void SwitchAutoUtilization(bool isActive)
         {
             _isAutoUtilizationActive = isActive;
+        }
+
+        public void UndoBadSorting()
+        {
+            // give back life
+            if (_lives < _currentLevelConfig.NumberOfLives)
+            {
+                _lives++;
+                _context.View.LivesIndicator.SetLives(_lives);
+            }
+
+            if (_lastBadSorting == null)
+                return;
+            
+            // reappear sneaker
+            _lastBadSorting.Sneaker.View.gameObject.SetActive(true);
+            // end drag state
+            _lastBadSorting.Sneaker.DragDropItem.OnEndDrag(null);
+            
+            // back to position before drag
+            if (!_lastBadSorting.Sneaker.DragDropItem.IsHold)
+            {
+                _lastBadSorting.Sneaker.SetPosition(_lastBadSorting.Sneaker.DragDropItem.vector);
+                SendToMainTransporter(_lastBadSorting.Sneaker, _lastBadSorting.Sneaker.CurrentPoint);
+            }
+            // back to wait
+            else
+            {
+                _lastBadSorting.Sneaker.SetPosition(_lastBadSorting.Sneaker.DragDropItem.vector);
+            }
+            
+            // don't count this sneaker as sorted
+            _sortedSneakersCount--;
         }
     }
 }

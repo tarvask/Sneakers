@@ -72,3 +72,6 @@ MonoBehaviour:
       bonusCooldown: 100000
       bonusPrice: 150
       bonusDuration: 100000
+    undoBonusParameters:
+      bonusCooldown: 0
+      bonusPrice: 200

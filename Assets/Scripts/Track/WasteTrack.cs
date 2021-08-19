@@ -19,7 +19,7 @@ namespace Sneakers
             if (sneaker.IsLegendary)
                 _sortingController.OnSortLegendaryError(sneaker);
             else
-                _sortingController.OnSortFailed(sneaker);
+                _sortingController.OnWasteFailed(sneaker);
         }
     }
 }

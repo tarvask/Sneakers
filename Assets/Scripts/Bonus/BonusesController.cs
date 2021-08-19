@@ -15,12 +15,14 @@ namespace Sneakers
             public Action WashAllSneakersAction { get; }
             public Action LaceAllSneakersAction { get; }
             public Action<bool> SwitchAutoUtilizationAction { get; }
+            public Action UndoBadSortingAction { get; }
 
             public Context(GameModel gameModel, BonusesParameters bonusesParameters,
                 Action<bool> switchFrozenStateAction,
                 Action washAllSneakersAction,
                 Action laceAllSneakersAction,
-                Action<bool> switchAutoUtilizationAction)
+                Action<bool> switchAutoUtilizationAction,
+                Action undoBadSortingAction)
             {
                 GameModel = gameModel;
                 BonusesParameters = bonusesParameters;
@@ -28,6 +30,7 @@ namespace Sneakers
                 WashAllSneakersAction = washAllSneakersAction;
                 LaceAllSneakersAction = laceAllSneakersAction;
                 SwitchAutoUtilizationAction = switchAutoUtilizationAction;
+                UndoBadSortingAction = undoBadSortingAction;
             }
         }
 
@@ -38,11 +41,14 @@ namespace Sneakers
         private bool _isFreezeTrackBonusOnCooldown;
 
         private bool _isQuickFixWashBonusOnCooldown;
+        
         private bool _isQuickFixLaceBonusOnCooldown;
 
         private bool _isAutoUtilizationBonusActive;
         private bool _stopAutoUtilizationBonus;
         private bool _isAutoUtilizationBonusOnCooldown;
+        
+        private bool _isUndoBonusOnCooldown; 
 
         private readonly ReactiveProperty<bool> _isFreezeTrackBonusReady;
         private readonly ReactiveProperty<bool> _isQuickFixWashBonusReady;
@@ -64,7 +70,8 @@ namespace Sneakers
         public void Init(BonusLevelLimitations freezeTrackBonusLimitations,
             BonusLevelLimitations quickFixWashBonusLimitations,
             BonusLevelLimitations quickFixLaceBonusLimitations,
-            BonusLevelLimitations autoUtilizationBonusLimitations)
+            BonusLevelLimitations autoUtilizationBonusLimitations,
+            BonusLevelLimitations undoBonusLimitations)
         {
             // track freeze
             if (freezeTrackBonusLimitations.BonusesToAddCount > 0)
@@ -101,6 +108,15 @@ namespace Sneakers
             if (autoUtilizationBonusLimitations.BonusMaxCount != -1)
                 while (GetBonusCount(BonusType.QuickFixLace) > autoUtilizationBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.AutoUtilization);
+            
+            // undo
+            if (undoBonusLimitations.BonusesToAddCount > 0)
+                for (int i = 0; i < undoBonusLimitations.BonusesToAddCount; i++)
+                    _context.GameModel.AddBonus(BonusType.Undo);
+            
+            if (undoBonusLimitations.BonusMaxCount != -1)
+                while (GetBonusCount(BonusType.Undo) > undoBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusType.Undo);
         }
 
         public void OuterUpdate(float frameLength)
@@ -131,6 +147,10 @@ namespace Sneakers
             
             if (!_isAutoUtilizationBonusReady.Value && !_isAutoUtilizationBonusOnCooldown)
                 _isAutoUtilizationBonusReady.Value = true;
+            
+            // undo bonus
+            if (!_isUndoBonusReady.Value && !_isUndoBonusOnCooldown)
+                _isUndoBonusReady.Value = true;
         }
 
         private int GetBonusCount(BonusType bonusType)
@@ -186,6 +206,9 @@ namespace Sneakers
                     break;
                 case BonusType.AutoUtilization:
                     AutoUtilization();
+                    break;
+                case BonusType.Undo:
+                    UndoBadSorting();
                     break;
             }
 
@@ -282,6 +305,24 @@ namespace Sneakers
                 {
                     await Task.Delay(cooldownTimerInMilliseconds);
                     _isAutoUtilizationBonusOnCooldown = false;
+                });
+            }
+        }
+
+        private void UndoBadSorting()
+        {
+            _context.UndoBadSortingAction();
+            
+            // effect cooldown
+            if (_context.BonusesParameters.UndoBonusParameters.BonusCooldown > 0)
+            {
+                _isUndoBonusOnCooldown = true;
+                int cooldownTimerInMilliseconds =
+                    Mathf.RoundToInt(_context.BonusesParameters.UndoBonusParameters.BonusCooldown * 1000);
+                Task.Run(async () =>
+                {
+                    await Task.Delay(cooldownTimerInMilliseconds);
+                    _isUndoBonusOnCooldown = false;
                 });
             }
         }

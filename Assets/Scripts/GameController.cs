@@ -40,7 +40,7 @@ namespace Sneakers
             _view = Object.FindObjectOfType<GameView>();
             
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.BonusesParameters, SwitchFrozenState, WashAllSneakers, LaceAllSneakers, SwitchAutoUtilization);
+                _view.GameConfig.BonusesParameters, SwitchFrozenState, WashAllSneakers, LaceAllSneakers, SwitchAutoUtilization, UndoBadSorting);
             _bonusesController = new BonusesController(bonusesControllerContext);
 
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
@@ -270,6 +270,11 @@ namespace Sneakers
         private void SwitchAutoUtilization(bool isActive)
         {
             _sortingController.SwitchAutoUtilization(isActive);
+        }
+
+        private void UndoBadSorting()
+        {
+            _sortingController.UndoBadSorting();
         }
 
         private void ApplyBonus(BonusType bonusType)

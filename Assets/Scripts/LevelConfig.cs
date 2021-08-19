@@ -53,6 +53,7 @@ namespace Sneakers
         [SerializeField] private BonusLevelLimitations quickFixWashBonusLimitations;
         [SerializeField] private BonusLevelLimitations quickFixLaceBonusLimitations;
         [SerializeField] private BonusLevelLimitations autoUtilizationBonusLimitations;
+        [SerializeField] private BonusLevelLimitations undoBonusLimitations;
 
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
@@ -96,9 +97,9 @@ namespace Sneakers
         public BonusLevelLimitations QuickFixWashBonusLimitations => quickFixWashBonusLimitations;
         public BonusLevelLimitations QuickFixLaceBonusLimitations => quickFixLaceBonusLimitations;
         public BonusLevelLimitations AutoUtilizationBonusLimitations => autoUtilizationBonusLimitations;
+        public BonusLevelLimitations UndoBonusLimitations => undoBonusLimitations;
 
         [ContextMenu("Validate number of sneakers")]
-
         public void ValidateNumberOfSneakers()
         {
             int sneakersToSort = 0;
