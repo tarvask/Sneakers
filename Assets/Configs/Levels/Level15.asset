@@ -83,3 +83,7 @@ MonoBehaviour:
     isBonusAvailable: 0
     bonusesToAddCount: 0
     bonusMaxCount: 0
+  undoBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0

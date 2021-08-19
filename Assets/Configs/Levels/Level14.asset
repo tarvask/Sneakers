@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7a041f6f4f44f2b7be096e234f0f89, type: 3}
   m_Name: Level14
   m_EditorClassIdentifier: 
-  numberOfSneakers: 18
+  numberOfSneakers: 21
   numberOfLives: 3
   coinsSuccessfulLevelReward: 100
   coinsWrongStepReward: -25
@@ -75,6 +75,10 @@ MonoBehaviour:
     bonusesToAddCount: 0
     bonusMaxCount: 0
   autoUtilizationBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+  undoBonusLimitations:
     isBonusAvailable: 0
     bonusesToAddCount: 0
     bonusMaxCount: 0
