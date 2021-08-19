@@ -106,7 +106,7 @@ namespace Sneakers
                     _context.GameModel.AddBonus(BonusType.AutoUtilization);
 
             if (autoUtilizationBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.QuickFixLace) > autoUtilizationBonusLimitations.BonusMaxCount)
+                while (GetBonusCount(BonusType.AutoUtilization) > autoUtilizationBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.AutoUtilization);
             
             // undo
