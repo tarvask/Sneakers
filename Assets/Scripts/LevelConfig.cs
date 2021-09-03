@@ -50,8 +50,7 @@ namespace Sneakers
         [Space]
         [Header("Bonuses")]
         [SerializeField] private BonusLevelLimitations freezeTrackBonusLimitations;
-        [SerializeField] private BonusLevelLimitations quickFixWashBonusLimitations;
-        [SerializeField] private BonusLevelLimitations quickFixLaceBonusLimitations;
+        [SerializeField] private BonusLevelLimitations quickFixBonusLimitations;
         [SerializeField] private BonusLevelLimitations autoUtilizationBonusLimitations;
         [SerializeField] private BonusLevelLimitations undoBonusLimitations;
 
@@ -94,8 +93,7 @@ namespace Sneakers
         
         // bonuses
         public BonusLevelLimitations FreezeTrackBonusLimitations => freezeTrackBonusLimitations;
-        public BonusLevelLimitations QuickFixWashBonusLimitations => quickFixWashBonusLimitations;
-        public BonusLevelLimitations QuickFixLaceBonusLimitations => quickFixLaceBonusLimitations;
+        public BonusLevelLimitations QuickFixBonusLimitations => quickFixBonusLimitations;
         public BonusLevelLimitations AutoUtilizationBonusLimitations => autoUtilizationBonusLimitations;
         public BonusLevelLimitations UndoBonusLimitations => undoBonusLimitations;
 

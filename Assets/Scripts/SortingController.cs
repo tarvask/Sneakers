@@ -54,6 +54,7 @@ namespace Sneakers
         
         public static SortingController instance;
         public Transform SneakersSpawnPoint => _context.View.SneakersSpawnPoint;
+        public LevelConfig CurrentLevelConfig => _currentLevelConfig;
 
         public Dictionary<int, int> CollectedLegendarySneakers => _collectedLegendarySneakers;
         public bool AllSneakersAreSorted => _sortedSneakersCount == _currentLevelConfig.NumberOfSneakers;
@@ -72,31 +73,31 @@ namespace Sneakers
             BonusItemController.Context freezeTrackBonusContext = new BonusItemController.Context(
                 _context.View.FreezeTrackBonus, BonusType.TrackFreeze, _context.BonusesParameters.FreezeTrackBonusParameters,
                 _context.GameModel.TrackFreezeBonusCountReactiveProperty,
-                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+                _context.OnBonusButtonClickedAction);
             _freezeTrackBonus = new BonusItemController(freezeTrackBonusContext);
             
             BonusItemController.Context quickFixWashBonusContext = new BonusItemController.Context(
                 _context.View.QuickFixWashBonus, BonusType.QuickFixWash, _context.BonusesParameters.QuickFixWashBonusParameters,
                 _context.GameModel.QuickFixWashBonusCountReactiveProperty,
-                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+                _context.OnBonusButtonClickedAction);
             _quickFixWashBonus = new BonusItemController(quickFixWashBonusContext);
             
             BonusItemController.Context quickFixLaceBonusContext = new BonusItemController.Context(
                 _context.View.QuickFixLaceBonus, BonusType.QuickFixLace, _context.BonusesParameters.QuickFixLaceBonusParameters,
                 _context.GameModel.QuickFixLaceBonusCountReactiveProperty,
-                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+                _context.OnBonusButtonClickedAction);
             _quickFixLaceBonus = new BonusItemController(quickFixLaceBonusContext);
             
             BonusItemController.Context autoUtilizationBonusContext = new BonusItemController.Context(
                 _context.View.AutoUtilizationBonus, BonusType.AutoUtilization, _context.BonusesParameters.AutoUtilizationBonusParameters,
                 _context.GameModel.AutoUtilizationBonusCountReactiveProperty,
-                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+                _context.OnBonusButtonClickedAction);
             _autoUtilizationBonus = new BonusItemController(autoUtilizationBonusContext);
             
             BonusItemController.Context undoBonusContext = new BonusItemController.Context(
                 _context.View.UndoBonus, BonusType.Undo, _context.BonusesParameters.UndoBonusParameters,
                 _context.GameModel.UndoBonusCountReactiveProperty,
-                _context.GameModel.CoinsReactiveProperty, _context.OnBonusButtonClickedAction);
+                _context.OnBonusButtonClickedAction);
             _undoBonus = new BonusItemController(undoBonusContext);
         }
 
@@ -125,13 +126,13 @@ namespace Sneakers
             _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
             
             _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations,
-                _currentLevelConfig.QuickFixWashBonusLimitations,
-                _currentLevelConfig.QuickFixLaceBonusLimitations,
+                _currentLevelConfig.QuickFixBonusLimitations,
+                _currentLevelConfig.QuickFixBonusLimitations,
                 _currentLevelConfig.AutoUtilizationBonusLimitations,
                 _currentLevelConfig.UndoBonusLimitations);
             _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
-            _quickFixWashBonus.Init(_currentLevelConfig.QuickFixWashBonusLimitations.IsBonusAvailable);
-            _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixLaceBonusLimitations.IsBonusAvailable);
+            _quickFixWashBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
+            _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
             _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable);
             _undoBonus.Init(_currentLevelConfig.UndoBonusLimitations.IsBonusAvailable);
             _lastBadSorting = null;

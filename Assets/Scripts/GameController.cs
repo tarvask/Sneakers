@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
-using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -55,7 +53,14 @@ namespace Sneakers
             _winUiController = new WinUiController(_view.WinUi);
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
-            _upgradeShopUiController = new UpgradeShopUiController(_view.UpgradeShopUi);
+            UpgradeShopUiController.Context upgradeShopControllerContext = new UpgradeShopUiController.Context(
+                _view.UpgradeShopUi, _view.GameConfig.BonusesParameters, _model.CoinsReactiveProperty,
+                _model.TrackFreezeBonusCountReactiveProperty,
+                _model.QuickFixWashBonusCountReactiveProperty,
+                _model.AutoUtilizationBonusCountReactiveProperty,
+                _model.UndoBonusCountReactiveProperty,
+                BuyBonus);
+            _upgradeShopUiController = new UpgradeShopUiController(upgradeShopControllerContext);
 
             _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
 
@@ -194,6 +199,10 @@ namespace Sneakers
                 _view.GameConfig.WashTrackLevels,
                 _view.GameConfig.LaceTrackLevels,
                 _model.WashTrackLevelReactiveProperty, _model.LaceTrackLevelReactiveProperty,
+                _sortingController.CurrentLevelConfig.FreezeTrackBonusLimitations,
+                _sortingController.CurrentLevelConfig.QuickFixBonusLimitations,
+                _sortingController.CurrentLevelConfig.AutoUtilizationBonusLimitations,
+                _sortingController.CurrentLevelConfig.UndoBonusLimitations,
                 () =>
                 {
                     if (!_model.SpendMoney(_view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value].Price))
@@ -210,11 +219,36 @@ namespace Sneakers
                     _model.UpgradeLaceMachine();
                     _sortingController.UpgradeLaceTrack(_view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value]);
                 },
-                (() =>
+                () =>
                 {
                     _upgradeShopUiController.Hide();
                     ChangeState(GameState.Playing);
-                }));
+                });
+        }
+
+        private void BuyBonus(BonusShopType bonusType)
+        {
+            int bonusPrice = _view.GameConfig.BonusesParameters.GetBonusPrice(bonusType);
+            
+            if (!_model.SpendMoney(bonusPrice))
+                return;
+
+            switch (bonusType)
+            {
+                case BonusShopType.TrackFreeze:
+                    _model.AddBonus(BonusType.TrackFreeze);
+                    break;
+                case BonusShopType.QuickFix:
+                    _model.AddBonus(BonusType.QuickFixWash);
+                    _model.AddBonus(BonusType.QuickFixLace);
+                    break;
+                case BonusShopType.AutoUtilization:
+                    _model.AddBonus(BonusType.AutoUtilization);
+                    break;
+                case BonusShopType.Undo:
+                    _model.AddBonus(BonusType.Undo);
+                    break;
+            }
         }
 
         private void SaveProgress()
