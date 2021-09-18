@@ -20,6 +20,7 @@ namespace Sneakers
         private readonly LoseUiController _loseUiController;
         private readonly LegendUiController _legendUiController;
         private readonly UpgradeShopUiController _upgradeShopUiController;
+        private readonly QuickFixBonusChoosingUiController _quickFixBonusChoosingUiController;
 
         private readonly CheatPanelUiController _cheatPanelUiController;
 
@@ -36,18 +37,8 @@ namespace Sneakers
 //#endif
             _model = new GameModel();
             _view = Object.FindObjectOfType<GameView>();
-            
-            BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.BonusesParameters, SwitchFrozenState, WashAllSneakers, LaceAllSneakers, SwitchAutoUtilization, UndoBadSorting);
-            _bonusesController = new BonusesController(bonusesControllerContext);
 
-            SortingView sortingView = Object.FindObjectOfType<SortingView>();
-            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, _model,
-                _view.GameConfig.BonusesParameters,
-                _bonusesController,
-                ShowLegend, ApplyBonus);
-            _sortingController = new SortingController(sortingControllerContext);
-
+            // ui
             _mainMenuUiController = new MainMenuUiController(_view.MainMenuUi);
             _tutorialUiController = new TutorialUiController(_view.TutorialUi);
             _winUiController = new WinUiController(_view.WinUi);
@@ -61,8 +52,25 @@ namespace Sneakers
                 _model.UndoBonusCountReactiveProperty,
                 BuyBonus);
             _upgradeShopUiController = new UpgradeShopUiController(upgradeShopControllerContext);
+            _quickFixBonusChoosingUiController = new QuickFixBonusChoosingUiController(_view.QuickFixBonusChoosingUi);
 
             _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
+            
+            // bonuses
+            BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
+                _view.GameConfig.BonusesParameters, _quickFixBonusChoosingUiController,
+                SwitchFrozenState,
+                WashAllSneakers, LaceAllSneakers, SetQuickWash, SetQuickLace,
+                SwitchAutoUtilization, UndoBadSorting);
+            _bonusesController = new BonusesController(bonusesControllerContext);
+            
+            // sorting
+            SortingView sortingView = Object.FindObjectOfType<SortingView>();
+            SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, _model,
+                _view.GameConfig.BonusesParameters,
+                _bonusesController,
+                ShowLegend, ApplyBonus);
+            _sortingController = new SortingController(sortingControllerContext);
 
             ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
         }
@@ -158,6 +166,7 @@ namespace Sneakers
         private void LoseLevel()
         {
             ChangeState(GameState.LoseLevel);
+            SaveResources();
             
             _loseUiController.Show(() =>
                 {
@@ -271,9 +280,21 @@ namespace Sneakers
             }
             
             PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, DictToString(currentLegends));
-            
+
+            SaveResources();
+        }
+
+        private void SaveResources()
+        {
             // save coins
             _model.AddMoney(_sortingController.Score);
+            
+            // bonuses
+            PlayerPrefs.SetInt(GameConstants.TrackFreezeBonusCountStorageName, _model.TrackFreezeBonusCountReactiveProperty.Value);
+            PlayerPrefs.SetInt(GameConstants.QuickFixWashBonusCountStorageName, _model.QuickFixWashBonusCountReactiveProperty.Value);
+            PlayerPrefs.SetInt(GameConstants.QuickFixLaceBonusCountStorageName, _model.QuickFixLaceBonusCountReactiveProperty.Value);
+            PlayerPrefs.SetInt(GameConstants.AutoUtilizationBonusCountStorageName, _model.AutoUtilizationBonusCountReactiveProperty.Value);
+            PlayerPrefs.SetInt(GameConstants.UndoBonusCountStorageName, _model.UndoBonusCountReactiveProperty.Value);
         }
 
         private void ChangeState(GameState newState)
@@ -301,6 +322,16 @@ namespace Sneakers
             _sortingController.LaceAllSneakers();
         }
 
+        private void SetQuickWash(float processDuration)
+        {
+            _sortingController.SetQuickWash(processDuration);
+        }
+
+        private void SetQuickLace(float processDuration)
+        {
+            _sortingController.SetQuickLace(processDuration);
+        }
+
         private void SwitchAutoUtilization(bool isActive)
         {
             _sortingController.SwitchAutoUtilization(isActive);
@@ -311,7 +342,7 @@ namespace Sneakers
             _sortingController.UndoBadSorting();
         }
 
-        private void ApplyBonus(BonusType bonusType)
+        private void ApplyBonus(BonusShopType bonusType)
         {
             _bonusesController.ApplyBonus(bonusType);
         }

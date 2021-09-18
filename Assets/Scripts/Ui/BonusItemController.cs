@@ -8,18 +8,16 @@ namespace Sneakers
         public struct Context
         {
             public BonusItemView View { get; }
-            public BonusType BonusType { get; }
-            public BonusParameters BonusParameters { get; }
+            public BonusShopType BonusType { get; }
             public IReadOnlyReactiveProperty<int> BonusCountReactiveProperty { get; }
-            public Action<BonusType> OnBonusClickedAction { get; }
+            public Action<BonusShopType> OnBonusClickedAction { get; }
 
-            public Context(BonusItemView view, BonusType bonusType, BonusParameters bonusParameters,
+            public Context(BonusItemView view, BonusShopType bonusType,
                 IReadOnlyReactiveProperty<int> bonusCountReactiveProperty,
-                Action<BonusType> onBonusClickedAction)
+                Action<BonusShopType> onBonusClickedAction)
             {
                 View = view;
                 BonusType = bonusType;
-                BonusParameters = bonusParameters;
                 BonusCountReactiveProperty = bonusCountReactiveProperty;
                 OnBonusClickedAction = onBonusClickedAction;
             }

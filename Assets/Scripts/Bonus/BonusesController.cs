@@ -11,24 +11,36 @@ namespace Sneakers
         {
             public GameModel GameModel { get; }
             public BonusesParameters BonusesParameters { get; }
+            public QuickFixBonusChoosingUiController QuickFixBonusChoosingUiController { get; }
+            
             public Action<bool> SwitchFrozenStateAction { get; }
             public Action WashAllSneakersAction { get; }
             public Action LaceAllSneakersAction { get; }
+            public Action<float> SetQuickWashAction { get; }
+            public Action<float> SetQuickLaceAction { get; }
             public Action<bool> SwitchAutoUtilizationAction { get; }
             public Action UndoBadSortingAction { get; }
 
             public Context(GameModel gameModel, BonusesParameters bonusesParameters,
+                QuickFixBonusChoosingUiController quickFixBonusChoosingUiController,
+                
                 Action<bool> switchFrozenStateAction,
                 Action washAllSneakersAction,
                 Action laceAllSneakersAction,
+                Action<float> setQuickWashAction,
+                Action<float> setQuickLaceAction,
                 Action<bool> switchAutoUtilizationAction,
                 Action undoBadSortingAction)
             {
                 GameModel = gameModel;
                 BonusesParameters = bonusesParameters;
+                QuickFixBonusChoosingUiController = quickFixBonusChoosingUiController;
+                
                 SwitchFrozenStateAction = switchFrozenStateAction;
                 WashAllSneakersAction = washAllSneakersAction;
                 LaceAllSneakersAction = laceAllSneakersAction;
+                SetQuickWashAction = setQuickWashAction;
+                SetQuickLaceAction = setQuickLaceAction;
                 SwitchAutoUtilizationAction = switchAutoUtilizationAction;
                 UndoBadSortingAction = undoBadSortingAction;
             }
@@ -82,7 +94,15 @@ namespace Sneakers
                 while (GetBonusCount(BonusType.TrackFreeze) > freezeTrackBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.TrackFreeze);
             
-            // quick fix wash
+            // quick fix
+            // equalize counts
+            if (GetBonusCount(BonusType.QuickFixWash) > GetBonusCount(BonusType.QuickFixLace))
+                _context.GameModel.SpendBonus(BonusType.QuickFixWash);
+            
+            if (GetBonusCount(BonusType.QuickFixLace) > GetBonusCount(BonusType.QuickFixWash))
+                _context.GameModel.SpendBonus(BonusType.QuickFixLace);
+                
+            // wash
             if (quickFixWashBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < quickFixWashBonusLimitations.BonusesToAddCount; i++)
                     _context.GameModel.AddBonus(BonusType.QuickFixWash);
@@ -95,7 +115,7 @@ namespace Sneakers
             if (quickFixLaceBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < quickFixLaceBonusLimitations.BonusesToAddCount; i++)
                     _context.GameModel.AddBonus(BonusType.QuickFixLace);
-
+            
             if (quickFixLaceBonusLimitations.BonusMaxCount != -1)
                 while (GetBonusCount(BonusType.QuickFixLace) > quickFixLaceBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.QuickFixLace);
@@ -191,28 +211,23 @@ namespace Sneakers
             throw new ArgumentException("Unknown bonus type");
         }
 
-        public void ApplyBonus(BonusType bonusType)
+        public void ApplyBonus(BonusShopType bonusType)
         {
             switch (bonusType)
             {
-                case BonusType.TrackFreeze:
+                case BonusShopType.TrackFreeze:
                     FreezeTrack();
                     break;
-                case BonusType.QuickFixWash:
-                    WashAllSneakers();
+                case BonusShopType.QuickFix:
+                    QuickFix();
                     break;
-                case BonusType.QuickFixLace:
-                    LaceAllSneakers();
-                    break;
-                case BonusType.AutoUtilization:
+                case BonusShopType.AutoUtilization:
                     AutoUtilization();
                     break;
-                case BonusType.Undo:
+                case BonusShopType.Undo:
                     UndoBadSorting();
                     break;
             }
-
-            _context.GameModel.SpendBonus(bonusType);
         }
 
         private void FreezeTrack()
@@ -242,6 +257,32 @@ namespace Sneakers
                     _isFreezeTrackBonusOnCooldown = false;
                 });
             }
+            
+            _context.GameModel.SpendBonus(BonusType.TrackFreeze);
+        }
+
+        private void QuickFix()
+        {
+            int quickFixWashBonusCount = GetBonusCount(BonusType.QuickFixWash);
+            int quickFixLaceBonusCount = GetBonusCount(BonusType.QuickFixLace);
+            bool isQuickWashingAvailable = quickFixWashBonusCount > 0 && quickFixWashBonusCount >= quickFixLaceBonusCount;
+            bool isQuickLacingAvailable = quickFixLaceBonusCount > 0 && quickFixLaceBonusCount >= quickFixWashBonusCount;;
+            _context.QuickFixBonusChoosingUiController.Show(isQuickWashingAvailable, SetQuickFixWash,
+                isQuickLacingAvailable, SetQuickFixLace);
+        }
+
+        private void SetQuickFixWash()
+        {
+            _context.GameModel.SpendBonus(BonusType.QuickFixWash);
+            _context.SetQuickWashAction(_context.BonusesParameters.QuickFixWashBonusParameters.BonusDuration);
+            _context.QuickFixBonusChoosingUiController.Hide();
+        }
+
+        private void SetQuickFixLace()
+        {
+            _context.GameModel.SpendBonus(BonusType.QuickFixLace);
+            _context.SetQuickLaceAction(_context.BonusesParameters.QuickFixLaceBonusParameters.BonusDuration);
+            _context.QuickFixBonusChoosingUiController.Hide();
         }
         
         private void WashAllSneakers()
@@ -307,6 +348,8 @@ namespace Sneakers
                     _isAutoUtilizationBonusOnCooldown = false;
                 });
             }
+            
+            _context.GameModel.SpendBonus(BonusType.AutoUtilization);
         }
 
         private void UndoBadSorting()
@@ -325,6 +368,8 @@ namespace Sneakers
                     _isUndoBonusOnCooldown = false;
                 });
             }
+            
+            _context.GameModel.SpendBonus(BonusType.Undo);
         }
     }
 }

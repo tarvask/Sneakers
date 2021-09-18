@@ -16,11 +16,11 @@ namespace Sneakers
             public BonusesParameters BonusesParameters { get; }
             public BonusesController BonusesController { get; }
             public Action<int> OnLegendarySneakerCollectedAction { get; }
-            public Action<BonusType> OnBonusButtonClickedAction { get; }
+            public Action<BonusShopType> OnBonusButtonClickedAction { get; }
 
             public Context(SortingView view, GameModel gameModel, BonusesParameters bonusesParameters,
                 BonusesController bonusesController,
-                Action<int> onLegendarySneakerCollectedAction, Action<BonusType> onBonusButtonClickedAction)
+                Action<int> onLegendarySneakerCollectedAction, Action<BonusShopType> onBonusButtonClickedAction)
             {
                 View = view;
                 GameModel = gameModel;
@@ -39,8 +39,7 @@ namespace Sneakers
         private Transform _spawnRoot;
 
         private readonly BonusItemController _freezeTrackBonus;
-        private readonly BonusItemController _quickFixWashBonus;
-        private readonly BonusItemController _quickFixLaceBonus;
+        private readonly QuickFixBonusItemController _quickFixBonus;
         private readonly BonusItemController _autoUtilizationBonus;
         private readonly BonusItemController _undoBonus;
 
@@ -71,31 +70,26 @@ namespace Sneakers
             
             // bonuses
             BonusItemController.Context freezeTrackBonusContext = new BonusItemController.Context(
-                _context.View.FreezeTrackBonus, BonusType.TrackFreeze, _context.BonusesParameters.FreezeTrackBonusParameters,
+                _context.View.FreezeTrackBonus, BonusShopType.TrackFreeze,
                 _context.GameModel.TrackFreezeBonusCountReactiveProperty,
                 _context.OnBonusButtonClickedAction);
             _freezeTrackBonus = new BonusItemController(freezeTrackBonusContext);
             
-            BonusItemController.Context quickFixWashBonusContext = new BonusItemController.Context(
-                _context.View.QuickFixWashBonus, BonusType.QuickFixWash, _context.BonusesParameters.QuickFixWashBonusParameters,
+            QuickFixBonusItemController.Context quickFixBonusContext = new QuickFixBonusItemController.Context(
+                _context.View.QuickFixBonus, BonusShopType.QuickFix,
                 _context.GameModel.QuickFixWashBonusCountReactiveProperty,
-                _context.OnBonusButtonClickedAction);
-            _quickFixWashBonus = new BonusItemController(quickFixWashBonusContext);
-            
-            BonusItemController.Context quickFixLaceBonusContext = new BonusItemController.Context(
-                _context.View.QuickFixLaceBonus, BonusType.QuickFixLace, _context.BonusesParameters.QuickFixLaceBonusParameters,
                 _context.GameModel.QuickFixLaceBonusCountReactiveProperty,
                 _context.OnBonusButtonClickedAction);
-            _quickFixLaceBonus = new BonusItemController(quickFixLaceBonusContext);
-            
+            _quickFixBonus = new QuickFixBonusItemController(quickFixBonusContext);
+
             BonusItemController.Context autoUtilizationBonusContext = new BonusItemController.Context(
-                _context.View.AutoUtilizationBonus, BonusType.AutoUtilization, _context.BonusesParameters.AutoUtilizationBonusParameters,
+                _context.View.AutoUtilizationBonus, BonusShopType.AutoUtilization,
                 _context.GameModel.AutoUtilizationBonusCountReactiveProperty,
                 _context.OnBonusButtonClickedAction);
             _autoUtilizationBonus = new BonusItemController(autoUtilizationBonusContext);
             
             BonusItemController.Context undoBonusContext = new BonusItemController.Context(
-                _context.View.UndoBonus, BonusType.Undo, _context.BonusesParameters.UndoBonusParameters,
+                _context.View.UndoBonus, BonusShopType.Undo,
                 _context.GameModel.UndoBonusCountReactiveProperty,
                 _context.OnBonusButtonClickedAction);
             _undoBonus = new BonusItemController(undoBonusContext);
@@ -131,8 +125,7 @@ namespace Sneakers
                 _currentLevelConfig.AutoUtilizationBonusLimitations,
                 _currentLevelConfig.UndoBonusLimitations);
             _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
-            _quickFixWashBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
-            _quickFixLaceBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
+            _quickFixBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
             _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable);
             _undoBonus.Init(_currentLevelConfig.UndoBonusLimitations.IsBonusAvailable);
             _lastBadSorting = null;
@@ -340,6 +333,16 @@ namespace Sneakers
             foreach (SneakerController sneaker in _sneakers)
                 if (sneaker.State == SneakerState.Unlaced)
                     sneaker.SetState(SneakerState.Normal);
+        }
+
+        public void SetQuickWash(float processDuration)
+        {
+            _context.View.WashTrack.SetQuickFix(processDuration);
+        }
+
+        public void SetQuickLace(float processDuration)
+        {
+            _context.View.LaceTrack.SetQuickFix(processDuration);
         }
         
         public void SwitchAutoUtilization(bool isActive)

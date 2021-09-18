@@ -5,21 +5,36 @@ namespace Sneakers
 {
     public class LaceTrack : AbstractSpecialTrack
     {
-        private float _laceTrackMovementSpeed;
-        private float _laceProcessDelay;
+        private TrackLevelParams _trackLevelParams;
+        private float _currentProcessDuration;
+        private bool _isQuickFixActive;
 
         public void Init(SortingController sortingController, bool isAvailable, TrackLevelParams trackLevelParams)
         {
             base.Init(sortingController, isAvailable);
 
-            _laceTrackMovementSpeed = trackLevelParams.TrackSpeed;
-            _laceProcessDelay = trackLevelParams.ProcessDuration;
+            _trackLevelParams = trackLevelParams;
+            _currentProcessDuration = _trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
         }
         
         public void Upgrade(TrackLevelParams trackLevelParams)
         {
-            _laceTrackMovementSpeed = trackLevelParams.TrackSpeed;
-            _laceProcessDelay = trackLevelParams.ProcessDuration;
+            _trackLevelParams = trackLevelParams;
+            _currentProcessDuration = _trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
+        }
+        
+        public void SetQuickFix(float processDuration)
+        {
+            _currentProcessDuration = processDuration;
+            _isQuickFixActive = true;
+        }
+        
+        private void ResetQuickFix()
+        {
+            _currentProcessDuration = _trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
         }
 
         protected override void OnDropSneaker(SneakerController sneaker)
@@ -62,10 +77,14 @@ namespace Sneakers
             if (mover == 2)
             {
                 sneaker.SwitchVisibility(false);
-                yield return new WaitForSeconds(_laceProcessDelay);
+                yield return new WaitForSeconds(_currentProcessDuration);
                     
                 sneaker.SetState(SneakerState.Normal);
                 StopProcessingSneaker();
+                
+                if (_isQuickFixActive)
+                    ResetQuickFix();
+                
                 sneaker.SetCurrentPoint(2);
                 sneaker.View.GetComponent<CanvasGroup>().alpha = 1F;
                 sneaker.View.GetComponent<CanvasGroup>().blocksRaycasts = true;
@@ -73,7 +92,7 @@ namespace Sneakers
                 
                 while (Vector3.SqrMagnitude(trackPoints[1].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[1].localPosition, _laceTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
                 mover++;
@@ -83,7 +102,7 @@ namespace Sneakers
                 sneaker.SetCurrentPoint(3);
                 while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _laceTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
                 mover++;

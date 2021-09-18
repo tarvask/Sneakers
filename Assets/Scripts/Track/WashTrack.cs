@@ -5,21 +5,36 @@ namespace Sneakers
 {
     public class WashTrack : AbstractSpecialTrack
     {
-        private float _washTrackMovementSpeed;
-        private float _washProcessDelay;
+        private TrackLevelParams _trackLevelParams;
+        private float _currentProcessDuration;
+        private bool _isQuickFixActive;
 
         public void Init(SortingController sortingController, bool isAvailable, TrackLevelParams trackLevelParams)
         {
             base.Init(sortingController, isAvailable);
 
-            _washTrackMovementSpeed = trackLevelParams.TrackSpeed;
-            _washProcessDelay = trackLevelParams.ProcessDuration;
+            _trackLevelParams = trackLevelParams;
+            _currentProcessDuration = trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
         }
 
         public void Upgrade(TrackLevelParams trackLevelParams)
         {
-            _washTrackMovementSpeed = trackLevelParams.TrackSpeed;
-            _washProcessDelay = trackLevelParams.ProcessDuration;
+            _trackLevelParams = trackLevelParams;
+            _currentProcessDuration = trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
+        }
+
+        public void SetQuickFix(float processDuration)
+        {
+            _currentProcessDuration = processDuration;
+            _isQuickFixActive = true;
+        }
+        
+        private void ResetQuickFix()
+        {
+            _currentProcessDuration = _trackLevelParams.ProcessDuration;
+            _isQuickFixActive = false;
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)
@@ -71,12 +86,12 @@ namespace Sneakers
                 sneaker.SetCurrentPoint(2);
                 while (Vector3.SqrMagnitude(trackPoints[1].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[1].localPosition, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[1].localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
                 
                 sneaker.SwitchVisibility(false);
-                yield return new WaitForSeconds(_washProcessDelay);
+                yield return new WaitForSeconds(_currentProcessDuration);
                 
                 sneaker.SwitchVisibility(true);
                 mover++;
@@ -85,10 +100,14 @@ namespace Sneakers
             {
                 sneaker.SetState(SneakerState.Normal);
                 StopProcessingSneaker();
+                
+                if (_isQuickFixActive)
+                    ResetQuickFix();
+                
                 sneaker.SetCurrentPoint(3);
                 while (Vector3.SqrMagnitude(trackPoints[2].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(trackPoints[2].localPosition, _washTrackMovementSpeed);
+                    sneaker.Move(trackPoints[2].localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
                 mover++;
@@ -98,7 +117,7 @@ namespace Sneakers
                 sneaker.SetCurrentPoint(4);
                 while (Vector3.SqrMagnitude(_sortingController.SneakersSpawnPoint.localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
                 {
-                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _washTrackMovementSpeed);
+                    sneaker.Move(_sortingController.SneakersSpawnPoint.localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
                 mover++;

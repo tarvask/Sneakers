@@ -23,7 +23,7 @@ namespace Sneakers
         [Space]
         [Header("Bonuses")]
         [SerializeField] private BonusItemView freezeTrackBonus;
-        [SerializeField] private BonusItemView quickFixWashBonus;
+        [SerializeField] private BonusItemView quickFixBonus;
         [SerializeField] private BonusItemView quickFixLaceBonus;
         [SerializeField] private BonusItemView autoUtilizationBonus;
         [SerializeField] private BonusItemView undoBonus;
@@ -43,8 +43,7 @@ namespace Sneakers
 
         // bonuses
         public BonusItemView FreezeTrackBonus => freezeTrackBonus;
-        public BonusItemView QuickFixWashBonus => quickFixWashBonus;
-        public BonusItemView QuickFixLaceBonus => quickFixLaceBonus;
+        public BonusItemView QuickFixBonus => quickFixBonus;
         public BonusItemView AutoUtilizationBonus => autoUtilizationBonus;
         public BonusItemView UndoBonus => undoBonus;
     }
