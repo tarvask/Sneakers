@@ -78,11 +78,7 @@ MonoBehaviour:
     isBonusAvailable: 1
     bonusesToAddCount: 0
     bonusMaxCount: -1
-  quickFixWashBonusLimitations:
-    isBonusAvailable: 1
-    bonusesToAddCount: 0
-    bonusMaxCount: -1
-  quickFixLaceBonusLimitations:
+  quickFixBonusLimitations:
     isBonusAvailable: 1
     bonusesToAddCount: 0
     bonusMaxCount: -1

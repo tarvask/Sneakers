@@ -69,9 +69,11 @@ MonoBehaviour:
     quickFixWashBonusParameters:
       bonusCooldown: 0
       bonusPrice: 100
+      bonusDuration: 0.5
     quickFixLaceBonusParameters:
       bonusCooldown: 0
       bonusPrice: 100
+      bonusDuration: 0.5
     autoUtilizationBonusParameters:
       bonusCooldown: 100000
       bonusPrice: 150
