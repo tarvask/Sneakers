@@ -9,6 +9,7 @@ namespace Sneakers
         public const string CurrentLaceTrackLevelStorageName = "storage/lacetrack";
         public const string CoinsStorageName = "storage/coins";
         public const string CollectedLegendarySneakersStorageName = "storage/legendaries";
+        public const string BestResultStorageName = "storage/best";
         
         // bonuses
         public const string TrackFreezeBonusCountStorageName = "storage/bonus/trackfreeze";

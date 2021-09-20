@@ -8,6 +8,7 @@ namespace Sneakers
         [SerializeField] private int numberOfSneakers;
         [SerializeField] private int numberOfLives;
         [SerializeField] private int coinsSuccessfulLevelReward;
+        [SerializeField] private int coinsSuccessfulStepReward;
         [SerializeField] private int coinsWrongStepReward;
 
         [Space]
@@ -57,6 +58,7 @@ namespace Sneakers
         public int NumberOfSneakers => numberOfSneakers;
         public int NumberOfLives => numberOfLives;
         public int CoinsSuccessfulLevelReward => coinsSuccessfulLevelReward;
+        public int CoinsSuccessfulStepReward => coinsSuccessfulStepReward;
         public int CoinsWrongStepReward => coinsWrongStepReward;
 
         public bool ShufflePossibleSneakers => shufflePossibleSneakers;

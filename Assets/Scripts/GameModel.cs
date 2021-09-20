@@ -12,6 +12,7 @@ namespace Sneakers
         private readonly ReactiveProperty<int> _coinsReactiveProperty;
         private readonly ReactiveProperty<int> _washTrackLevelReactiveProperty;
         private readonly ReactiveProperty<int> _laceTrackLevelReactiveProperty;
+        private readonly ReactiveProperty<int> _bestResultReactiveProperty;
         // bonuses
         private readonly ReactiveProperty<int> _trackFreezeBonusCountReactiveProperty;
         private readonly ReactiveProperty<int> _quickFixWashBonusCountReactiveProperty;
@@ -25,7 +26,8 @@ namespace Sneakers
         public IReadOnlyReactiveProperty<int> CoinsReactiveProperty => _coinsReactiveProperty;
         public IReadOnlyReactiveProperty<int> WashTrackLevelReactiveProperty => _washTrackLevelReactiveProperty;
         public IReadOnlyReactiveProperty<int> LaceTrackLevelReactiveProperty => _laceTrackLevelReactiveProperty;
-        
+        public ReactiveProperty<int> BestResultReactiveProperty => _bestResultReactiveProperty;
+
         // bonuses
         public IReadOnlyReactiveProperty<int> TrackFreezeBonusCountReactiveProperty => _trackFreezeBonusCountReactiveProperty;
         public IReadOnlyReactiveProperty<int> QuickFixWashBonusCountReactiveProperty => _quickFixWashBonusCountReactiveProperty;
@@ -39,6 +41,7 @@ namespace Sneakers
             _coinsReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CoinsStorageName, 0));
             _washTrackLevelReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentWashTrackLevelStorageName, 0));
             _laceTrackLevelReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.CurrentLaceTrackLevelStorageName, 0));
+            _bestResultReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.BestResultStorageName, 0));
             
             _trackFreezeBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.TrackFreezeBonusCountStorageName, 0));
             _quickFixWashBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.QuickFixWashBonusCountStorageName, 0));
@@ -62,6 +65,9 @@ namespace Sneakers
             PlayerPrefs.SetInt(GameConstants.CoinsStorageName, 0);
             // legends
             PlayerPrefs.SetString(GameConstants.CollectedLegendarySneakersStorageName, "");
+            // best result
+            _bestResultReactiveProperty.Value = 0;
+            PlayerPrefs.SetInt(GameConstants.BestResultStorageName, 0);
             // bonuses
             _trackFreezeBonusCountReactiveProperty.Value = 0;
             PlayerPrefs.SetInt(GameConstants.TrackFreezeBonusCountStorageName, 0);
@@ -165,6 +171,15 @@ namespace Sneakers
         {
             _laceTrackLevelReactiveProperty.Value++;
             PlayerPrefs.SetInt(GameConstants.CurrentLaceTrackLevelStorageName, _laceTrackLevelReactiveProperty.Value);
+        }
+
+        public void SetBestResult(int newBest)
+        {
+            if (newBest <= _bestResultReactiveProperty.Value)
+                return;
+            
+            _bestResultReactiveProperty.Value = newBest;
+            PlayerPrefs.SetInt(GameConstants.BestResultStorageName, _bestResultReactiveProperty.Value);
         }
     }
 }

@@ -35,6 +35,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: edb5e89eee5f0409da52ce97019d3eb0, type: 2}
   - {fileID: 11400000, guid: 9611667cbcd7b4d7f8c60a3bba9c2687, type: 2}
   - {fileID: 11400000, guid: c4ccf6faa98f449d3adfae97546ed67b, type: 2}
+  endlessLevel: {fileID: 11400000, guid: 002660b587eca4479b53bdfc1c7c8d34, type: 2}
   washTrackLevels:
   - level: 0
     price: 0
@@ -61,23 +62,8 @@ MonoBehaviour:
     price: 400
     processDuration: 1.5
     trackSpeed: 240
-  bonusesParameters:
-    freezeTrackBonusParameters:
-      bonusCooldown: 0
-      bonusPrice: 50
-      bonusDuration: 3
-    quickFixWashBonusParameters:
-      bonusCooldown: 0
-      bonusPrice: 100
-      bonusDuration: 0.5
-    quickFixLaceBonusParameters:
-      bonusCooldown: 0
-      bonusPrice: 100
-      bonusDuration: 0.5
-    autoUtilizationBonusParameters:
-      bonusCooldown: 100000
-      bonusPrice: 150
-      bonusDuration: 100000
-    undoBonusParameters:
-      bonusCooldown: 0
-      bonusPrice: 200
+  levelToEnableEndlessMode: 17
+  regularModeBonusesConfig: {fileID: 11400000, guid: 970d03a657c2449b5ab31af992beec17,
+    type: 2}
+  endlessModeBonusesConfig: {fileID: 11400000, guid: abe8ed1f8656746c1844c704ab05ffe1,
+    type: 2}

@@ -18,13 +18,13 @@ namespace Sneakers
 
         public Canvas canvas;
         [SerializeField] private Text totalLabel;
+        [SerializeField] private Text bestLabel;
         [SerializeField] private LivesIndicator livesIndicator;
 
         [Space]
         [Header("Bonuses")]
         [SerializeField] private BonusItemView freezeTrackBonus;
         [SerializeField] private BonusItemView quickFixBonus;
-        [SerializeField] private BonusItemView quickFixLaceBonus;
         [SerializeField] private BonusItemView autoUtilizationBonus;
         [SerializeField] private BonusItemView undoBonus;
 
@@ -39,6 +39,7 @@ namespace Sneakers
         public ModelBinTrack SecondModelBin => secondModelBin;
 
         public Text TotalLabel => totalLabel;
+        public Text BestLabel => bestLabel;
         public LivesIndicator LivesIndicator => livesIndicator;
 
         // bonuses

@@ -11,10 +11,14 @@ namespace Sneakers
             _view = view;
         }
 
-        public void Show(int currentLevel, Action onPlayAction)
+        public void Show(int currentLevel, bool isEndlessModeEnabled,
+            Action onRegularModePlayAction, Action onEndlessModePlayAction)
         {
             _view.CurrentLevelText.text = $"Current level: {currentLevel}";
-            _view.PlayButton.onClick.AddListener(() => onPlayAction());
+            _view.EndlessModeButton.gameObject.SetActive(isEndlessModeEnabled);
+            _view.RegularModeButton.onClick.AddListener(() => onRegularModePlayAction());
+            _view.EndlessModeButton.onClick.AddListener(() => onEndlessModePlayAction());
+            
             _view.gameObject.SetActive(true);
         }
 
@@ -22,7 +26,7 @@ namespace Sneakers
         {
             _view.gameObject.SetActive(false);
             
-            _view.PlayButton.onClick.RemoveAllListeners();
+            _view.RegularModeButton.onClick.RemoveAllListeners();
         }
     }
 }

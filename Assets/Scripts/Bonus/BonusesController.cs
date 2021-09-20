@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -50,17 +51,11 @@ namespace Sneakers
 
         private bool _isFreezeTrackBonusActive;
         private bool _stopFreezeTrackBonus;
-        private bool _isFreezeTrackBonusOnCooldown;
-
-        private bool _isQuickFixWashBonusOnCooldown;
-        
-        private bool _isQuickFixLaceBonusOnCooldown;
 
         private bool _isAutoUtilizationBonusActive;
         private bool _stopAutoUtilizationBonus;
-        private bool _isAutoUtilizationBonusOnCooldown;
-        
-        private bool _isUndoBonusOnCooldown; 
+
+        private readonly Dictionary<BonusShopType, bool> _bonusesOnCooldown;
 
         private readonly ReactiveProperty<bool> _isFreezeTrackBonusReady;
         private readonly ReactiveProperty<bool> _isQuickFixWashBonusReady;
@@ -71,6 +66,14 @@ namespace Sneakers
         public BonusesController(Context context)
         {
             _context = context;
+            
+            _bonusesOnCooldown = new Dictionary<BonusShopType, bool>
+            {
+                {BonusShopType.TrackFreeze, false},
+                {BonusShopType.QuickFix, false},
+                {BonusShopType.AutoUtilization, false},
+                {BonusShopType.Undo, false}
+            };
             
             _isFreezeTrackBonusReady = new ReactiveProperty<bool>();
             _isQuickFixWashBonusReady = new ReactiveProperty<bool>();
@@ -137,6 +140,12 @@ namespace Sneakers
             if (undoBonusLimitations.BonusMaxCount != -1)
                 while (GetBonusCount(BonusType.Undo) > undoBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusType.Undo);
+
+            // drop cooldown
+            _bonusesOnCooldown[BonusShopType.TrackFreeze] = false;
+            _bonusesOnCooldown[BonusShopType.QuickFix] = false;
+            _bonusesOnCooldown[BonusShopType.AutoUtilization] = false;
+            _bonusesOnCooldown[BonusShopType.Undo] = false;
         }
 
         public void OuterUpdate(float frameLength)
@@ -148,14 +157,14 @@ namespace Sneakers
                 _context.SwitchFrozenStateAction(false);
             }
             
-            if (!_isFreezeTrackBonusReady.Value && !_isFreezeTrackBonusOnCooldown)
+            if (!_isFreezeTrackBonusReady.Value && !_bonusesOnCooldown[BonusShopType.TrackFreeze])
                 _isFreezeTrackBonusReady.Value = true;
 
             // quick fix bonus
-            if (!_isQuickFixWashBonusReady.Value && !_isQuickFixWashBonusOnCooldown)
+            if (!_isQuickFixWashBonusReady.Value && !_bonusesOnCooldown[BonusShopType.QuickFix])
                 _isQuickFixWashBonusReady.Value = true;
             
-            if (!_isQuickFixLaceBonusReady.Value && !_isQuickFixLaceBonusOnCooldown)
+            if (!_isQuickFixLaceBonusReady.Value && !_bonusesOnCooldown[BonusShopType.QuickFix])
                 _isQuickFixLaceBonusReady.Value = true;
             
             // auto utilization
@@ -165,11 +174,11 @@ namespace Sneakers
                 _context.SwitchAutoUtilizationAction(false);
             }
             
-            if (!_isAutoUtilizationBonusReady.Value && !_isAutoUtilizationBonusOnCooldown)
+            if (!_isAutoUtilizationBonusReady.Value && !_bonusesOnCooldown[BonusShopType.AutoUtilization])
                 _isAutoUtilizationBonusReady.Value = true;
             
             // undo bonus
-            if (!_isUndoBonusReady.Value && !_isUndoBonusOnCooldown)
+            if (!_isUndoBonusReady.Value && !_bonusesOnCooldown[BonusShopType.Undo])
                 _isUndoBonusReady.Value = true;
         }
 
@@ -245,18 +254,7 @@ namespace Sneakers
                 _stopFreezeTrackBonus = true;
             });
             
-            // effect cooldown
-            if (_context.BonusesParameters.FreezeTrackBonusParameters.BonusCooldown > 0)
-            {
-                _isFreezeTrackBonusOnCooldown = true;
-                int cooldownTimerInMilliseconds =
-                    Mathf.RoundToInt(_context.BonusesParameters.FreezeTrackBonusParameters.BonusCooldown * 1000);
-                Task.Run(async () =>
-                {
-                    await Task.Delay(cooldownTimerInMilliseconds);
-                    _isFreezeTrackBonusOnCooldown = false;
-                });
-            }
+            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.FreezeTrackBonusParameters.BonusCooldown);
             
             _context.GameModel.SpendBonus(BonusType.TrackFreeze);
         }
@@ -276,6 +274,12 @@ namespace Sneakers
             _context.GameModel.SpendBonus(BonusType.QuickFixWash);
             _context.SetQuickWashAction(_context.BonusesParameters.QuickFixWashBonusParameters.BonusDuration);
             _context.QuickFixBonusChoosingUiController.Hide();
+            
+            // effect cooldown
+            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
+                return;
+            
+            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown);
         }
 
         private void SetQuickFixLace()
@@ -283,6 +287,12 @@ namespace Sneakers
             _context.GameModel.SpendBonus(BonusType.QuickFixLace);
             _context.SetQuickLaceAction(_context.BonusesParameters.QuickFixLaceBonusParameters.BonusDuration);
             _context.QuickFixBonusChoosingUiController.Hide();
+            
+            // effect cooldown
+            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
+                return;
+            
+            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
         }
         
         private void WashAllSneakers()
@@ -290,35 +300,20 @@ namespace Sneakers
             _context.WashAllSneakersAction();
             
             // effect cooldown
-            if (_context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown > 0)
-            {
-                _isQuickFixWashBonusOnCooldown = true;
-                int cooldownTimerInMilliseconds =
-                    Mathf.RoundToInt(_context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown * 1000);
-                Task.Run(async () =>
-                {
-                    await Task.Delay(cooldownTimerInMilliseconds);
-                    _isQuickFixWashBonusOnCooldown = false;
-                });
-            }
+            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
+                return;
+            
+            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown);
         }
         
         private void LaceAllSneakers()
         {
             _context.LaceAllSneakersAction();
             
-            // effect cooldown
-            if (_context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown > 0)
-            {
-                _isQuickFixLaceBonusOnCooldown = true;
-                int cooldownTimerInMilliseconds =
-                    Mathf.RoundToInt(_context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown * 1000);
-                Task.Run(async () =>
-                {
-                    await Task.Delay(cooldownTimerInMilliseconds);
-                    _isQuickFixLaceBonusOnCooldown = false;
-                });
-            }
+            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
+                return;
+            
+            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
         }
 
         private void AutoUtilization()
@@ -336,40 +331,34 @@ namespace Sneakers
                 _stopAutoUtilizationBonus = true;
             });
             
-            // effect cooldown
-            if (_context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown > 0)
-            {
-                _isAutoUtilizationBonusOnCooldown = true;
-                int cooldownTimerInMilliseconds =
-                    Mathf.RoundToInt(_context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown * 1000);
-                Task.Run(async () =>
-                {
-                    await Task.Delay(cooldownTimerInMilliseconds);
-                    _isAutoUtilizationBonusOnCooldown = false;
-                });
-            }
-            
+            StartBonusCooldown(BonusShopType.AutoUtilization, _context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown);
             _context.GameModel.SpendBonus(BonusType.AutoUtilization);
         }
 
         private void UndoBadSorting()
         {
             _context.UndoBadSortingAction();
-            
-            // effect cooldown
-            if (_context.BonusesParameters.UndoBonusParameters.BonusCooldown > 0)
+            StartBonusCooldown(BonusShopType.Undo, _context.BonusesParameters.UndoBonusParameters.BonusCooldown);
+            _context.GameModel.SpendBonus(BonusType.Undo);
+        }
+
+        private void StartBonusCooldown(BonusShopType bonusType, float cooldownDuration)
+        {
+            if (cooldownDuration > 0)
             {
-                _isUndoBonusOnCooldown = true;
+                _bonusesOnCooldown[bonusType] = true;
                 int cooldownTimerInMilliseconds =
-                    Mathf.RoundToInt(_context.BonusesParameters.UndoBonusParameters.BonusCooldown * 1000);
+                    Mathf.RoundToInt(cooldownDuration * 1000);
                 Task.Run(async () =>
                 {
                     await Task.Delay(cooldownTimerInMilliseconds);
-                    _isUndoBonusOnCooldown = false;
+                    _bonusesOnCooldown[bonusType] = false;
                 });
             }
-            
-            _context.GameModel.SpendBonus(BonusType.Undo);
+
+            // set cooldown without timer, to make it available only once per level
+            if (cooldownDuration < 0)
+                _bonusesOnCooldown[bonusType] = true;
         }
     }
 }

@@ -136,6 +136,8 @@ namespace Sneakers
             _context.View.LivesIndicator.SetLives(_lives);
             _score = 0;
             _context.View.TotalLabel.text = _score.ToString();
+            _context.View.BestLabel.text = $"Best: {_context.GameModel.BestResultReactiveProperty.Value}";
+            _context.View.BestLabel.gameObject.SetActive(_currentLevelConfig.NumberOfSneakers < 0);
             
             _context.View.StartCoroutine(Spawn());
         }
@@ -165,7 +167,8 @@ namespace Sneakers
                 _spawnRoot.localScale = Vector3.one;
             }
 
-            while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers)
+            while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers
+            || _currentLevelConfig.NumberOfSneakers == -1)
             {
                 SneakerController sneaker = InstantiateSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
                 
@@ -254,6 +257,7 @@ namespace Sneakers
 
         public void OnSortSucceeded(SneakerController sneaker)
         {
+            _score += _currentLevelConfig.CoinsSuccessfulStepReward;
             _context.View.TotalLabel.text = _score.ToString();
             _sortedSneakersCount++;
 
@@ -308,7 +312,7 @@ namespace Sneakers
         {
             int coinsReward = _currentLevelConfig.CoinsSuccessfulLevelReward;
             int fineSize = (_currentLevelConfig.NumberOfLives - _lives) * _currentLevelConfig.CoinsWrongStepReward; 
-            _score = coinsReward + fineSize;
+            _score += coinsReward + fineSize;
         }
 
         public void UpgradeWashTrack(TrackLevelParams trackLevelParams)

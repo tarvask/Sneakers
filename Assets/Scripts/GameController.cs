@@ -30,6 +30,8 @@ namespace Sneakers
         private static GameController _instance;
         //#endif
 
+        private LevelConfig CurrentLevelConfig => _view.GameConfig.Levels[_model.CurrentLevel - 1];
+
         public GameController()
         {
 //#if UNITY_EDITOR
@@ -45,7 +47,8 @@ namespace Sneakers
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
             UpgradeShopUiController.Context upgradeShopControllerContext = new UpgradeShopUiController.Context(
-                _view.UpgradeShopUi, _view.GameConfig.BonusesParameters, _model.CoinsReactiveProperty,
+                _view.UpgradeShopUi, _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
+                _model.CoinsReactiveProperty,
                 _model.TrackFreezeBonusCountReactiveProperty,
                 _model.QuickFixWashBonusCountReactiveProperty,
                 _model.AutoUtilizationBonusCountReactiveProperty,
@@ -58,7 +61,7 @@ namespace Sneakers
             
             // bonuses
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.BonusesParameters, _quickFixBonusChoosingUiController,
+                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters, _quickFixBonusChoosingUiController,
                 SwitchFrozenState,
                 WashAllSneakers, LaceAllSneakers, SetQuickWash, SetQuickLace,
                 SwitchAutoUtilization, UndoBadSorting);
@@ -67,12 +70,12 @@ namespace Sneakers
             // sorting
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
             SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, _model,
-                _view.GameConfig.BonusesParameters,
+                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
                 _bonusesController,
                 ShowLegend, ApplyBonus);
             _sortingController = new SortingController(sortingControllerContext);
 
-            ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
+            ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
         }
 
         public void OuterUpdate(float frameLength)
@@ -96,9 +99,16 @@ namespace Sneakers
         {
             ChangeState(GameState.MainMenu);
             
-            _mainMenuUiController.Show(currentLevel, () =>
+            _mainMenuUiController.Show(currentLevel,
+                currentLevel >= _view.GameConfig.LevelToEnableEndlessMode,
+                () =>
             {
                 StartLevel(levelConfig);
+                _mainMenuUiController.Hide();
+            },
+            () =>
+            {
+                StartEndlessMode();
                 _mainMenuUiController.Hide();
             });
         }
@@ -123,6 +133,11 @@ namespace Sneakers
             }
         }
 
+        private void StartEndlessMode()
+        {
+            StartLevel(_view.GameConfig.EndlessLevel);
+        }
+
         private void ShowTutorial(string tutorialText)
         {
             ChangeState(GameState.Tutorial);
@@ -131,7 +146,7 @@ namespace Sneakers
                 {
                     _tutorialUiController.Hide();
 
-                    if (_view.GameConfig.Levels[_model.CurrentLevel - 1].ShowUpgradeShop)
+                    if (CurrentLevelConfig.ShowUpgradeShop)
                     {
                         ShowUpgradeShop();
                     }
@@ -153,13 +168,13 @@ namespace Sneakers
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(_view.GameConfig.Levels[_model.CurrentLevel - 1]);
+                    StartLevel(CurrentLevelConfig);
                 },
                 () =>
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
+                    ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
                 });
         }
 
@@ -176,13 +191,17 @@ namespace Sneakers
                 {
                     _loseUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(_view.GameConfig.Levels[_model.CurrentLevel - 1]);
+                    
+                    if (_sortingController.CurrentLevelConfig.NumberOfSneakers > 0)
+                        StartLevel(CurrentLevelConfig);
+                    else
+                        StartEndlessMode();
                 },
                 () =>
                 {
                     _loseUiController.Hide();
                     _sortingController.Clear();
-                    ShowMainMenu(_model.CurrentLevel, _view.GameConfig.Levels[_model.CurrentLevel - 1]);
+                    ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
                 });
         }
 
@@ -190,7 +209,7 @@ namespace Sneakers
         {
             ChangeState(GameState.CollectLegend);
             // find config of legendary sneaker
-            SneakerConfig legendarySneakerConfig = Array.Find(_view.GameConfig.Levels[_model.CurrentLevel - 1].PossibleSneakers,
+            SneakerConfig legendarySneakerConfig = Array.Find(CurrentLevelConfig.PossibleSneakers,
                 (sneakerParams) => sneakerParams.Config.Id == legendarySneakerId).Config;
             _legendUiController.Show(legendarySneakerConfig,
                 () =>
@@ -237,7 +256,7 @@ namespace Sneakers
 
         private void BuyBonus(BonusShopType bonusType)
         {
-            int bonusPrice = _view.GameConfig.BonusesParameters.GetBonusPrice(bonusType);
+            int bonusPrice = _view.GameConfig.RegularModeBonusesConfig.BonusesParameters.GetBonusPrice(bonusType);
             
             if (!_model.SpendMoney(bonusPrice))
                 return;
@@ -288,6 +307,12 @@ namespace Sneakers
         {
             // save coins
             _model.AddMoney(_sortingController.Score);
+            
+            // save best in endless mode
+            if (_sortingController.CurrentLevelConfig.NumberOfSneakers < 0)
+            {
+                _model.SetBestResult(_sortingController.Score);
+            }
             
             // bonuses
             PlayerPrefs.SetInt(GameConstants.TrackFreezeBonusCountStorageName, _model.TrackFreezeBonusCountReactiveProperty.Value);
