@@ -20,6 +20,9 @@ namespace Sneakers
         [SerializeField] private float mainTrackMovementSpeed = 5f;
         [SerializeField] private float mainTrackMinSpawnDelay = 2f;
         [SerializeField] private float mainTrackMaxSpawnDelay = 2f;
+        [SerializeField] private bool isMainTrackSpeedingUp;
+        [SerializeField] private float mainTrackSpeedUpInterval;
+        [SerializeField] private float mainTrackSpeedUpDelta;
 
         [Header("Wash track")]
         [SerializeField] private bool isWashTrackAvailable;
@@ -68,7 +71,10 @@ namespace Sneakers
         public float MainTrackMovementSpeed => mainTrackMovementSpeed;
         public float MainTrackMinSpawnDelay => mainTrackMinSpawnDelay;
         public float MainTrackMaxSpawnDelay => mainTrackMaxSpawnDelay;
-        
+        public bool IsMainTrackSpeedingUp => isMainTrackSpeedingUp;
+        public float MainTrackSpeedUpInterval => mainTrackSpeedUpInterval;
+        public float MainTrackSpeedUpDelta => mainTrackSpeedUpDelta;
+
         // wash track
         public bool IsWashTrackAvailable => isWashTrackAvailable;
         

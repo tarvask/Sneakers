@@ -140,6 +140,9 @@ namespace Sneakers
             _context.View.BestLabel.gameObject.SetActive(_currentLevelConfig.NumberOfSneakers < 0);
             
             _context.View.StartCoroutine(Spawn());
+
+            if (_currentLevelConfig.IsMainTrackSpeedingUp)
+                _context.View.StartCoroutine(SpeedUpMainTrack());
         }
 
         public void Clear()
@@ -199,6 +202,16 @@ namespace Sneakers
             _spawnedSneakersCount++;
             
             return sneakerController;
+        }
+
+        private IEnumerator SpeedUpMainTrack()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(_currentLevelConfig.MainTrackSpeedUpInterval);
+
+                _context.View.MainTrack.SpeedUp(_currentLevelConfig.MainTrackSpeedUpDelta);
+            }
         }
 
         private void CheckAndRemoveFromSpecialTracks(SneakerController sneakerController, TransporterType trackToIgnore = TransporterType.Undefined)

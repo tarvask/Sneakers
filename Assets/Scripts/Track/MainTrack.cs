@@ -62,5 +62,10 @@ namespace Sneakers
                     _sortingController.OnSortLegendaryError(sneaker);
             }
         }
+
+        public void SpeedUp(float speedUpDelta)
+        {
+            _mainTrackMovementSpeed += speedUpDelta;
+        }
     }
 }
