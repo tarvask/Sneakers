@@ -41,6 +41,8 @@ namespace Sneakers
         [Header("Model bin track")]
         [SerializeField] private int firstBinModelId;
         [SerializeField] private int secondBinModelId;
+        [SerializeField] private bool areBinModelsSwitching;
+        [SerializeField] private float binModelsSwitchingInterval;
         
         [Space]
         [Header("Tutorial")]
@@ -92,6 +94,8 @@ namespace Sneakers
         // model bins
         public int FirstBinModelId => firstBinModelId;
         public int SecondBinModelId => secondBinModelId;
+        public bool AreBinModelsSwitching => areBinModelsSwitching;
+        public float BinModelsSwitchingInterval => binModelsSwitchingInterval;
         
         // tutorial
         public string TutorialText => tutorialText;

@@ -8,7 +8,9 @@ namespace Sneakers
         [SerializeField] private TextMeshProUGUI modelIdText;
         
         private int _modelId;
-        
+
+        public int ModelId => _modelId;
+
         public void Init(SortingController sortingController, bool isAvailable, int modelId)
         {
             base.Init(sortingController, isAvailable);

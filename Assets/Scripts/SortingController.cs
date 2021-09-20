@@ -143,6 +143,9 @@ namespace Sneakers
 
             if (_currentLevelConfig.IsMainTrackSpeedingUp)
                 _context.View.StartCoroutine(SpeedUpMainTrack());
+
+            if (_currentLevelConfig.AreBinModelsSwitching)
+                _context.View.StartCoroutine(SwitchBinsModels());
         }
 
         public void Clear()
@@ -236,6 +239,21 @@ namespace Sneakers
             }
         }
 
+        private IEnumerator SwitchBinsModels()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(_currentLevelConfig.BinModelsSwitchingInterval);
+
+                int newFirstBinModelId = _currentLevelConfig
+                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config.Id;
+                int newSecondBinModelId = _currentLevelConfig
+                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config.Id;
+                _context.View.FirstModelBin.ChangeModelId(newFirstBinModelId);
+                _context.View.SecondModelBin.ChangeModelId(newSecondBinModelId);
+            }
+        }
+
         private void CheckAndRemoveFromSpecialTracks(SneakerController sneakerController, TransporterType trackToIgnore = TransporterType.Undefined)
         {
             if (trackToIgnore != TransporterType.Washing)
@@ -303,10 +321,20 @@ namespace Sneakers
 
         public void OnSortFailed(SneakerController sneaker)
         {
-            _lives--;
-            _context.View.LivesIndicator.SetLives(_lives);
+            // was not sorted to bin
+            if (sneaker.Id == _context.View.FirstModelBin.ModelId
+                || sneaker.Id == _context.View.SecondModelBin.ModelId)
+            {
+                _lives--;
+                _context.View.LivesIndicator.SetLives(_lives);
+            }
+            else // could not be sorted, so count as success
+            {
+                _score += _currentLevelConfig.CoinsSuccessfulStepReward;
+                _context.View.TotalLabel.text = _score.ToString();
+            }
+
             _sortedSneakersCount++;
-            
             _sneakers.Remove(sneaker);
             CheckAndRemoveFromSpecialTracks(sneaker);
             sneaker.Dispose();
