@@ -170,10 +170,16 @@ namespace Sneakers
                 _spawnRoot.localScale = Vector3.one;
             }
 
-            while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers
-            || _currentLevelConfig.NumberOfSneakers == -1)
+            bool randomSpawn = _currentLevelConfig.NumberOfSneakers == -1;
+
+            while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers || randomSpawn)
             {
-                SneakerController sneaker = InstantiateSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                SneakerController sneaker;
+                
+                if (randomSpawn)
+                    sneaker = InstantiateRandomSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                else
+                    sneaker = InstantiateSneakerFromList(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
                 
                 if (_isAutoUtilizationActive && sneaker.State == SneakerState.Wasted)
                     OnSortSucceeded(sneaker);
@@ -187,11 +193,27 @@ namespace Sneakers
             }
         }
         
-        private SneakerController InstantiateSneaker(Transform spawnRoot, Vector3 position)
+        private SneakerController InstantiateSneakerFromList(Transform spawnRoot, Vector3 position)
         {
             SneakerConfig sneakerConfig = _sneakersToSpawn[_spawnedSneakersCount].Config;
-            SneakerState state = _sneakersToSpawn[_spawnedSneakersCount].State;
+            SneakerState sneakerState = _sneakersToSpawn[_spawnedSneakersCount].State;
             
+            return InstantiateSneaker(spawnRoot, position, sneakerConfig, sneakerState);
+        }
+        
+        private SneakerController InstantiateRandomSneaker(Transform spawnRoot, Vector3 position)
+        {
+            // random sneaker, random state
+            int sneakerToSpawnIndex = Random.Range(0, _currentLevelConfig.PossibleSneakers.Length);
+            SneakerConfig sneakerConfig = _currentLevelConfig.PossibleSneakers[sneakerToSpawnIndex].Config;
+            SneakerState sneakerState = (SneakerState)Random.Range((int)SneakerState.Normal, (int)SneakerState.Wasted + 1);
+            
+            return InstantiateSneaker(spawnRoot, position, sneakerConfig, sneakerState);
+        }
+        
+        private SneakerController InstantiateSneaker(Transform spawnRoot, Vector3 position,
+            SneakerConfig sneakerConfig, SneakerState state)
+        {
             SneakerView newSneakerView = Object.Instantiate(sneakerConfig.Prefab, spawnRoot);
             newSneakerView.transform.localPosition = position;
             
