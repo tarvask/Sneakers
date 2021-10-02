@@ -244,6 +244,7 @@ namespace Sneakers
             _context.SwitchFrozenStateAction(true);
             
             _isFreezeTrackBonusActive = true;
+            _stopFreezeTrackBonus = false;
 
             // effect duration
             int effectTimerInMilliseconds =
