@@ -67,8 +67,8 @@ namespace Sneakers
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
                 _view.GameConfig.RegularModeBonusesConfig.BonusesParameters, _quickFixBonusChoosingUiController,
                 SwitchFrozenState,
-                WashAllSneakers, LaceAllSneakers, SetQuickWash, SetQuickLace,
-                SwitchAutoUtilization, UndoBadSorting);
+                WashAllDirtySneakers, LaceAllUnlacedSneakers, SetQuickWash, SetQuickLace,
+                SwitchAutoUtilization, WasteAllWastedSneakers, UndoBadSorting);
             _bonusesController = new BonusesController(bonusesControllerContext);
             
             // sorting
@@ -341,14 +341,19 @@ namespace Sneakers
                 ChangeState(GameState.Playing);
         }
 
-        private void WashAllSneakers()
+        private void WashAllDirtySneakers()
         {
-            _sortingController.WashAllSneakers();
+            _sortingController.WashAllDirtySneakers();
         }
 
-        private void LaceAllSneakers()
+        private void LaceAllUnlacedSneakers()
         {
-            _sortingController.LaceAllSneakers();
+            _sortingController.LaceAllUnlacedSneakers();
+        }
+
+        private void WasteAllWastedSneakers()
+        {
+            _sortingController.WasteAllWastedSneakers();
         }
 
         private void SetQuickWash(float processDuration)

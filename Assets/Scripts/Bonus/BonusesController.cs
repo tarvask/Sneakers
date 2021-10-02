@@ -20,6 +20,7 @@ namespace Sneakers
             public Action<float> SetQuickWashAction { get; }
             public Action<float> SetQuickLaceAction { get; }
             public Action<bool> SwitchAutoUtilizationAction { get; }
+            public Action WasteAllWastedSneakersAction { get; }
             public Action UndoBadSortingAction { get; }
 
             public Context(GameModel gameModel, BonusesParameters bonusesParameters,
@@ -31,6 +32,7 @@ namespace Sneakers
                 Action<float> setQuickWashAction,
                 Action<float> setQuickLaceAction,
                 Action<bool> switchAutoUtilizationAction,
+                Action wasteAllWastedSneakersAction,
                 Action undoBadSortingAction)
             {
                 GameModel = gameModel;
@@ -43,6 +45,7 @@ namespace Sneakers
                 SetQuickWashAction = setQuickWashAction;
                 SetQuickLaceAction = setQuickLaceAction;
                 SwitchAutoUtilizationAction = switchAutoUtilizationAction;
+                WasteAllWastedSneakersAction = wasteAllWastedSneakersAction;
                 UndoBadSortingAction = undoBadSortingAction;
             }
         }
@@ -296,7 +299,7 @@ namespace Sneakers
             StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
         }
         
-        private void WashAllSneakers()
+        private void WashAllDirtySneakers()
         {
             _context.WashAllSneakersAction();
             
@@ -307,7 +310,7 @@ namespace Sneakers
             StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown);
         }
         
-        private void LaceAllSneakers()
+        private void LaceAllUnlacedSneakers()
         {
             _context.LaceAllSneakersAction();
             
@@ -317,8 +320,14 @@ namespace Sneakers
             StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
         }
 
+        private void WasteAllWastedSneakers()
+        {
+            _context.WasteAllWastedSneakersAction();
+        }
+
         private void AutoUtilization()
         {
+            WasteAllWastedSneakers();
             _context.SwitchAutoUtilizationAction(true);
             
             _isAutoUtilizationBonusActive = true;

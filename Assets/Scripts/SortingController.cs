@@ -386,18 +386,32 @@ namespace Sneakers
             _context.View.LaceTrack.Upgrade(trackLevelParams);
         }
 
-        public void WashAllSneakers()
+        public void WashAllDirtySneakers()
         {
             foreach (SneakerController sneaker in _sneakers)
                 if (sneaker.State == SneakerState.Dirty)
                     sneaker.SetState(SneakerState.Normal);
         }
 
-        public void LaceAllSneakers()
+        public void LaceAllUnlacedSneakers()
         {
             foreach (SneakerController sneaker in _sneakers)
                 if (sneaker.State == SneakerState.Unlaced)
                     sneaker.SetState(SneakerState.Normal);
+        }
+
+        public void WasteAllWastedSneakers()
+        {
+            List<SneakerController> sneakersToWaste = new List<SneakerController>(_sneakers.Count);
+            
+            foreach (SneakerController sneaker in _sneakers)
+                if (sneaker.State == SneakerState.Wasted)
+                    sneakersToWaste.Add(sneaker);
+
+            foreach (SneakerController wastedSneaker in sneakersToWaste)
+                OnSortSucceeded(wastedSneaker);
+            
+            sneakersToWaste.Clear();
         }
 
         public void SetQuickWash(float processDuration)
