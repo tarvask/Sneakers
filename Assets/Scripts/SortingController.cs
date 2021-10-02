@@ -13,18 +13,16 @@ namespace Sneakers
         {
             public SortingView View { get; }
             public GameModel GameModel { get; }
-            public BonusesParameters BonusesParameters { get; }
             public BonusesController BonusesController { get; }
             public Action<int> OnLegendarySneakerCollectedAction { get; }
             public Action<BonusShopType> OnBonusButtonClickedAction { get; }
 
-            public Context(SortingView view, GameModel gameModel, BonusesParameters bonusesParameters,
+            public Context(SortingView view, GameModel gameModel,
                 BonusesController bonusesController,
                 Action<int> onLegendarySneakerCollectedAction, Action<BonusShopType> onBonusButtonClickedAction)
             {
                 View = view;
                 GameModel = gameModel;
-                BonusesParameters = bonusesParameters;
                 BonusesController = bonusesController;
                 OnLegendarySneakerCollectedAction = onLegendarySneakerCollectedAction;
                 OnBonusButtonClickedAction = onBonusButtonClickedAction;

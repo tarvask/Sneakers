@@ -47,8 +47,12 @@ namespace Sneakers
             _loseUiController = new LoseUiController(_view.LoseUi);
             _legendUiController = new LegendUiController(_view.LegendUi);
             UpgradeShopUiController.Context upgradeShopControllerContext = new UpgradeShopUiController.Context(
-                _view.UpgradeShopUi, _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
+                _view.UpgradeShopUi,
+                _view.GameConfig.WashTrackLevels, _view.GameConfig.LaceTrackLevels,
+                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
                 _model.CoinsReactiveProperty,
+                _model.WashTrackLevelReactiveProperty,
+                _model.LaceTrackLevelReactiveProperty,
                 _model.TrackFreezeBonusCountReactiveProperty,
                 _model.QuickFixWashBonusCountReactiveProperty,
                 _model.AutoUtilizationBonusCountReactiveProperty,
@@ -70,7 +74,6 @@ namespace Sneakers
             // sorting
             SortingView sortingView = Object.FindObjectOfType<SortingView>();
             SortingController.Context sortingControllerContext = new SortingController.Context(sortingView, _model,
-                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
                 _bonusesController,
                 ShowLegend, ApplyBonus);
             _sortingController = new SortingController(sortingControllerContext);
@@ -223,17 +226,16 @@ namespace Sneakers
         {
             ChangeState(GameState.UpgradeShop);
 
-            _upgradeShopUiController.Show(_model.CoinsReactiveProperty,
-                _view.GameConfig.WashTrackLevels,
-                _view.GameConfig.LaceTrackLevels,
-                _model.WashTrackLevelReactiveProperty, _model.LaceTrackLevelReactiveProperty,
+            _upgradeShopUiController.Show(
                 _sortingController.CurrentLevelConfig.FreezeTrackBonusLimitations,
                 _sortingController.CurrentLevelConfig.QuickFixBonusLimitations,
                 _sortingController.CurrentLevelConfig.AutoUtilizationBonusLimitations,
                 _sortingController.CurrentLevelConfig.UndoBonusLimitations,
                 () =>
                 {
-                    if (!_model.SpendMoney(_view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value].Price))
+                    int washTrackNextLevelIndex = _model.WashTrackLevelReactiveProperty.Value + 1;
+                    
+                    if (!_model.SpendMoney(_view.GameConfig.WashTrackLevels[washTrackNextLevelIndex].Price))
                         return;
                     
                     _model.UpgradeWashMachine();
@@ -241,7 +243,9 @@ namespace Sneakers
                 },
                 () =>
                 {
-                    if (!_model.SpendMoney(_view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value].Price))
+                    int laceTrackNextLevelIndex = _model.LaceTrackLevelReactiveProperty.Value + 1;
+                    
+                    if (!_model.SpendMoney(_view.GameConfig.LaceTrackLevels[laceTrackNextLevelIndex].Price))
                         return;
                     
                     _model.UpgradeLaceMachine();
