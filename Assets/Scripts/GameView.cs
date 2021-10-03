@@ -13,7 +13,6 @@ namespace Sneakers
         [SerializeField] private LoseUiView loseUi;
         [SerializeField] private LegendUiView legendUi;
         [SerializeField] private UpgradeShopUiView upgradeShopUi;
-        [SerializeField] private QuickFixBonusChoosingUiView quickFixBonusChoosingUi;
 
         [Space] [Header("Cheat Panel")]
         [SerializeField] private CheatPanelUiView cheatPanelUi;
@@ -27,7 +26,6 @@ namespace Sneakers
         public LoseUiView LoseUi => loseUi;
         public LegendUiView LegendUi => legendUi;
         public UpgradeShopUiView UpgradeShopUi => upgradeShopUi;
-        public QuickFixBonusChoosingUiView QuickFixBonusChoosingUi => quickFixBonusChoosingUi;
         
         // cheat panel
         public CheatPanelUiView CheatPanelUi => cheatPanelUi;

@@ -1,10 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sneakers
 {
     public class WashTrack : AbstractSpecialTrack
     {
+        [SerializeField] private Image quickFixActiveHighlight;
+        
         private TrackLevelParams _trackLevelParams;
         private float _currentProcessDuration;
         private bool _isQuickFixActive;
@@ -14,8 +17,7 @@ namespace Sneakers
             base.Init(sortingController, isAvailable);
 
             _trackLevelParams = trackLevelParams;
-            _currentProcessDuration = trackLevelParams.ProcessDuration;
-            _isQuickFixActive = false;
+            ResetQuickFix();
         }
 
         public void Upgrade(TrackLevelParams trackLevelParams)
@@ -29,12 +31,16 @@ namespace Sneakers
         {
             _currentProcessDuration = processDuration;
             _isQuickFixActive = true;
+
+            quickFixActiveHighlight.gameObject.SetActive(true);
         }
         
         private void ResetQuickFix()
         {
             _currentProcessDuration = _trackLevelParams.ProcessDuration;
             _isQuickFixActive = false;
+            
+            quickFixActiveHighlight.gameObject.SetActive(false);
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)

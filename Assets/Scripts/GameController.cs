@@ -20,7 +20,6 @@ namespace Sneakers
         private readonly LoseUiController _loseUiController;
         private readonly LegendUiController _legendUiController;
         private readonly UpgradeShopUiController _upgradeShopUiController;
-        private readonly QuickFixBonusChoosingUiController _quickFixBonusChoosingUiController;
 
         private readonly CheatPanelUiController _cheatPanelUiController;
 
@@ -59,13 +58,12 @@ namespace Sneakers
                 _model.UndoBonusCountReactiveProperty,
                 BuyBonus);
             _upgradeShopUiController = new UpgradeShopUiController(upgradeShopControllerContext);
-            _quickFixBonusChoosingUiController = new QuickFixBonusChoosingUiController(_view.QuickFixBonusChoosingUi);
 
             _cheatPanelUiController = new CheatPanelUiController(_view.CheatPanelUi, _view.GameConfig.ShowCheatPanel);
             
             // bonuses
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters, _quickFixBonusChoosingUiController,
+                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
                 SwitchFrozenState,
                 WashAllDirtySneakers, LaceAllUnlacedSneakers, SetQuickWash, SetQuickLace,
                 SwitchAutoUtilization, WasteAllWastedSneakers, UndoBadSorting);

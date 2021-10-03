@@ -12,7 +12,6 @@ namespace Sneakers
         {
             public GameModel GameModel { get; }
             public BonusesParameters BonusesParameters { get; }
-            public QuickFixBonusChoosingUiController QuickFixBonusChoosingUiController { get; }
             
             public Action<bool> SwitchFrozenStateAction { get; }
             public Action WashAllSneakersAction { get; }
@@ -24,7 +23,6 @@ namespace Sneakers
             public Action UndoBadSortingAction { get; }
 
             public Context(GameModel gameModel, BonusesParameters bonusesParameters,
-                QuickFixBonusChoosingUiController quickFixBonusChoosingUiController,
                 
                 Action<bool> switchFrozenStateAction,
                 Action washAllSneakersAction,
@@ -37,7 +35,6 @@ namespace Sneakers
             {
                 GameModel = gameModel;
                 BonusesParameters = bonusesParameters;
-                QuickFixBonusChoosingUiController = quickFixBonusChoosingUiController;
                 
                 SwitchFrozenStateAction = switchFrozenStateAction;
                 WashAllSneakersAction = washAllSneakersAction;
@@ -265,19 +262,15 @@ namespace Sneakers
 
         private void QuickFix()
         {
-            int quickFixWashBonusCount = GetBonusCount(BonusType.QuickFixWash);
-            int quickFixLaceBonusCount = GetBonusCount(BonusType.QuickFixLace);
-            bool isQuickWashingAvailable = quickFixWashBonusCount > 0 && quickFixWashBonusCount >= quickFixLaceBonusCount;
-            bool isQuickLacingAvailable = quickFixLaceBonusCount > 0 && quickFixLaceBonusCount >= quickFixWashBonusCount;;
-            _context.QuickFixBonusChoosingUiController.Show(isQuickWashingAvailable, SetQuickFixWash,
-                isQuickLacingAvailable, SetQuickFixLace);
+            SetQuickFixWash();
+            SetQuickFixLace();
         }
 
         private void SetQuickFixWash()
         {
             _context.GameModel.SpendBonus(BonusType.QuickFixWash);
             _context.SetQuickWashAction(_context.BonusesParameters.QuickFixWashBonusParameters.BonusDuration);
-            _context.QuickFixBonusChoosingUiController.Hide();
+            //_context.QuickFixBonusChoosingUiController.Hide();
             
             // effect cooldown
             if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
@@ -290,7 +283,6 @@ namespace Sneakers
         {
             _context.GameModel.SpendBonus(BonusType.QuickFixLace);
             _context.SetQuickLaceAction(_context.BonusesParameters.QuickFixLaceBonusParameters.BonusDuration);
-            _context.QuickFixBonusChoosingUiController.Hide();
             
             // effect cooldown
             if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
