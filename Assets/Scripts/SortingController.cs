@@ -321,7 +321,9 @@ namespace Sneakers
         {
             // was not sorted to bin
             if (sneaker.Id == _context.View.FirstModelBin.ModelId
-                || sneaker.Id == _context.View.SecondModelBin.ModelId)
+                || sneaker.Id == _context.View.SecondModelBin.ModelId
+                // was not fixed in endless mode
+                || sneaker.State != SneakerState.Normal)
             {
                 _lives--;
                 _context.View.LivesIndicator.SetLives(_lives);
