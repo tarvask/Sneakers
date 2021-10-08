@@ -51,7 +51,7 @@ MonoBehaviour:
     count: 0
   mainTrackMovementSpeed: 240
   mainTrackMinSpawnDelay: 1.1
-  mainTrackMaxSpawnDelay: 2.2
+  mainTrackMaxSpawnDelay: 2.1
   isMainTrackSpeedingUp: 0
   mainTrackSpeedUpInterval: 0
   mainTrackSpeedUpDelta: 0
