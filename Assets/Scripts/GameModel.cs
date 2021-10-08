@@ -15,8 +15,7 @@ namespace Sneakers
         private readonly ReactiveProperty<int> _bestResultReactiveProperty;
         // bonuses
         private readonly ReactiveProperty<int> _trackFreezeBonusCountReactiveProperty;
-        private readonly ReactiveProperty<int> _quickFixWashBonusCountReactiveProperty;
-        private readonly ReactiveProperty<int> _quickFixLaceBonusCountReactiveProperty;
+        private readonly ReactiveProperty<int> _quickFixBonusCountReactiveProperty;
         private readonly ReactiveProperty<int> _autoUtilizationBonusCountReactiveProperty;
         private readonly ReactiveProperty<int> _undoBonusCountReactiveProperty;
 
@@ -30,8 +29,7 @@ namespace Sneakers
 
         // bonuses
         public IReadOnlyReactiveProperty<int> TrackFreezeBonusCountReactiveProperty => _trackFreezeBonusCountReactiveProperty;
-        public IReadOnlyReactiveProperty<int> QuickFixWashBonusCountReactiveProperty => _quickFixWashBonusCountReactiveProperty;
-        public IReadOnlyReactiveProperty<int> QuickFixLaceBonusCountReactiveProperty => _quickFixLaceBonusCountReactiveProperty;
+        public IReadOnlyReactiveProperty<int> QuickFixBonusCountReactiveProperty => _quickFixBonusCountReactiveProperty;
         public IReadOnlyReactiveProperty<int> AutoUtilizationBonusCountReactiveProperty => _autoUtilizationBonusCountReactiveProperty;
         public IReadOnlyReactiveProperty<int> UndoBonusCountReactiveProperty => _undoBonusCountReactiveProperty;
 
@@ -44,8 +42,7 @@ namespace Sneakers
             _bestResultReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.BestResultStorageName, 0));
             
             _trackFreezeBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.TrackFreezeBonusCountStorageName, 0));
-            _quickFixWashBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.QuickFixWashBonusCountStorageName, 0));
-            _quickFixLaceBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.QuickFixLaceBonusCountStorageName, 0));
+            _quickFixBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.QuickFixBonusCountStorageName, 0));
             _autoUtilizationBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.AutoUtilizationBonusCountStorageName, 0));
             _undoBonusCountReactiveProperty = new ReactiveProperty<int>(PlayerPrefs.GetInt(GameConstants.UndoBonusCountStorageName, 0));
         }
@@ -71,10 +68,8 @@ namespace Sneakers
             // bonuses
             _trackFreezeBonusCountReactiveProperty.Value = 0;
             PlayerPrefs.SetInt(GameConstants.TrackFreezeBonusCountStorageName, 0);
-            _quickFixWashBonusCountReactiveProperty.Value = 0;
-            PlayerPrefs.SetInt(GameConstants.QuickFixWashBonusCountStorageName, 0);
-            _quickFixLaceBonusCountReactiveProperty.Value = 0;
-            PlayerPrefs.SetInt(GameConstants.QuickFixLaceBonusCountStorageName, 0);
+            _quickFixBonusCountReactiveProperty.Value = 0;
+            PlayerPrefs.SetInt(GameConstants.QuickFixBonusCountStorageName, 0);
             _autoUtilizationBonusCountReactiveProperty.Value = 0;
             PlayerPrefs.SetInt(GameConstants.AutoUtilizationBonusCountStorageName, 0);
             _undoBonusCountReactiveProperty.Value = 0;
@@ -97,23 +92,20 @@ namespace Sneakers
             PlayerPrefs.SetInt(GameConstants.CoinsStorageName, _coinsReactiveProperty.Value);
         }
         
-        public void SpendBonus(BonusType bonusType)
+        public void SpendBonus(BonusShopType bonusType)
         {
             switch (bonusType)
             {
-                case BonusType.TrackFreeze:
+                case BonusShopType.TrackFreeze:
                     _trackFreezeBonusCountReactiveProperty.Value--;
                     break;
-                case BonusType.QuickFixWash:
-                    _quickFixWashBonusCountReactiveProperty.Value--;
+                case BonusShopType.QuickFix:
+                    _quickFixBonusCountReactiveProperty.Value--;
                     break;
-                case BonusType.QuickFixLace:
-                    _quickFixLaceBonusCountReactiveProperty.Value--;
-                    break;
-                case BonusType.AutoUtilization:
+                case BonusShopType.AutoUtilization:
                     _autoUtilizationBonusCountReactiveProperty.Value--;
                     break;
-                case BonusType.Undo:
+                case BonusShopType.Undo:
                     _undoBonusCountReactiveProperty.Value--;
                     break;
                 default:
@@ -121,23 +113,20 @@ namespace Sneakers
             }
         }
         
-        public void AddBonus(BonusType bonusType)
+        public void AddBonus(BonusShopType bonusType)
         {
             switch (bonusType)
             {
-                case BonusType.TrackFreeze:
+                case BonusShopType.TrackFreeze:
                     _trackFreezeBonusCountReactiveProperty.Value++;
                     break;
-                case BonusType.QuickFixWash:
-                    _quickFixWashBonusCountReactiveProperty.Value++;
+                case BonusShopType.QuickFix:
+                    _quickFixBonusCountReactiveProperty.Value++;
                     break;
-                case BonusType.QuickFixLace:
-                    _quickFixLaceBonusCountReactiveProperty.Value++;
-                    break;
-                case BonusType.AutoUtilization:
+                case BonusShopType.AutoUtilization:
                     _autoUtilizationBonusCountReactiveProperty.Value++;
                     break;
-                case BonusType.Undo:
+                case BonusShopType.Undo:
                     _undoBonusCountReactiveProperty.Value++;
                     break;
                 default:

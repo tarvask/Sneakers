@@ -72,7 +72,7 @@ namespace Sneakers
             _freezeTrackBonus = new BonusShopItemController(freezeTrackBonusContext);
             
             BonusShopItemController.Context quickFixBonusContext = new BonusShopItemController.Context(
-                _context.View.QuickFixBonus, BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters,
+                _context.View.QuickFixBonus, BonusShopType.QuickFix, _context.BonusesParameters.QuickFixBonusParameters,
                 _context.QuickFixBonusCountReactiveProperty,
                 _context.CoinsReactiveProperty);
             _quickFixBonus = new BonusShopItemController(quickFixBonusContext);

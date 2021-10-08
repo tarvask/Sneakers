@@ -1,6 +1,5 @@
 using System;
 using UniRx;
-using UnityEngine;
 
 namespace Sneakers
 {
@@ -10,47 +9,50 @@ namespace Sneakers
         {
             public BonusItemView View { get; }
             public BonusShopType BonusType { get; }
-            public IReadOnlyReactiveProperty<int> QuickFixWashBonusCountReactiveProperty { get; }
-            public IReadOnlyReactiveProperty<int> QuickFixLaceBonusCountReactiveProperty { get; }
+            public IReadOnlyReactiveProperty<int> QuickFixBonusCountReactiveProperty { get; }
+            public IReadOnlyReactiveProperty<bool> BonusReadinessReactiveProperty { get; }
             public Action<BonusShopType> OnBonusClickedAction { get; }
 
             public Context(BonusItemView view, BonusShopType bonusType,
-                IReadOnlyReactiveProperty<int> quickFixWashBonusCountReactiveProperty,
-                IReadOnlyReactiveProperty<int> quickFixLaceBonusCountReactiveProperty,
+                IReadOnlyReactiveProperty<int> quickFixBonusCountReactiveProperty,
+                IReadOnlyReactiveProperty<bool> bonusReadinessReactiveProperty,
                 Action<BonusShopType> onBonusClickedAction)
             {
                 View = view;
                 BonusType = bonusType;
-                QuickFixWashBonusCountReactiveProperty = quickFixWashBonusCountReactiveProperty;
-                QuickFixLaceBonusCountReactiveProperty = quickFixLaceBonusCountReactiveProperty;
+                QuickFixBonusCountReactiveProperty = quickFixBonusCountReactiveProperty;
+                BonusReadinessReactiveProperty = bonusReadinessReactiveProperty;
                 OnBonusClickedAction = onBonusClickedAction;
             }
         }
 
         private readonly Context _context;
         private bool _isBonusAvailableOnLevel;
+        private bool _isBonusUnlimitedOnLevel;
 
         public QuickFixBonusItemController(Context context)
         {
             _context = context;
 
-            _context.QuickFixWashBonusCountReactiveProperty.Subscribe((bonusCount) => Refresh());
-            _context.QuickFixLaceBonusCountReactiveProperty.Subscribe((bonusCount) => Refresh());
+            _context.QuickFixBonusCountReactiveProperty.Subscribe((bonusCount) => Refresh());
+            _context.BonusReadinessReactiveProperty.Subscribe((bonusReadiness) => Refresh());
             _context.View.UseBonusButton.onClick.AddListener(OnBonusClickedEventHandler);
         }
 
-        public void Init(bool isBonusAvailableOnLevel)
+        public void Init(bool isBonusAvailableOnLevel, bool isBonusUnlimitedOnLevel)
         {
             _isBonusAvailableOnLevel = isBonusAvailableOnLevel;
+            _isBonusUnlimitedOnLevel = isBonusUnlimitedOnLevel;
             Refresh();
         }
 
         private void Refresh()
         {
-            _context.View.BonusCountText.text = $"{Mathf.Min(_context.QuickFixWashBonusCountReactiveProperty.Value, _context.QuickFixLaceBonusCountReactiveProperty.Value)}";
-            _context.View.BonusCountText.gameObject.SetActive(_context.QuickFixWashBonusCountReactiveProperty.Value > 0 || _context.QuickFixLaceBonusCountReactiveProperty.Value > 0);
+            _context.View.BonusCountText.text = $"{_context.QuickFixBonusCountReactiveProperty.Value}";
+            _context.View.BonusCountText.gameObject.SetActive(_context.QuickFixBonusCountReactiveProperty.Value > 0 && !_isBonusUnlimitedOnLevel);
             bool isBlocked = !_isBonusAvailableOnLevel
-                             || _context.QuickFixWashBonusCountReactiveProperty.Value == 0 && _context.QuickFixLaceBonusCountReactiveProperty.Value == 0;
+                             || _context.QuickFixBonusCountReactiveProperty.Value == 0 && !_isBonusUnlimitedOnLevel
+                             || !_context.BonusReadinessReactiveProperty.Value;
             _context.View.BlockerGo.SetActive(isBlocked);
             _context.View.UseBonusButton.enabled = !isBlocked;
         }

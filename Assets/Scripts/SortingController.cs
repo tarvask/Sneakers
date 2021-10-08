@@ -70,30 +70,34 @@ namespace Sneakers
             BonusItemController.Context freezeTrackBonusContext = new BonusItemController.Context(
                 _context.View.FreezeTrackBonus, BonusShopType.TrackFreeze,
                 _context.GameModel.TrackFreezeBonusCountReactiveProperty,
+                _context.BonusesController.GetBonusesReadiness(BonusShopType.TrackFreeze),
                 _context.OnBonusButtonClickedAction);
             _freezeTrackBonus = new BonusItemController(freezeTrackBonusContext);
             
             QuickFixBonusItemController.Context quickFixBonusContext = new QuickFixBonusItemController.Context(
                 _context.View.QuickFixBonus, BonusShopType.QuickFix,
-                _context.GameModel.QuickFixWashBonusCountReactiveProperty,
-                _context.GameModel.QuickFixLaceBonusCountReactiveProperty,
+                _context.GameModel.QuickFixBonusCountReactiveProperty,
+                _context.BonusesController.GetBonusesReadiness(BonusShopType.QuickFix),
                 _context.OnBonusButtonClickedAction);
             _quickFixBonus = new QuickFixBonusItemController(quickFixBonusContext);
 
             BonusItemController.Context autoUtilizationBonusContext = new BonusItemController.Context(
                 _context.View.AutoUtilizationBonus, BonusShopType.AutoUtilization,
                 _context.GameModel.AutoUtilizationBonusCountReactiveProperty,
+                _context.BonusesController.GetBonusesReadiness(BonusShopType.AutoUtilization),
                 _context.OnBonusButtonClickedAction);
             _autoUtilizationBonus = new BonusItemController(autoUtilizationBonusContext);
             
             BonusItemController.Context undoBonusContext = new BonusItemController.Context(
                 _context.View.UndoBonus, BonusShopType.Undo,
                 _context.GameModel.UndoBonusCountReactiveProperty,
+                _context.BonusesController.GetBonusesReadiness(BonusShopType.Undo),
                 _context.OnBonusButtonClickedAction);
             _undoBonus = new BonusItemController(undoBonusContext);
         }
 
-        public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel)
+        public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel,
+            BonusesParameters bonusesParameters)
         {
             _currentLevelConfig = levelConfig;
 
@@ -117,15 +121,20 @@ namespace Sneakers
             _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
             _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
             
-            _context.BonusesController.Init(_currentLevelConfig.FreezeTrackBonusLimitations,
+            _context.BonusesController.Init(bonusesParameters,
+                _currentLevelConfig.FreezeTrackBonusLimitations,
                 _currentLevelConfig.QuickFixBonusLimitations,
                 _currentLevelConfig.QuickFixBonusLimitations,
                 _currentLevelConfig.AutoUtilizationBonusLimitations,
                 _currentLevelConfig.UndoBonusLimitations);
-            _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable);
-            _quickFixBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable);
-            _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable);
-            _undoBonus.Init(_currentLevelConfig.UndoBonusLimitations.IsBonusAvailable);
+            _freezeTrackBonus.Init(_currentLevelConfig.FreezeTrackBonusLimitations.IsBonusAvailable,
+                _currentLevelConfig.FreezeTrackBonusLimitations.IsUnlimited);
+            _quickFixBonus.Init(_currentLevelConfig.QuickFixBonusLimitations.IsBonusAvailable,
+                _currentLevelConfig.QuickFixBonusLimitations.IsUnlimited);
+            _autoUtilizationBonus.Init(_currentLevelConfig.AutoUtilizationBonusLimitations.IsBonusAvailable,
+                _currentLevelConfig.AutoUtilizationBonusLimitations.IsUnlimited);
+            _undoBonus.Init(_currentLevelConfig.UndoBonusLimitations.IsBonusAvailable,
+                _currentLevelConfig.UndoBonusLimitations.IsUnlimited);
             _lastBadSorting = null;
             
             _spawnedSneakersCount = 0;

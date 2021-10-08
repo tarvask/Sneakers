@@ -7,14 +7,12 @@ namespace Sneakers
     public class BonusesParameters
     {
         [SerializeField] private BonusWithDurationParameters freezeTrackBonusParameters;
-        [SerializeField] private BonusWithDurationParameters quickFixWashBonusParameters;
-        [SerializeField] private BonusWithDurationParameters quickFixLaceBonusParameters;
+        [SerializeField] private BonusWithDurationParameters quickFixBonusParameters;
         [SerializeField] private BonusWithDurationParameters autoUtilizationBonusParameters;
         [SerializeField] private BonusParameters undoBonusParameters;
         
         public BonusWithDurationParameters FreezeTrackBonusParameters => freezeTrackBonusParameters;
-        public BonusWithDurationParameters QuickFixWashBonusParameters => quickFixWashBonusParameters;
-        public BonusWithDurationParameters QuickFixLaceBonusParameters => quickFixLaceBonusParameters;
+        public BonusWithDurationParameters QuickFixBonusParameters => quickFixBonusParameters;
         public BonusWithDurationParameters AutoUtilizationBonusParameters => autoUtilizationBonusParameters;
         public BonusParameters UndoBonusParameters => undoBonusParameters;
 
@@ -25,9 +23,7 @@ namespace Sneakers
                 case BonusShopType.TrackFreeze:
                     return freezeTrackBonusParameters.BonusPrice;
                 case BonusShopType.QuickFix:
-                    // use quick fix wash, but lace can be used likewise
-                    return quickFixWashBonusParameters.BonusPrice;
-                    //return quickFixLaceBonusParameters.BonusPrice;
+                    return quickFixBonusParameters.BonusPrice;
                 case BonusShopType.AutoUtilization:
                     return autoUtilizationBonusParameters.BonusPrice;
                 case BonusShopType.Undo:

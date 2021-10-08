@@ -11,7 +11,6 @@ namespace Sneakers
         public struct Context
         {
             public GameModel GameModel { get; }
-            public BonusesParameters BonusesParameters { get; }
             
             public Action<bool> SwitchFrozenStateAction { get; }
             public Action WashAllSneakersAction { get; }
@@ -22,7 +21,7 @@ namespace Sneakers
             public Action WasteAllWastedSneakersAction { get; }
             public Action UndoBadSortingAction { get; }
 
-            public Context(GameModel gameModel, BonusesParameters bonusesParameters,
+            public Context(GameModel gameModel,
                 
                 Action<bool> switchFrozenStateAction,
                 Action washAllSneakersAction,
@@ -34,8 +33,7 @@ namespace Sneakers
                 Action undoBadSortingAction)
             {
                 GameModel = gameModel;
-                BonusesParameters = bonusesParameters;
-                
+
                 SwitchFrozenStateAction = switchFrozenStateAction;
                 WashAllSneakersAction = washAllSneakersAction;
                 LaceAllSneakersAction = laceAllSneakersAction;
@@ -49,6 +47,8 @@ namespace Sneakers
 
         private readonly Context _context;
 
+        private BonusesParameters _currentBonusesParameters;
+        
         private bool _isFreezeTrackBonusActive;
         private bool _stopFreezeTrackBonus;
 
@@ -56,12 +56,13 @@ namespace Sneakers
         private bool _stopAutoUtilizationBonus;
 
         private readonly Dictionary<BonusShopType, bool> _bonusesOnCooldown;
+        private readonly Dictionary<BonusShopType, bool> _bonusesUnlimited;
+        private readonly Dictionary<BonusShopType, ReactiveProperty<bool>> _bonusesReadiness;
 
-        private readonly ReactiveProperty<bool> _isFreezeTrackBonusReady;
-        private readonly ReactiveProperty<bool> _isQuickFixWashBonusReady;
-        private readonly ReactiveProperty<bool> _isQuickFixLaceBonusReady;
-        private readonly ReactiveProperty<bool> _isAutoUtilizationBonusReady;
-        private readonly ReactiveProperty<bool> _isUndoBonusReady;
+        public IReadOnlyReactiveProperty<bool> GetBonusesReadiness(BonusShopType bonusType)
+        {
+            return _bonusesReadiness[bonusType];
+        }
 
         public BonusesController(Context context)
         {
@@ -75,77 +76,79 @@ namespace Sneakers
                 {BonusShopType.Undo, false}
             };
             
-            _isFreezeTrackBonusReady = new ReactiveProperty<bool>();
-            _isQuickFixWashBonusReady = new ReactiveProperty<bool>();
-            _isQuickFixLaceBonusReady = new ReactiveProperty<bool>();
-            _isAutoUtilizationBonusReady = new ReactiveProperty<bool>();
-            _isUndoBonusReady = new ReactiveProperty<bool>();
+            _bonusesUnlimited = new Dictionary<BonusShopType, bool>
+            {
+                {BonusShopType.TrackFreeze, false},
+                {BonusShopType.QuickFix, false},
+                {BonusShopType.AutoUtilization, false},
+                {BonusShopType.Undo, false}
+            };
+            
+            _bonusesReadiness = new Dictionary<BonusShopType, ReactiveProperty<bool>>
+            {
+                {BonusShopType.TrackFreeze, new ReactiveProperty<bool>()},
+                {BonusShopType.QuickFix, new ReactiveProperty<bool>()},
+                {BonusShopType.AutoUtilization, new ReactiveProperty<bool>()},
+                {BonusShopType.Undo, new ReactiveProperty<bool>()}
+            };
         }
 
-        public void Init(BonusLevelLimitations freezeTrackBonusLimitations,
+        public void Init(BonusesParameters bonusesParameters,
+            BonusLevelLimitations freezeTrackBonusLimitations,
             BonusLevelLimitations quickFixWashBonusLimitations,
             BonusLevelLimitations quickFixLaceBonusLimitations,
             BonusLevelLimitations autoUtilizationBonusLimitations,
             BonusLevelLimitations undoBonusLimitations)
         {
+            _currentBonusesParameters = bonusesParameters;
+            
             // track freeze
             if (freezeTrackBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < freezeTrackBonusLimitations.BonusesToAddCount; i++)
-                    _context.GameModel.AddBonus(BonusType.TrackFreeze);
+                    _context.GameModel.AddBonus(BonusShopType.TrackFreeze);
 
             if (freezeTrackBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.TrackFreeze) > freezeTrackBonusLimitations.BonusMaxCount)
-                    _context.GameModel.SpendBonus(BonusType.TrackFreeze);
+                while (GetBonusCount(BonusShopType.TrackFreeze) > freezeTrackBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusShopType.TrackFreeze);
             
             // quick fix
-            // equalize counts
-            if (GetBonusCount(BonusType.QuickFixWash) > GetBonusCount(BonusType.QuickFixLace))
-                _context.GameModel.SpendBonus(BonusType.QuickFixWash);
-            
-            if (GetBonusCount(BonusType.QuickFixLace) > GetBonusCount(BonusType.QuickFixWash))
-                _context.GameModel.SpendBonus(BonusType.QuickFixLace);
-                
-            // wash
             if (quickFixWashBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < quickFixWashBonusLimitations.BonusesToAddCount; i++)
-                    _context.GameModel.AddBonus(BonusType.QuickFixWash);
+                    _context.GameModel.AddBonus(BonusShopType.QuickFix);
 
             if (quickFixWashBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.QuickFixWash) > quickFixWashBonusLimitations.BonusMaxCount)
-                    _context.GameModel.SpendBonus(BonusType.QuickFixWash);
-            
-            // quick fix lace
-            if (quickFixLaceBonusLimitations.BonusesToAddCount > 0)
-                for (int i = 0; i < quickFixLaceBonusLimitations.BonusesToAddCount; i++)
-                    _context.GameModel.AddBonus(BonusType.QuickFixLace);
-            
-            if (quickFixLaceBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.QuickFixLace) > quickFixLaceBonusLimitations.BonusMaxCount)
-                    _context.GameModel.SpendBonus(BonusType.QuickFixLace);
-            
+                while (GetBonusCount(BonusShopType.QuickFix) > quickFixWashBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusShopType.QuickFix);
+
             // auto utilization
             if (autoUtilizationBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < autoUtilizationBonusLimitations.BonusesToAddCount; i++)
-                    _context.GameModel.AddBonus(BonusType.AutoUtilization);
+                    _context.GameModel.AddBonus(BonusShopType.AutoUtilization);
 
             if (autoUtilizationBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.AutoUtilization) > autoUtilizationBonusLimitations.BonusMaxCount)
-                    _context.GameModel.SpendBonus(BonusType.AutoUtilization);
+                while (GetBonusCount(BonusShopType.AutoUtilization) > autoUtilizationBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusShopType.AutoUtilization);
             
             // undo
             if (undoBonusLimitations.BonusesToAddCount > 0)
                 for (int i = 0; i < undoBonusLimitations.BonusesToAddCount; i++)
-                    _context.GameModel.AddBonus(BonusType.Undo);
+                    _context.GameModel.AddBonus(BonusShopType.Undo);
             
             if (undoBonusLimitations.BonusMaxCount != -1)
-                while (GetBonusCount(BonusType.Undo) > undoBonusLimitations.BonusMaxCount)
-                    _context.GameModel.SpendBonus(BonusType.Undo);
+                while (GetBonusCount(BonusShopType.Undo) > undoBonusLimitations.BonusMaxCount)
+                    _context.GameModel.SpendBonus(BonusShopType.Undo);
 
             // drop cooldown
             _bonusesOnCooldown[BonusShopType.TrackFreeze] = false;
             _bonusesOnCooldown[BonusShopType.QuickFix] = false;
             _bonusesOnCooldown[BonusShopType.AutoUtilization] = false;
             _bonusesOnCooldown[BonusShopType.Undo] = false;
+            
+            // set unlimited parameter
+            _bonusesUnlimited[BonusShopType.TrackFreeze] = freezeTrackBonusLimitations.IsUnlimited;
+            _bonusesUnlimited[BonusShopType.QuickFix] = quickFixLaceBonusLimitations.IsUnlimited;
+            _bonusesUnlimited[BonusShopType.AutoUtilization] = autoUtilizationBonusLimitations.IsUnlimited;
+            _bonusesUnlimited[BonusShopType.Undo] = undoBonusLimitations.IsUnlimited;
         }
 
         public void OuterUpdate(float frameLength)
@@ -157,15 +160,12 @@ namespace Sneakers
                 _context.SwitchFrozenStateAction(false);
             }
             
-            if (!_isFreezeTrackBonusReady.Value && !_bonusesOnCooldown[BonusShopType.TrackFreeze])
-                _isFreezeTrackBonusReady.Value = true;
+            if (!_bonusesReadiness[BonusShopType.TrackFreeze].Value && !_bonusesOnCooldown[BonusShopType.TrackFreeze])
+                _bonusesReadiness[BonusShopType.TrackFreeze].Value = true;
 
             // quick fix bonus
-            if (!_isQuickFixWashBonusReady.Value && !_bonusesOnCooldown[BonusShopType.QuickFix])
-                _isQuickFixWashBonusReady.Value = true;
-            
-            if (!_isQuickFixLaceBonusReady.Value && !_bonusesOnCooldown[BonusShopType.QuickFix])
-                _isQuickFixLaceBonusReady.Value = true;
+            if (!_bonusesReadiness[BonusShopType.QuickFix].Value && !_bonusesOnCooldown[BonusShopType.QuickFix])
+                _bonusesReadiness[BonusShopType.QuickFix].Value = true;
             
             // auto utilization
             if (_isAutoUtilizationBonusActive && _stopAutoUtilizationBonus)
@@ -174,47 +174,26 @@ namespace Sneakers
                 _context.SwitchAutoUtilizationAction(false);
             }
             
-            if (!_isAutoUtilizationBonusReady.Value && !_bonusesOnCooldown[BonusShopType.AutoUtilization])
-                _isAutoUtilizationBonusReady.Value = true;
+            if (!_bonusesReadiness[BonusShopType.AutoUtilization].Value && !_bonusesOnCooldown[BonusShopType.AutoUtilization])
+                _bonusesReadiness[BonusShopType.AutoUtilization].Value = true;
             
             // undo bonus
-            if (!_isUndoBonusReady.Value && !_bonusesOnCooldown[BonusShopType.Undo])
-                _isUndoBonusReady.Value = true;
+            if (!_bonusesReadiness[BonusShopType.Undo].Value && !_bonusesOnCooldown[BonusShopType.Undo])
+                _bonusesReadiness[BonusShopType.Undo].Value = true;
         }
 
-        private int GetBonusCount(BonusType bonusType)
+        private int GetBonusCount(BonusShopType bonusType)
         {
             switch (bonusType)
             {
-                case BonusType.TrackFreeze:
+                case BonusShopType.TrackFreeze:
                     return _context.GameModel.TrackFreezeBonusCountReactiveProperty.Value;
-                case BonusType.QuickFixWash:
-                    return _context.GameModel.QuickFixWashBonusCountReactiveProperty.Value;
-                case BonusType.QuickFixLace:
-                    return _context.GameModel.QuickFixLaceBonusCountReactiveProperty.Value;
-                case BonusType.AutoUtilization:
+                case BonusShopType.QuickFix:
+                    return _context.GameModel.QuickFixBonusCountReactiveProperty.Value;
+                case BonusShopType.AutoUtilization:
                     return _context.GameModel.AutoUtilizationBonusCountReactiveProperty.Value;
-                case BonusType.Undo:
+                case BonusShopType.Undo:
                     return _context.GameModel.UndoBonusCountReactiveProperty.Value;
-            }
-
-            throw new ArgumentException("Unknown bonus type");
-        }
-        
-        private ReactiveProperty<bool> GetBonusReadyReactiveProperty(BonusType bonusType)
-        {
-            switch (bonusType)
-            {
-                case BonusType.TrackFreeze:
-                    return _isFreezeTrackBonusReady;
-                case BonusType.QuickFixWash:
-                    return _isQuickFixWashBonusReady;
-                case BonusType.QuickFixLace:
-                    return _isQuickFixLaceBonusReady;
-                case BonusType.AutoUtilization:
-                    return _isAutoUtilizationBonusReady;
-                case BonusType.Undo:
-                    return _isUndoBonusReady;
             }
 
             throw new ArgumentException("Unknown bonus type");
@@ -248,47 +227,42 @@ namespace Sneakers
 
             // effect duration
             int effectTimerInMilliseconds =
-                Mathf.RoundToInt(_context.BonusesParameters.FreezeTrackBonusParameters.BonusDuration * 1000);
+                Mathf.RoundToInt(_currentBonusesParameters.FreezeTrackBonusParameters.BonusDuration * 1000);
             Task.Run(async () =>
             {
                 await Task.Delay(effectTimerInMilliseconds);
                 _stopFreezeTrackBonus = true;
             });
             
-            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.FreezeTrackBonusParameters.BonusCooldown);
+            StartBonusCooldown(BonusShopType.TrackFreeze, _currentBonusesParameters.FreezeTrackBonusParameters.BonusCooldown);
             
-            _context.GameModel.SpendBonus(BonusType.TrackFreeze);
+            if (!_bonusesUnlimited[BonusShopType.TrackFreeze])
+                _context.GameModel.SpendBonus(BonusShopType.TrackFreeze);
         }
 
         private void QuickFix()
         {
             SetQuickFixWash();
             SetQuickFixLace();
+            
+            if (!_bonusesUnlimited[BonusShopType.QuickFix])
+                _context.GameModel.SpendBonus(BonusShopType.QuickFix);
         }
 
         private void SetQuickFixWash()
         {
-            _context.GameModel.SpendBonus(BonusType.QuickFixWash);
-            _context.SetQuickWashAction(_context.BonusesParameters.QuickFixWashBonusParameters.BonusDuration);
-            //_context.QuickFixBonusChoosingUiController.Hide();
-            
+            _context.SetQuickWashAction(_currentBonusesParameters.QuickFixBonusParameters.BonusDuration);
+
             // effect cooldown
-            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
-                return;
-            
-            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown);
+            StartBonusCooldown(BonusShopType.QuickFix, _currentBonusesParameters.QuickFixBonusParameters.BonusCooldown);
         }
 
         private void SetQuickFixLace()
         {
-            _context.GameModel.SpendBonus(BonusType.QuickFixLace);
-            _context.SetQuickLaceAction(_context.BonusesParameters.QuickFixLaceBonusParameters.BonusDuration);
+            _context.SetQuickLaceAction(_currentBonusesParameters.QuickFixBonusParameters.BonusDuration);
             
             // effect cooldown
-            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
-                return;
-            
-            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
+            StartBonusCooldown(BonusShopType.QuickFix, _currentBonusesParameters.QuickFixBonusParameters.BonusCooldown);
         }
         
         private void WashAllDirtySneakers()
@@ -296,20 +270,15 @@ namespace Sneakers
             _context.WashAllSneakersAction();
             
             // effect cooldown
-            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
-                return;
-            
-            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixWashBonusParameters.BonusCooldown);
+            StartBonusCooldown(BonusShopType.QuickFix, _currentBonusesParameters.QuickFixBonusParameters.BonusCooldown);
         }
         
         private void LaceAllUnlacedSneakers()
         {
             _context.LaceAllSneakersAction();
             
-            if (GetBonusCount(BonusType.QuickFixWash) != GetBonusCount(BonusType.QuickFixLace))
-                return;
-            
-            StartBonusCooldown(BonusShopType.QuickFix, _context.BonusesParameters.QuickFixLaceBonusParameters.BonusCooldown);
+            // effect cooldown
+            StartBonusCooldown(BonusShopType.QuickFix, _currentBonusesParameters.QuickFixBonusParameters.BonusCooldown);
         }
 
         private void WasteAllWastedSneakers()
@@ -326,22 +295,26 @@ namespace Sneakers
 
             // effect duration
             int effectTimerInMilliseconds =
-                Mathf.RoundToInt(_context.BonusesParameters.AutoUtilizationBonusParameters.BonusDuration * 1000);
+                Mathf.RoundToInt(_currentBonusesParameters.AutoUtilizationBonusParameters.BonusDuration * 1000);
             Task.Run(async () =>
             {
                 await Task.Delay(effectTimerInMilliseconds);
                 _stopAutoUtilizationBonus = true;
             });
             
-            StartBonusCooldown(BonusShopType.AutoUtilization, _context.BonusesParameters.AutoUtilizationBonusParameters.BonusCooldown);
-            _context.GameModel.SpendBonus(BonusType.AutoUtilization);
+            StartBonusCooldown(BonusShopType.AutoUtilization, _currentBonusesParameters.AutoUtilizationBonusParameters.BonusCooldown);
+            
+            if (!_bonusesUnlimited[BonusShopType.AutoUtilization])
+                _context.GameModel.SpendBonus(BonusShopType.AutoUtilization);
         }
 
         private void UndoBadSorting()
         {
             _context.UndoBadSortingAction();
-            StartBonusCooldown(BonusShopType.Undo, _context.BonusesParameters.UndoBonusParameters.BonusCooldown);
-            _context.GameModel.SpendBonus(BonusType.Undo);
+            StartBonusCooldown(BonusShopType.Undo, _currentBonusesParameters.UndoBonusParameters.BonusCooldown);
+            
+            if (!_bonusesUnlimited[BonusShopType.Undo])
+                _context.GameModel.SpendBonus(BonusShopType.Undo);
         }
 
         private void StartBonusCooldown(BonusShopType bonusType, float cooldownDuration)
@@ -349,6 +322,7 @@ namespace Sneakers
             if (cooldownDuration > 0)
             {
                 _bonusesOnCooldown[bonusType] = true;
+                _bonusesReadiness[bonusType].Value = false;
                 int cooldownTimerInMilliseconds =
                     Mathf.RoundToInt(cooldownDuration * 1000);
                 Task.Run(async () =>

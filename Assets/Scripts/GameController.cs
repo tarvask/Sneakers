@@ -53,7 +53,7 @@ namespace Sneakers
                 _model.WashTrackLevelReactiveProperty,
                 _model.LaceTrackLevelReactiveProperty,
                 _model.TrackFreezeBonusCountReactiveProperty,
-                _model.QuickFixWashBonusCountReactiveProperty,
+                _model.QuickFixBonusCountReactiveProperty,
                 _model.AutoUtilizationBonusCountReactiveProperty,
                 _model.UndoBonusCountReactiveProperty,
                 BuyBonus);
@@ -63,7 +63,6 @@ namespace Sneakers
             
             // bonuses
             BonusesController.Context bonusesControllerContext = new BonusesController.Context(_model,
-                _view.GameConfig.RegularModeBonusesConfig.BonusesParameters,
                 SwitchFrozenState,
                 WashAllDirtySneakers, LaceAllUnlacedSneakers, SetQuickWash, SetQuickLace,
                 SwitchAutoUtilization, WasteAllWastedSneakers, UndoBadSorting);
@@ -104,7 +103,7 @@ namespace Sneakers
                 currentLevel >= _view.GameConfig.LevelToEnableEndlessMode,
                 () =>
             {
-                StartLevel(levelConfig);
+                StartLevel(levelConfig, _view.GameConfig.RegularModeBonusesConfig);
                 _mainMenuUiController.Hide();
             },
             () =>
@@ -114,15 +113,16 @@ namespace Sneakers
             });
         }
 
-        private void StartLevel(LevelConfig levelConfig)
+        private void StartLevel(LevelConfig levelConfig, BonusesParametersConfig bonusesParametersConfig)
         {
             _sortingController.Init(levelConfig,
                 _view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value],
-                _view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value]);
+                _view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value],
+                bonusesParametersConfig.BonusesParameters);
 
             if (!String.IsNullOrEmpty(levelConfig.TutorialText))
             {
-                ShowTutorial(levelConfig.TutorialText);
+                ShowTutorial(levelConfig);
             }
             else if (levelConfig.ShowUpgradeShop)
             {
@@ -136,18 +136,18 @@ namespace Sneakers
 
         private void StartEndlessMode()
         {
-            StartLevel(_view.GameConfig.EndlessLevel);
+            StartLevel(_view.GameConfig.EndlessLevel, _view.GameConfig.EndlessModeBonusesConfig);
         }
 
-        private void ShowTutorial(string tutorialText)
+        private void ShowTutorial(LevelConfig levelConfig)
         {
             ChangeState(GameState.Tutorial);
-            _tutorialUiController.Show(tutorialText,
+            _tutorialUiController.Show(levelConfig.TutorialText,
                 () =>
                 {
                     _tutorialUiController.Hide();
 
-                    if (CurrentLevelConfig.ShowUpgradeShop)
+                    if (levelConfig.ShowUpgradeShop)
                     {
                         ShowUpgradeShop();
                     }
@@ -169,7 +169,7 @@ namespace Sneakers
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(CurrentLevelConfig);
+                    StartLevel(CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
                 },
                 () =>
                 {
@@ -194,7 +194,7 @@ namespace Sneakers
                     _sortingController.Clear();
                     
                     if (_sortingController.CurrentLevelConfig.NumberOfSneakers > 0)
-                        StartLevel(CurrentLevelConfig);
+                        StartLevel(CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
                     else
                         StartEndlessMode();
                 },
@@ -266,17 +266,16 @@ namespace Sneakers
             switch (bonusType)
             {
                 case BonusShopType.TrackFreeze:
-                    _model.AddBonus(BonusType.TrackFreeze);
+                    _model.AddBonus(BonusShopType.TrackFreeze);
                     break;
                 case BonusShopType.QuickFix:
-                    _model.AddBonus(BonusType.QuickFixWash);
-                    _model.AddBonus(BonusType.QuickFixLace);
+                    _model.AddBonus(BonusShopType.QuickFix);
                     break;
                 case BonusShopType.AutoUtilization:
-                    _model.AddBonus(BonusType.AutoUtilization);
+                    _model.AddBonus(BonusShopType.AutoUtilization);
                     break;
                 case BonusShopType.Undo:
-                    _model.AddBonus(BonusType.Undo);
+                    _model.AddBonus(BonusShopType.Undo);
                     break;
             }
         }
@@ -318,8 +317,7 @@ namespace Sneakers
             
             // bonuses
             PlayerPrefs.SetInt(GameConstants.TrackFreezeBonusCountStorageName, _model.TrackFreezeBonusCountReactiveProperty.Value);
-            PlayerPrefs.SetInt(GameConstants.QuickFixWashBonusCountStorageName, _model.QuickFixWashBonusCountReactiveProperty.Value);
-            PlayerPrefs.SetInt(GameConstants.QuickFixLaceBonusCountStorageName, _model.QuickFixLaceBonusCountReactiveProperty.Value);
+            PlayerPrefs.SetInt(GameConstants.QuickFixBonusCountStorageName, _model.QuickFixBonusCountReactiveProperty.Value);
             PlayerPrefs.SetInt(GameConstants.AutoUtilizationBonusCountStorageName, _model.AutoUtilizationBonusCountReactiveProperty.Value);
             PlayerPrefs.SetInt(GameConstants.UndoBonusCountStorageName, _model.UndoBonusCountReactiveProperty.Value);
         }
