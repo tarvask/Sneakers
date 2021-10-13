@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afd4d25719a69ae459061bc38cf0b8e5, type: 3}
+  m_Name: 01
+  m_EditorClassIdentifier: 
+  model: nike_red
+  id: 1
+  isLegendary: 0
+  prefab: {fileID: 8816515728949970005, guid: 1889242b6451b4f5cab05b4c523cce7a, type: 3}
+  boxSprite: {fileID: 21300000, guid: b410fb1f9f5b045419b463339d4544e2, type: 3}
