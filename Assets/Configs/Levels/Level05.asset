@@ -15,6 +15,7 @@ MonoBehaviour:
   numberOfSneakers: 12
   numberOfLives: 3
   coinsSuccessfulLevelReward: 100
+  coinsSuccessfulStepReward: 0
   coinsWrongStepReward: -25
   shufflePossibleSneakers: 1
   possibleSneakers:
@@ -45,15 +46,42 @@ MonoBehaviour:
   mainTrackMovementSpeed: 180
   mainTrackMinSpawnDelay: 1.1
   mainTrackMaxSpawnDelay: 2.2
+  isMainTrackSpeedingUp: 0
+  mainTrackSpeedUpInterval: 0
+  mainTrackSpeedUpDelta: 0
   isWashTrackAvailable: 1
   isLaceTrackAvailable: 1
   isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
   isWaitTrackMovingToWaste: 0
   isWasteTrackAvailable: 1
-  firstBinModelId: 1
-  secondBinModelId: 0
+  firstBinModelConfig: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9,
+    type: 2}
+  secondBinModelConfig: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860,
+    type: 2}
+  areBinModelsSwitching: 0
+  binModelsSwitchingInterval: 0
   tutorialText: "\u041B\u0435\u043D\u0442\u0430 \u043D\u0435\u043C\u043D\u043E\u0433\u043E
     \u0431\u0430\u0440\u0430\u0445\u043B\u0438\u0442 \u0441\u0435\u0433\u043E\u0434\u043D\u044F
     - \u0441\u0442\u043E\u0438\u0442 \u0431\u044B\u0442\u044C \u043D\u0430\u0447\u0435\u043A\u0443!"
   showUpgradeShop: 0
+  freezeTrackBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  quickFixBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  autoUtilizationBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  undoBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0

@@ -15,31 +15,32 @@ MonoBehaviour:
   numberOfSneakers: 16
   numberOfLives: 3
   coinsSuccessfulLevelReward: 100
+  coinsSuccessfulStepReward: 0
   coinsWrongStepReward: -25
   shufflePossibleSneakers: 1
   possibleSneakers:
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: 9a5cfea8ac0cc426ba996c44cd2a5f4f, type: 2}
     state: 2
     count: 1
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: 9a5cfea8ac0cc426ba996c44cd2a5f4f, type: 2}
     state: 4
     count: 1
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: 9a5cfea8ac0cc426ba996c44cd2a5f4f, type: 2}
     state: 3
     count: 2
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: 9a5cfea8ac0cc426ba996c44cd2a5f4f, type: 2}
     state: 1
     count: 1
-  - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
+  - config: {fileID: 11400000, guid: af64903e6db9b4416918c10656117f9f, type: 2}
     state: 2
     count: 2
-  - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
+  - config: {fileID: 11400000, guid: af64903e6db9b4416918c10656117f9f, type: 2}
     state: 4
     count: 1
-  - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
+  - config: {fileID: 11400000, guid: af64903e6db9b4416918c10656117f9f, type: 2}
     state: 3
     count: 1
-  - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
+  - config: {fileID: 11400000, guid: af64903e6db9b4416918c10656117f9f, type: 2}
     state: 1
     count: 2
   - config: {fileID: 11400000, guid: fc0d70bf1cacc4e199e370aae7862613, type: 2}
@@ -51,14 +52,21 @@ MonoBehaviour:
   mainTrackMovementSpeed: 200
   mainTrackMinSpawnDelay: 1.4
   mainTrackMaxSpawnDelay: 2.3
+  isMainTrackSpeedingUp: 0
+  mainTrackSpeedUpInterval: 0
+  mainTrackSpeedUpDelta: 0
   isWashTrackAvailable: 1
   isLaceTrackAvailable: 1
   isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 1
   isWaitTrackMovingToWaste: 0
   isWasteTrackAvailable: 1
-  firstBinModelId: 1
-  secondBinModelId: 0
+  firstBinModelConfig: {fileID: 11400000, guid: 9a5cfea8ac0cc426ba996c44cd2a5f4f,
+    type: 2}
+  secondBinModelConfig: {fileID: 11400000, guid: af64903e6db9b4416918c10656117f9f,
+    type: 2}
+  areBinModelsSwitching: 0
+  binModelsSwitchingInterval: 0
   tutorialText: "\u0422\u044B \u043D\u0430\u0441\u0442\u043E\u044F\u0449\u0438\u0439
     \u043C\u0430\u0441\u0442\u0435\u0440 \u0432 \u044D\u0442\u043E\u043C \u0434\u0435\u043B\u0435!\n\u0412
     \u044D\u0442\u043E\u0439 \u043F\u0430\u0440\u0442\u0438\u0438 \u0443\u0436\u0435
@@ -66,3 +74,23 @@ MonoBehaviour:
     \u0445\u043E\u0442\u044F \u0431\u044B \u043E\u0434\u0438\u043D \u043B\u0435\u0433\u0435\u043D\u0434\u0430\u0440\u043D\u044B\u0439
     \u043A\u0440\u043E\u0441\u0441\u043E\u0432\u043E\u043A."
   showUpgradeShop: 1
+  freezeTrackBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  quickFixBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  autoUtilizationBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  undoBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0

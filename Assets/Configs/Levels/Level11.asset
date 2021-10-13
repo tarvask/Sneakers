@@ -15,19 +15,20 @@ MonoBehaviour:
   numberOfSneakers: 17
   numberOfLives: 3
   coinsSuccessfulLevelReward: 100
+  coinsSuccessfulStepReward: 0
   coinsWrongStepReward: -25
   shufflePossibleSneakers: 1
   possibleSneakers:
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: af21166d5ed264c31aa90289e1df35eb, type: 2}
     state: 2
     count: 2
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: af21166d5ed264c31aa90289e1df35eb, type: 2}
     state: 4
     count: 1
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: af21166d5ed264c31aa90289e1df35eb, type: 2}
     state: 3
     count: 2
-  - config: {fileID: 11400000, guid: a170decb95a45d94ab1bd828c360b860, type: 2}
+  - config: {fileID: 11400000, guid: af21166d5ed264c31aa90289e1df35eb, type: 2}
     state: 1
     count: 1
   - config: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9, type: 2}
@@ -48,14 +49,21 @@ MonoBehaviour:
   mainTrackMovementSpeed: 200
   mainTrackMinSpawnDelay: 1.3
   mainTrackMaxSpawnDelay: 2.4
+  isMainTrackSpeedingUp: 0
+  mainTrackSpeedUpInterval: 0
+  mainTrackSpeedUpDelta: 0
   isWashTrackAvailable: 1
   isLaceTrackAvailable: 1
   isWaitTrackAvailable: 1
   waitTrackMovementSpeed: 50
   isWaitTrackMovingToWaste: 1
   isWasteTrackAvailable: 1
-  firstBinModelId: 1
-  secondBinModelId: 0
+  firstBinModelConfig: {fileID: 11400000, guid: cf26a27a899936a4b974f4f86d8ba9b9,
+    type: 2}
+  secondBinModelConfig: {fileID: 11400000, guid: af21166d5ed264c31aa90289e1df35eb,
+    type: 2}
+  areBinModelsSwitching: 0
+  binModelsSwitchingInterval: 0
   tutorialText: "\u041D\u0435 \u0437\u0430\u0431\u044B\u0432\u0430\u0439 \u0443\u043B\u0443\u0447\u0448\u0430\u0442\u044C
     \u0441\u0432\u043E\u0438 \u043C\u0430\u0448\u0438\u043D\u044B \u0434\u043B\u044F
     \u043A\u0440\u043E\u0441\u0441\u043E\u0432\u043E\u043A.\n\u0418\u043D\u0430\u0447\u0435
@@ -65,3 +73,23 @@ MonoBehaviour:
     \u043A\u0440\u043E\u0441\u0441\u043E\u0432\u043E\u043A \u0438 \u0446\u0435\u043D\u043D\u043E\u0433\u043E
     \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u0430!"
   showUpgradeShop: 1
+  freezeTrackBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  quickFixBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  autoUtilizationBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
+  undoBonusLimitations:
+    isBonusAvailable: 0
+    bonusesToAddCount: 0
+    bonusMaxCount: 0
+    isUnlimited: 0
