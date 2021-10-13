@@ -118,8 +118,8 @@ namespace Sneakers
             _context.View.LaceTrack.Init(this, _currentLevelConfig.IsLaceTrackAvailable, laceTrackLevel);
             _context.View.WasteTrack.Init(this, _currentLevelConfig.IsWasteTrackAvailable);
             _context.View.WaitTrack.Init(this, _currentLevelConfig.IsWaitTrackAvailable, _currentLevelConfig.WaitTrackMovementSpeed, _currentLevelConfig.IsWaitTrackMovingToWaste);
-            _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelId);
-            _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelId);
+            _context.View.FirstModelBin.Init(this, true, _currentLevelConfig.FirstBinModelConfig);
+            _context.View.SecondModelBin.Init(this, true, _currentLevelConfig.SecondBinModelConfig);
             
             _context.BonusesController.Init(bonusesParameters,
                 _currentLevelConfig.FreezeTrackBonusLimitations,
@@ -252,12 +252,12 @@ namespace Sneakers
             {
                 yield return new WaitForSeconds(_currentLevelConfig.BinModelsSwitchingInterval);
 
-                int newFirstBinModelId = _currentLevelConfig
-                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config.Id;
-                int newSecondBinModelId = _currentLevelConfig
-                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config.Id;
-                _context.View.FirstModelBin.ChangeModelId(newFirstBinModelId);
-                _context.View.SecondModelBin.ChangeModelId(newSecondBinModelId);
+                SneakerConfig newFirstBinModelConfig = _currentLevelConfig
+                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config;
+                SneakerConfig newSecondBinModelConfig = _currentLevelConfig
+                    .PossibleSneakers[Random.Range(0, _currentLevelConfig.PossibleSneakers.Length)].Config;
+                _context.View.FirstModelBin.ChangeModel(newFirstBinModelConfig);
+                _context.View.SecondModelBin.ChangeModel(newSecondBinModelConfig);
             }
         }
 

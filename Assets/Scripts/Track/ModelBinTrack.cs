@@ -1,27 +1,27 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sneakers
 {
     public class ModelBinTrack : AbstractSpecialTrack
     {
-        [SerializeField] private TextMeshProUGUI modelIdText;
+        [SerializeField] private Image modelBoxSprite;
         
         private int _modelId;
 
         public int ModelId => _modelId;
 
-        public void Init(SortingController sortingController, bool isAvailable, int modelId)
+        public void Init(SortingController sortingController, bool isAvailable, SneakerConfig modelConfig)
         {
             base.Init(sortingController, isAvailable);
 
-            ChangeModelId(modelId);
+            ChangeModel(modelConfig);
         }
 
-        public void ChangeModelId(int modelId)
+        public void ChangeModel(SneakerConfig modelConfig)
         {
-            _modelId = modelId;
-            modelIdText.text = $"{modelId}";
+            _modelId = modelConfig.Id;
+            modelBoxSprite.sprite = modelConfig.BoxSprite;
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)

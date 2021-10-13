@@ -39,8 +39,8 @@ namespace Sneakers
         [SerializeField] private bool isWasteTrackAvailable;
         
         [Header("Model bin track")]
-        [SerializeField] private int firstBinModelId;
-        [SerializeField] private int secondBinModelId;
+        [SerializeField] private SneakerConfig firstBinModelConfig;
+        [SerializeField] private SneakerConfig secondBinModelConfig;
         [SerializeField] private bool areBinModelsSwitching;
         [SerializeField] private float binModelsSwitchingInterval;
         
@@ -92,8 +92,8 @@ namespace Sneakers
         public bool IsWaitTrackMovingToWaste => isWaitTrackMovingToWaste;
         
         // model bins
-        public int FirstBinModelId => firstBinModelId;
-        public int SecondBinModelId => secondBinModelId;
+        public SneakerConfig FirstBinModelConfig => firstBinModelConfig;
+        public SneakerConfig SecondBinModelConfig => secondBinModelConfig;
         public bool AreBinModelsSwitching => areBinModelsSwitching;
         public float BinModelsSwitchingInterval => binModelsSwitchingInterval;
         
