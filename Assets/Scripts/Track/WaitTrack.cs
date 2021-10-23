@@ -68,7 +68,7 @@ namespace Sneakers
 
             int baseWaitTransporterIndex = 0;
             
-            while (mover == 1 || mover == 2)
+            while (mover == 1)
             {
                 while (Vector3.SqrMagnitude(trackPoints[baseWaitTransporterIndex + mover].localPosition - sneaker.LocalPosition)
                        > GameConstants.SuperCloseDistanceSqr)
