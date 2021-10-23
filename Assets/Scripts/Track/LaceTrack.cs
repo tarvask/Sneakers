@@ -101,6 +101,12 @@ namespace Sneakers
                     sneaker.Move(trackPoints[1].localPosition, _trackLevelParams.TrackSpeed);
                     yield return null;
                 }
+                
+                while (Vector3.SqrMagnitude(trackPoints[2].localPosition - sneaker.LocalPosition) > GameConstants.SuperCloseDistanceSqr)
+                {
+                    sneaker.Move(trackPoints[2].localPosition, _trackLevelParams.TrackSpeed);
+                    yield return null;
+                }
                 mover++;
             }
             if (mover == 3)

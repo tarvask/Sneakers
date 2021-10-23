@@ -15,6 +15,7 @@ namespace Sneakers
         [SerializeField] private WaitTrack waitTrack;
         [SerializeField] private ModelBinTrack firstModelBin;
         [SerializeField] private ModelBinTrack secondModelBin;
+        [SerializeField] private Transform sneakersRoot;
 
         public Canvas canvas;
         [SerializeField] private Text totalLabel;
@@ -37,6 +38,7 @@ namespace Sneakers
         public WaitTrack WaitTrack => waitTrack;
         public ModelBinTrack FirstModelBin => firstModelBin;
         public ModelBinTrack SecondModelBin => secondModelBin;
+        public Transform SneakersRoot => sneakersRoot;
 
         public Text TotalLabel => totalLabel;
         public Text BestLabel => bestLabel;

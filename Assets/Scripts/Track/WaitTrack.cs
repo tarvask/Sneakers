@@ -1,10 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sneakers
 {
     public class WaitTrack : AbstractSpecialTrack
     {
+        [SerializeField] private Image roadToWaste;
+        
         private float _waitTrackMovementSpeed;
         private bool _moveToWaste;
         
@@ -14,6 +17,7 @@ namespace Sneakers
 
             _waitTrackMovementSpeed = waitTrackMovementSpeed;
             _moveToWaste = moveToWaste;
+            roadToWaste.gameObject.SetActive(_moveToWaste);
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)

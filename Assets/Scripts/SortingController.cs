@@ -34,7 +34,6 @@ namespace Sneakers
         private readonly Dictionary<int, int> _collectedLegendarySneakers;
         private List<PossibleSneakerParams> _sneakersToSpawn;
         private LevelConfig _currentLevelConfig;
-        private Transform _spawnRoot;
 
         private readonly BonusItemController _freezeTrackBonus;
         private readonly QuickFixBonusItemController _quickFixBonus;
@@ -171,15 +170,6 @@ namespace Sneakers
         private IEnumerator Spawn()
         {
             yield return new WaitForSeconds(1f);
-
-            if (_spawnRoot == null)
-            {
-                _spawnRoot = new GameObject("Sneakers").transform;
-                _spawnRoot.SetParent(_context.View.SneakersSpawnPoint.parent.parent);
-                _spawnRoot.localPosition = Vector3.zero;
-                _spawnRoot.localScale = Vector3.one;
-            }
-
             bool randomSpawn = _currentLevelConfig.NumberOfSneakers == -1;
 
             while (_spawnedSneakersCount < _currentLevelConfig.NumberOfSneakers || randomSpawn)
@@ -187,9 +177,9 @@ namespace Sneakers
                 SneakerController sneaker;
                 
                 if (randomSpawn)
-                    sneaker = InstantiateRandomSneaker(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                    sneaker = InstantiateRandomSneaker(_context.View.SneakersRoot, _context.View.SneakersSpawnPoint.localPosition);
                 else
-                    sneaker = InstantiateSneakerFromList(_spawnRoot, _context.View.SneakersSpawnPoint.localPosition);
+                    sneaker = InstantiateSneakerFromList(_context.View.SneakersRoot, _context.View.SneakersSpawnPoint.localPosition);
                 
                 if (_isAutoUtilizationActive && sneaker.State == SneakerState.Wasted)
                     OnSortSucceeded(sneaker);

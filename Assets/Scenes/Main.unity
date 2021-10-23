@@ -632,6 +632,7 @@ MonoBehaviour:
   waitTrack: {fileID: 1269669202}
   firstModelBin: {fileID: 715104877}
   secondModelBin: {fileID: 2016216055}
+  sneakersRoot: {fileID: 5675266398274679911}
   canvas: {fileID: 243219440}
   totalLabel: {fileID: 2067790396}
   bestLabel: {fileID: 525389508}
@@ -1592,6 +1593,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 243219437}
     m_Modifications:
+    - target: {fileID: 997939951194938000, guid: 34d80a8725f4f43b4a9c917d495c3a6b,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5675266397402182900, guid: 34d80a8725f4f43b4a9c917d495c3a6b,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1704,6 +1710,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34d80a8725f4f43b4a9c917d495c3a6b, type: 3}
+--- !u!224 &5675266398274679911 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6237033885435167508, guid: 34d80a8725f4f43b4a9c917d495c3a6b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5675266398274679910}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6024442103568671520
 PrefabInstance:
   m_ObjectHideFlags: 0
