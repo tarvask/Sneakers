@@ -138,6 +138,12 @@ namespace Sneakers
                 while (GetBonusCount(BonusShopType.Undo) > undoBonusLimitations.BonusMaxCount)
                     _context.GameModel.SpendBonus(BonusShopType.Undo);
 
+            // stop bonuses
+            _isAutoUtilizationBonusActive = false;
+            _context.SwitchAutoUtilizationAction(false);
+            _isFreezeTrackBonusActive = false;
+            _context.SwitchFrozenStateAction(false);
+            
             // drop cooldown
             _bonusesOnCooldown[BonusShopType.TrackFreeze] = false;
             _bonusesOnCooldown[BonusShopType.QuickFix] = false;
