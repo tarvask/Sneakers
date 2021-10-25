@@ -28,6 +28,11 @@ namespace Sneakers
                 
                 if (!sneaker.DragDropItem.IsHold)
                     _sortingController.SendToMainTransporter(sneaker, sneaker.CurrentPoint);
+                else
+                {
+                    StartProcessingSneaker(sneaker);
+                    _sortingController.SendToWaitTransporter(sneaker, 1);
+                }
             }
             else
             {
