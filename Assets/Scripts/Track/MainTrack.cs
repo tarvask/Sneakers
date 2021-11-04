@@ -5,7 +5,8 @@ namespace Sneakers
 {
     public class MainTrack : AbstractTrack
     {
-        [SerializeField] protected Transform[] trackPoints;
+        [SerializeField] private Transform[] trackPoints;
+        [SerializeField] private MainTrackAnimator trackAnimator;
         
         private float _mainTrackMovementSpeed;
 
@@ -14,6 +15,13 @@ namespace Sneakers
             base.Init(sortingController, isAvailable);
 
             _mainTrackMovementSpeed = mainTrackMovementSpeed;
+            
+            trackAnimator.SetSpeed(_mainTrackMovementSpeed);
+        }
+
+        public void Stop()
+        {
+            trackAnimator.SetSpeed(-1);
         }
         
         protected override void OnDropSneaker(SneakerController sneaker)

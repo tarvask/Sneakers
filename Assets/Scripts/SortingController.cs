@@ -165,6 +165,7 @@ namespace Sneakers
             _sneakers.Clear();
             _collectedLegendarySneakers.Clear();
             _context.View.StopAllCoroutines();
+            _context.View.MainTrack.Stop();
         }
         
         private IEnumerator Spawn()
