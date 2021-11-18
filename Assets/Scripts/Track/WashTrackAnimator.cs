@@ -3,26 +3,25 @@ using UnityEngine.UI;
 
 namespace Sneakers
 {
-    public class MainTrackAnimator : MonoBehaviour
+    public class WashTrackAnimator : MonoBehaviour
     {
         [SerializeField] private Sprite[] animationFrames;
         [SerializeField] private Image animationTarget;
-
-        [SerializeField] private float MagicSpeedTranslationCoefficient;
 
         private bool _isRunning;
         private float _singleFrameDuration;
         private float _currentFrameTimer;
         private int _currentFrame;
 
-        private float _speed;
-
-        public void SetSpeed(float newSpeed)
+        public void OuterStart()
         {
-            _speed = newSpeed;
-            _isRunning = _speed > 0;
-            float animationDuration = 1f / 60 * animationFrames.Length;
-            _singleFrameDuration = animationDuration * MagicSpeedTranslationCoefficient / (animationFrames.Length * _speed);
+            _isRunning = true;
+            _singleFrameDuration = 1f / 60;
+        }
+
+        public void OuterStop()
+        {
+            _isRunning = false;
         }
 
         public void Update()

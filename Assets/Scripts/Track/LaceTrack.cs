@@ -7,6 +7,7 @@ namespace Sneakers
     public class LaceTrack : AbstractSpecialTrack
     {
         [SerializeField] private Image quickFixActiveHighlight;
+        [SerializeField] private WashTrackAnimator trackAnimator;
         
         private TrackLevelParams _trackLevelParams;
         private float _currentProcessDuration;
@@ -18,6 +19,12 @@ namespace Sneakers
 
             _trackLevelParams = trackLevelParams;
             ResetQuickFix();
+            trackAnimator.OuterStart();
+        }
+
+        public void Stop()
+        {
+            trackAnimator.OuterStop();
         }
         
         public void Upgrade(TrackLevelParams trackLevelParams)
