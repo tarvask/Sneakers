@@ -68,9 +68,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6770833
+    - _ScaleRatioC: 0.6770833
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -162,9 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: BalooDa2-Bold SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: -907698655
   material: {fileID: -1327621341036213573}
-  materialHashCode: 0
+  materialHashCode: 1003856225
   m_Version: 1.1.0
   m_SourceFontFileGUID: baad5642599bd43d994bbf2befb02612
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: baad5642599bd43d994bbf2befb02612,
@@ -2633,7 +2633,8 @@ MonoBehaviour:
   m_FontFeatureTable:
     m_GlyphPairAdjustmentRecords: []
   fallbackFontAssets: []
-  m_FallbackFontAssetTable: []
+  m_FallbackFontAssetTable:
+  - {fileID: 11400000, guid: 63e07373f7cb343198f27ed2bde09222, type: 2}
   m_CreationSettings:
     sourceFontFileName: 
     sourceFontFileGUID: baad5642599bd43d994bbf2befb02612
