@@ -14,7 +14,7 @@ namespace Sneakers
         public void Show(SneakerConfig legendarySneakerConfig, Action onContinueAction)
         {
             _view.LegendIcon.sprite = legendarySneakerConfig.Prefab.Icon.sprite;
-            _view.LegendNameText.text = legendarySneakerConfig.Model;
+            //_view.LegendNameText.text = legendarySneakerConfig.Model;
             _view.ContinueButton.onClick.AddListener(() => onContinueAction());
             
             _view.gameObject.SetActive(true);

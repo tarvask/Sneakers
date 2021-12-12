@@ -8,6 +8,8 @@ namespace Sneakers
 
         [Space] [Header("Windows")]
         [SerializeField] private MainMenuUiView mainMenuUi;
+        [SerializeField] private LegendaryInventoryUiView legendaryInventoryUi;
+        [SerializeField] private SettingsUiView settingsUi;
         [SerializeField] private TutorialUiView tutorialUi;
         [SerializeField] private WinUiView winUi;
         [SerializeField] private LoseUiView loseUi;
@@ -21,6 +23,8 @@ namespace Sneakers
         
         // windows
         public MainMenuUiView MainMenuUi => mainMenuUi;
+        public LegendaryInventoryUiView LegendaryInventoryUi => legendaryInventoryUi;
+        public SettingsUiView SettingsUi => settingsUi;
         public TutorialUiView TutorialUi => tutorialUi;
         public WinUiView WinUi => winUi;
         public LoseUiView LoseUi => loseUi;

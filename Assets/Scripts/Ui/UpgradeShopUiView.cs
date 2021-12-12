@@ -8,11 +8,28 @@ namespace Sneakers
     {
         [SerializeField] private TextMeshProUGUI coinsCountText;
         
-        [SerializeField] private Text washTrackUpgradePriceText;
+        [Header("Background")]
+        [SerializeField] private Image background;
+
+        [SerializeField] private Sprite backgroundNoBonusesSprite;
+        [SerializeField] private Sprite backgroundWithBonusesSprite;
+
+        [SerializeField] private float backgroundNoBonusesHeight;
+        [SerializeField] private float backgroundWithBonusesHeight;
+
+        [Header("Washing")]
+        [SerializeField] private TextMeshProUGUI washTrackUpgradePriceText;
         [SerializeField] private Button washTrackUpgradeButton;
+        [SerializeField] private GameObject washTrackButtonBlockerGo;
+        [SerializeField] private GameObject washTrackMaxPriceLabelGo;
+        [SerializeField] private Image[] washTrackUpgradeChecks;
         
-        [SerializeField] private Text laceTrackUpgradePriceText;
+        [Header("Lacing")]
+        [SerializeField] private TextMeshProUGUI laceTrackUpgradePriceText;
         [SerializeField] private Button laceTrackUpgradeButton;
+        [SerializeField] private GameObject laceTrackButtonBlockerGo;
+        [SerializeField] private GameObject laceTrackMaxPriceLabelGo;
+        [SerializeField] private Image[] laceTrackUpgradeChecks;
         
         [Header("Bonuses")]
         [SerializeField] private BonusShopItemView freezeTrackBonus;
@@ -24,12 +41,29 @@ namespace Sneakers
         [SerializeField] private Button continueButton;
 
         public TextMeshProUGUI CoinsCountText => coinsCountText;
+        
+        // background
+        public Image Background => background;
 
-        public Text WashTrackUpgradePriceText => washTrackUpgradePriceText;
+        public Sprite BackgroundNoBonusesSprite => backgroundNoBonusesSprite;
+        public Sprite BackgroundWithBonusesSprite => backgroundWithBonusesSprite;
+
+        public float BackgroundNoBonusesHeight => backgroundNoBonusesHeight;
+        public float BackgroundWithBonusesHeight => backgroundWithBonusesHeight;
+
+        // washing
+        public TextMeshProUGUI WashTrackUpgradePriceText => washTrackUpgradePriceText;
         public Button WashTrackUpgradeButton => washTrackUpgradeButton;
+        public GameObject WashTrackButtonBlockerGo => washTrackButtonBlockerGo;
+        public GameObject WashTrackMaxPriceLabelGo => washTrackMaxPriceLabelGo;
+        public Image[] WashTrackUpgradeChecks => washTrackUpgradeChecks;
 
-        public Text LaceTrackUpgradePriceText => laceTrackUpgradePriceText;
+        // lacing
+        public TextMeshProUGUI LaceTrackUpgradePriceText => laceTrackUpgradePriceText;
         public Button LaceTrackUpgradeButton => laceTrackUpgradeButton;
+        public GameObject LaceTrackButtonBlockerGo => laceTrackButtonBlockerGo;
+        public GameObject LaceTrackMaxPriceLabelGo => laceTrackMaxPriceLabelGo;
+        public Image[] LaceTrackUpgradeChecks => laceTrackUpgradeChecks;
         
         // bonuses
         public BonusShopItemView FreezeTrackBonus => freezeTrackBonus;

@@ -11,11 +11,10 @@ namespace Sneakers
             _view = view;
         }
 
-        public void Show(int score, Action onContinueAction, Action onMainMenuAction)
+        public void Show(int score, Action onContinueAction)
         {
-            _view.LevelScoreText.text = $"And got {score} coins";
+            _view.LevelScoreText.text = $"{score}";
             _view.ContinueButton.onClick.AddListener(() => onContinueAction());
-            _view.MainMenuButton.onClick.AddListener(() => onMainMenuAction());
             _view.gameObject.SetActive(true);
         }
 
@@ -24,7 +23,6 @@ namespace Sneakers
             _view.gameObject.SetActive(false);
             
             _view.ContinueButton.onClick.RemoveAllListeners();
-            _view.MainMenuButton.onClick.RemoveAllListeners();
         }
     }
 }

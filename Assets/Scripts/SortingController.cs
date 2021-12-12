@@ -95,9 +95,11 @@ namespace Sneakers
             _undoBonus = new BonusItemController(undoBonusContext);
         }
 
-        public void Init(LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel,
+        public void Init(int levelNumber, LevelConfig levelConfig, TrackLevelParams washTrackLevel, TrackLevelParams laceTrackLevel,
             BonusesParameters bonusesParameters)
         {
+            _context.View.LevelNumberLabel.text = $"{levelNumber}";
+            _context.View.LevelNumberLabel.gameObject.SetActive(levelNumber >= 0);
             _currentLevelConfig = levelConfig;
 
             // prepare stuff for spawn

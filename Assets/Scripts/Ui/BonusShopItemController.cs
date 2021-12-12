@@ -48,12 +48,10 @@ namespace Sneakers
         private void Refresh()
         {
             _context.View.BonusCountText.text = $"{_context.BonusCountReactiveProperty.Value}";
-            bool isBlocked = !_isBonusAvailableOnLevel
-                             ||
-                             /*_context.BonusCountReactiveProperty.Value == 0
-                             &&*/ _context.CoinsCountReactiveProperty.Value < _context.BonusParameters.BonusPrice;
-            _context.View.BlockerGo.SetActive(isBlocked);
-            _context.View.BuyBonusButton.enabled = !isBlocked;
+            bool isBlocked = !_isBonusAvailableOnLevel;
+            bool notEnoughMoney = _context.CoinsCountReactiveProperty.Value < _context.BonusParameters.BonusPrice;
+            _context.View.gameObject.SetActive(!isBlocked);
+            _context.View.BuyBonusButton.enabled = !notEnoughMoney;
         }
 
         private void OnBonusClickedEventHandler()

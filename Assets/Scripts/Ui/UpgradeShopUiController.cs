@@ -1,5 +1,6 @@
 using System;
 using UniRx;
+using UnityEngine;
 
 namespace Sneakers
 {
@@ -99,8 +100,27 @@ namespace Sneakers
             Action onUpgradeLaceTrackAction,
             Action onContinueAction)
         {
+            // set right background
+            RectTransform backgroundRectTransform = _context.View.Background.rectTransform;
+            
+            if (freezeTrackBonusLimitations.IsBonusAvailable || quickFixWashBonusLimitations.IsBonusAvailable
+                                                             || autoUtilizationBonusLimitations.IsBonusAvailable
+                                                             || undoBonusLimitations.IsBonusAvailable)
+            {
+                _context.View.Background.sprite = _context.View.BackgroundWithBonusesSprite;
+                backgroundRectTransform.sizeDelta = new Vector2(backgroundRectTransform.sizeDelta.x,
+                    _context.View.BackgroundWithBonusesHeight);
+            }
+            else
+            {
+                _context.View.Background.sprite = _context.View.BackgroundNoBonusesSprite;
+                backgroundRectTransform.sizeDelta = new Vector2(backgroundRectTransform.sizeDelta.x,
+                    _context.View.BackgroundNoBonusesHeight);
+            }
+
             UpdateInfo();
             
+            // update bonuses
             _freezeTrackBonus.Init(freezeTrackBonusLimitations.IsBonusAvailable,
                 (bonusShopType) =>
                 {
@@ -125,10 +145,12 @@ namespace Sneakers
             _context.View.WashTrackUpgradeButton.onClick.AddListener(() =>
             {
                 onUpgradeWashTrackAction();
+                UpdateInfo();
             });
             _context.View.LaceTrackUpgradeButton.onClick.AddListener(() =>
             {
                 onUpgradeLaceTrackAction();
+                UpdateInfo();
             });
             _context.View.ContinueButton.onClick.AddListener(() => onContinueAction());
             _coinsChangingSubscription = _context.CoinsReactiveProperty.Subscribe(UpdateInfo);
@@ -152,13 +174,26 @@ namespace Sneakers
             {
                 _context.View.WashTrackUpgradePriceText.text = washTrackLevelParams[washTrackLevel.Value + 1].Price.ToString();
                 _context.View.WashTrackUpgradePriceText.gameObject.SetActive(true);
+                _context.View.WashTrackMaxPriceLabelGo.gameObject.SetActive(false);
             }
             else
+            {
                 _context.View.WashTrackUpgradePriceText.gameObject.SetActive(false);
+                _context.View.WashTrackMaxPriceLabelGo.gameObject.SetActive(true);
+            }
 
             bool canUpgradeWashTrack = hasUpgradesOnWashTrack && _context.CoinsReactiveProperty.Value >= washTrackLevelParams[washTrackLevel.Value + 1].Price;
 
             _context.View.WashTrackUpgradeButton.enabled = canUpgradeWashTrack;
+            _context.View.WashTrackButtonBlockerGo.SetActive(!canUpgradeWashTrack);
+
+            for (int washTrackUpgradeIndex = 1; washTrackUpgradeIndex < washTrackLevelParams.Length; washTrackUpgradeIndex++)
+            {
+                if (washTrackUpgradeIndex <= washTrackLevel.Value)
+                    _context.View.WashTrackUpgradeChecks[washTrackUpgradeIndex - 1].color = new Color(1f, 1f, 1f, 1f);
+                else
+                    _context.View.WashTrackUpgradeChecks[washTrackUpgradeIndex - 1].color = new Color(1f, 1f, 1f, 0.5f);
+            }
         }
 
         private void UpdateLaceTrackUpgradeInfo(TrackLevelParams[] laceTrackLevelParams, IReadOnlyReactiveProperty<int> laceTrackLevel)
@@ -169,13 +204,26 @@ namespace Sneakers
             {
                 _context.View.LaceTrackUpgradePriceText.text = laceTrackLevelParams[laceTrackLevel.Value + 1].Price.ToString();
                 _context.View.LaceTrackUpgradePriceText.gameObject.SetActive(true);
+                _context.View.LaceTrackMaxPriceLabelGo.gameObject.SetActive(false);
             }
             else
+            {
                 _context.View.LaceTrackUpgradePriceText.gameObject.SetActive(false);
-            
+                _context.View.LaceTrackMaxPriceLabelGo.gameObject.SetActive(true);
+            }
+
             bool canUpgradeLaceTrack = hasUpgradesOnLaceTrack && _context.CoinsReactiveProperty.Value >= laceTrackLevelParams[laceTrackLevel.Value + 1].Price;
             
             _context.View.LaceTrackUpgradeButton.enabled = canUpgradeLaceTrack;
+            _context.View.LaceTrackButtonBlockerGo.SetActive(!canUpgradeLaceTrack);
+            
+            for (int washTrackUpgradeIndex = 1; washTrackUpgradeIndex < laceTrackLevelParams.Length; washTrackUpgradeIndex++)
+            {
+                if (washTrackUpgradeIndex <= laceTrackLevel.Value)
+                    _context.View.LaceTrackUpgradeChecks[washTrackUpgradeIndex - 1].color = new Color(1f, 1f, 1f, 1f);
+                else
+                    _context.View.LaceTrackUpgradeChecks[washTrackUpgradeIndex - 1].color = new Color(1f, 1f, 1f, 0.5f);
+            }
         }
 
         public void Hide()

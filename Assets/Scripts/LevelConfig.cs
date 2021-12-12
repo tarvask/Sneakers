@@ -47,6 +47,8 @@ namespace Sneakers
         [Space]
         [Header("Tutorial")]
         [TextArea]
+        [SerializeField] private string tutorialHeader;
+        [TextArea]
         [SerializeField] private string tutorialText;
 
         [Space]
@@ -98,6 +100,7 @@ namespace Sneakers
         public float BinModelsSwitchingInterval => binModelsSwitchingInterval;
         
         // tutorial
+        public string TutorialHeader => tutorialHeader;
         public string TutorialText => tutorialText;
         
         // upgrade shop

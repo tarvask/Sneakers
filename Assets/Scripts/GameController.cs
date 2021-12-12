@@ -15,6 +15,8 @@ namespace Sneakers
         private readonly BonusesController _bonusesController;
 
         private readonly MainMenuUiController _mainMenuUiController;
+        private readonly LegendaryInventoryUiController _legendaryInventoryUiController;
+        private readonly SettingsUiController _settingsUiController;
         private readonly TutorialUiController _tutorialUiController;
         private readonly WinUiController _winUiController;
         private readonly LoseUiController _loseUiController;
@@ -27,7 +29,7 @@ namespace Sneakers
 
 //#if UNITY_EDITOR
         private static GameController _instance;
-        //#endif
+//#endif
 
         private LevelConfig CurrentLevelConfig => _view.GameConfig.Levels[_model.CurrentLevel - 1];
 
@@ -41,6 +43,8 @@ namespace Sneakers
 
             // ui
             _mainMenuUiController = new MainMenuUiController(_view.MainMenuUi);
+            _legendaryInventoryUiController = new LegendaryInventoryUiController(_view.LegendaryInventoryUi);
+            _settingsUiController = new SettingsUiController(_view.SettingsUi);
             _tutorialUiController = new TutorialUiController(_view.TutorialUi);
             _winUiController = new WinUiController(_view.WinUi);
             _loseUiController = new LoseUiController(_view.LoseUi);
@@ -103,19 +107,29 @@ namespace Sneakers
                 currentLevel >= _view.GameConfig.LevelToEnableEndlessMode,
                 () =>
             {
-                StartLevel(levelConfig, _view.GameConfig.RegularModeBonusesConfig);
+                StartLevel(currentLevel, levelConfig, _view.GameConfig.RegularModeBonusesConfig);
                 _mainMenuUiController.Hide();
             },
             () =>
             {
                 StartEndlessMode();
                 _mainMenuUiController.Hide();
-            });
+            },
+                () =>
+                {
+                    ShowLegendaryInventory();
+                    _mainMenuUiController.Hide();
+                },
+                () =>
+                {
+                    ShowSettings();
+                    _mainMenuUiController.Hide();
+                });
         }
 
-        private void StartLevel(LevelConfig levelConfig, BonusesParametersConfig bonusesParametersConfig)
+        private void StartLevel(int levelNumber, LevelConfig levelConfig, BonusesParametersConfig bonusesParametersConfig)
         {
-            _sortingController.Init(levelConfig,
+            _sortingController.Init(levelNumber, levelConfig,
                 _view.GameConfig.WashTrackLevels[_model.WashTrackLevelReactiveProperty.Value],
                 _view.GameConfig.LaceTrackLevels[_model.LaceTrackLevelReactiveProperty.Value],
                 bonusesParametersConfig.BonusesParameters);
@@ -136,13 +150,33 @@ namespace Sneakers
 
         private void StartEndlessMode()
         {
-            StartLevel(_view.GameConfig.EndlessLevel, _view.GameConfig.EndlessModeBonusesConfig);
+            StartLevel(-1, _view.GameConfig.EndlessLevel, _view.GameConfig.EndlessModeBonusesConfig);
+        }
+
+        private void ShowLegendaryInventory()
+        {
+            Dictionary<int, int> currentLegends = StringToDict(PlayerPrefs.GetString(GameConstants.CollectedLegendarySneakersStorageName, ""));
+            
+            _legendaryInventoryUiController.Show(currentLegends, () =>
+            {
+                ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
+                _legendaryInventoryUiController.Hide();
+            });
+        }
+
+        private void ShowSettings()
+        {
+            _settingsUiController.Show(() =>
+            {
+                ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
+                _settingsUiController.Hide();
+            });
         }
 
         private void ShowTutorial(LevelConfig levelConfig)
         {
             ChangeState(GameState.Tutorial);
-            _tutorialUiController.Show(levelConfig.TutorialText,
+            _tutorialUiController.Show(levelConfig.TutorialHeader, levelConfig.TutorialText,
                 () =>
                 {
                     _tutorialUiController.Hide();
@@ -169,13 +203,7 @@ namespace Sneakers
                 {
                     _winUiController.Hide();
                     _sortingController.Clear();
-                    StartLevel(CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
-                },
-                () =>
-                {
-                    _winUiController.Hide();
-                    _sortingController.Clear();
-                    ShowMainMenu(_model.CurrentLevel, CurrentLevelConfig);
+                    StartLevel(_model.CurrentLevel, CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
                 });
         }
 
@@ -194,7 +222,7 @@ namespace Sneakers
                     _sortingController.Clear();
                     
                     if (_sortingController.CurrentLevelConfig.NumberOfSneakers > 0)
-                        StartLevel(CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
+                        StartLevel(_model.CurrentLevel, CurrentLevelConfig, _view.GameConfig.RegularModeBonusesConfig);
                     else
                         StartEndlessMode();
                 },

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sneakers
@@ -20,6 +21,7 @@ namespace Sneakers
         public Canvas canvas;
         [SerializeField] private Text totalLabel;
         [SerializeField] private Text bestLabel;
+        [SerializeField] private TextMeshProUGUI levelNumberLabel;
         [SerializeField] private LivesIndicator livesIndicator;
 
         [Space]
@@ -42,6 +44,7 @@ namespace Sneakers
 
         public Text TotalLabel => totalLabel;
         public Text BestLabel => bestLabel;
+        public TextMeshProUGUI LevelNumberLabel => levelNumberLabel;
         public LivesIndicator LivesIndicator => livesIndicator;
 
         // bonuses
