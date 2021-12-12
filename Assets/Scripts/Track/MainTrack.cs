@@ -27,8 +27,8 @@ namespace Sneakers
         protected override void OnDropSneaker(SneakerController sneaker)
         {
             if (sneaker.View.DragDropItem.IsHold)
-                sneaker.View.DragDropItem.IsHold = false;
-            
+                return;
+
             OnWrongTrackDropped(sneaker);
         }
         

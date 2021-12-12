@@ -28,17 +28,29 @@ namespace Sneakers
         protected void StartProcessingSneaker(SneakerController sneaker)
         {
             _processingSneaker = sneaker;
+            StartWorkAnimation();
         }
 
         protected void StopProcessingSneaker()
         {
             _processingSneaker = null;
+            StopWorkAnimation();
         }
 
         public void CheckAndRemoveFromTrack(SneakerController sneaker)
         {
             if (_processingSneaker == sneaker)
                 StopProcessingSneaker();
+        }
+
+        protected virtual void StartWorkAnimation()
+        {
+            
+        }
+        
+        protected virtual void StopWorkAnimation()
+        {
+            
         }
     }
 }

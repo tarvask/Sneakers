@@ -19,12 +19,6 @@ namespace Sneakers
 
             _trackLevelParams = trackLevelParams;
             ResetQuickFix();
-            trackAnimator.OuterStart();
-        }
-
-        public void Stop()
-        {
-            trackAnimator.OuterStop();
         }
         
         public void Upgrade(TrackLevelParams trackLevelParams)
@@ -131,6 +125,16 @@ namespace Sneakers
                 sneaker.SetCurrentPoint(4);
                 _sortingController.SendToMainTransporter(sneaker);
             }
+        }
+        
+        protected override void StartWorkAnimation()
+        {
+            trackAnimator.OuterStart();
+        }
+        
+        protected override void StopWorkAnimation()
+        {
+            trackAnimator.OuterStop();
         }
     }
 }
